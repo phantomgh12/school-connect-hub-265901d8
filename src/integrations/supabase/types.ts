@@ -14,7 +14,120 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          city: string | null
+          country: string | null
+          cover_url: string | null
+          created_at: string
+          date_of_birth: string | null
+          full_name: string | null
+          gender: string | null
+          grade_class: string | null
+          graduation_year: number | null
+          id: string
+          onboarded: boolean
+          phone: string | null
+          region: string | null
+          school_name: string | null
+          school_type: Database["public"]["Enums"]["school_type"] | null
+          updated_at: string
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          city?: string | null
+          country?: string | null
+          cover_url?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          full_name?: string | null
+          gender?: string | null
+          grade_class?: string | null
+          graduation_year?: number | null
+          id: string
+          onboarded?: boolean
+          phone?: string | null
+          region?: string | null
+          school_name?: string | null
+          school_type?: Database["public"]["Enums"]["school_type"] | null
+          updated_at?: string
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          city?: string | null
+          country?: string | null
+          cover_url?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          full_name?: string | null
+          gender?: string | null
+          grade_class?: string | null
+          graduation_year?: number | null
+          id?: string
+          onboarded?: boolean
+          phone?: string | null
+          region?: string | null
+          school_name?: string | null
+          school_type?: Database["public"]["Enums"]["school_type"] | null
+          updated_at?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
+      student_questionnaire: {
+        Row: {
+          career_goal: string | null
+          class_grade: string | null
+          clubs_activities: string | null
+          created_at: string
+          favorite_subjects: string | null
+          hobbies: string | null
+          inspiration: string | null
+          level: string | null
+          message_to_students: string | null
+          reconnect_classmates: boolean | null
+          school: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          career_goal?: string | null
+          class_grade?: string | null
+          clubs_activities?: string | null
+          created_at?: string
+          favorite_subjects?: string | null
+          hobbies?: string | null
+          inspiration?: string | null
+          level?: string | null
+          message_to_students?: string | null
+          reconnect_classmates?: boolean | null
+          school?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          career_goal?: string | null
+          class_grade?: string | null
+          clubs_activities?: string | null
+          created_at?: string
+          favorite_subjects?: string | null
+          hobbies?: string | null
+          inspiration?: string | null
+          level?: string | null
+          message_to_students?: string | null
+          reconnect_classmates?: boolean | null
+          school?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +136,13 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      school_type:
+        | "primary"
+        | "jhs"
+        | "shs"
+        | "technical"
+        | "university"
+        | "alumni"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +269,15 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      school_type: [
+        "primary",
+        "jhs",
+        "shs",
+        "technical",
+        "university",
+        "alumni",
+      ],
+    },
   },
 } as const
