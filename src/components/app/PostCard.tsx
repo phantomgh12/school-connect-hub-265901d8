@@ -59,12 +59,17 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
   }
 
   async function loadComments() {
-    const { data } = await supabase
+    const { data: raw } = await supabase
       .from("post_comments")
-      .select("id,user_id,content,created_at,author:profiles!post_comments_user_id_fkey(full_name,avatar_url)")
+      .select("id,user_id,content,created_at")
       .eq("post_id", post.id)
       .order("created_at", { ascending: true });
-    setComments((data as any) ?? []);
+    const ids = [...new Set((raw ?? []).map((c: any) => c.user_id))];
+    const { data: authors } = ids.length
+      ? await supabase.from("profiles").select("id,full_name,avatar_url").in("id", ids)
+      : { data: [] as any[] };
+    const map = new Map((authors ?? []).map((a: any) => [a.id, a]));
+    setComments((raw ?? []).map((c: any) => ({ ...c, author: map.get(c.user_id) ?? null })));
   }
 
   useEffect(() => { if (showComments) loadComments(); }, [showComments]); // eslint-disable-line

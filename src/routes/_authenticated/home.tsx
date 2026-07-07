@@ -23,17 +23,23 @@ function HomePage() {
   const loadFeed = useCallback(async (uid: string) => {
     const { data: rawPosts } = await supabase
       .from("posts")
-      .select("id,user_id,content,media_urls,post_type,hashtags,created_at,author:profiles!posts_user_id_fkey(full_name,username,avatar_url,school_name)")
+      .select("id,user_id,content,media_urls,post_type,hashtags,created_at")
       .order("created_at", { ascending: false })
       .limit(50);
 
     const ids = (rawPosts ?? []).map((p: any) => p.id);
-    const [{ data: likes }, { data: comments }, { data: myLikes }, { data: mySaves }] = await Promise.all([
-      supabase.from("post_likes").select("post_id").in("post_id", ids.length ? ids : ["00000000-0000-0000-0000-000000000000"]),
-      supabase.from("post_comments").select("post_id").in("post_id", ids.length ? ids : ["00000000-0000-0000-0000-000000000000"]),
+    const authorIds = [...new Set((rawPosts ?? []).map((p: any) => p.user_id))];
+    const safeIds = ids.length ? ids : ["00000000-0000-0000-0000-000000000000"];
+    const [{ data: likes }, { data: comments }, { data: myLikes }, { data: mySaves }, { data: authors }] = await Promise.all([
+      supabase.from("post_likes").select("post_id").in("post_id", safeIds),
+      supabase.from("post_comments").select("post_id").in("post_id", safeIds),
       supabase.from("post_likes").select("post_id").eq("user_id", uid),
       supabase.from("post_saves").select("post_id").eq("user_id", uid),
+      authorIds.length
+        ? supabase.from("profiles").select("id,full_name,username,avatar_url,school_name").in("id", authorIds)
+        : Promise.resolve({ data: [] as any[] }),
     ]);
+    const authorMap = new Map((authors ?? []).map((a: any) => [a.id, a]));
     const likeCount: Record<string, number> = {};
     likes?.forEach((l: any) => { likeCount[l.post_id] = (likeCount[l.post_id] ?? 0) + 1; });
     const commentCount: Record<string, number> = {};
@@ -43,6 +49,7 @@ function HomePage() {
 
     const feed: FeedPost[] = (rawPosts ?? []).map((p: any) => ({
       ...p,
+      author: authorMap.get(p.user_id) ?? null,
       like_count: likeCount[p.id] ?? 0,
       comment_count: commentCount[p.id] ?? 0,
       liked_by_me: likedSet.has(p.id),
