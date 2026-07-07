@@ -73,7 +73,7 @@ function AuthPage() {
         });
         if (error) throw error;
         toast.success("Signed in!");
-        navigate({ to: "/profile" });
+        navigate({ to: "/home" });
       }
     } catch (err: any) {
       toast.error(err?.message ?? "Something went wrong");
@@ -91,7 +91,7 @@ function AuthPage() {
       if (result.error) { toast.error(result.error.message ?? "Google sign-in failed"); return; }
       if ((result as any).redirected) return;
       toast.success("Signed in!");
-      navigate({ to: "/profile" });
+      navigate({ to: "/home" });
     } finally {
       setOauthLoading(false);
     }

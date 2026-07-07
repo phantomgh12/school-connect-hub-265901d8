@@ -120,7 +120,7 @@ function OnboardingPage() {
       if (qErr) throw qErr;
 
       toast.success("Profile ready! Welcome to SchoolConnect 🎉");
-      navigate({ to: "/profile" });
+      navigate({ to: "/home" });
     } catch (err: any) {
       toast.error(err?.message ?? "Could not save your profile");
     } finally { setSaving(false); }
