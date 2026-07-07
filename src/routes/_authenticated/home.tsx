@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/app/AppShell";
 import { CreatePost } from "@/components/app/CreatePost";
 import { PostCard, type FeedPost } from "@/components/app/PostCard";
-import { Loader2, TrendingUp, Users, Plus, Sparkles } from "lucide-react";
+import { TrendingUp, Users, Plus, Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/home")({
   head: () => ({ meta: [{ title: "Home — SchoolConnect" }] }),
@@ -14,7 +14,7 @@ export const Route = createFileRoute("/_authenticated/home")({
 function HomePage() {
   const [userId, setUserId] = useState<string>("");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [profileName, setProfileName] = useState<string>("");
+  const [, setProfileName] = useState<string>("");
   const [posts, setPosts] = useState<FeedPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [suggestions, setSuggestions] = useState<any[]>([]);
