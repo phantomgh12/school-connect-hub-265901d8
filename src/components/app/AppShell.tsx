@@ -5,14 +5,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { useTheme } from "@/lib/theme";
 import { toast } from "sonner";
 
-const NAV = [
+type NavItem = { to: "/home" | "/profile"; label: string; icon: typeof Home; disabled?: boolean };
+const NAV: NavItem[] = [
   { to: "/home", label: "Home", icon: Home },
   { to: "/profile", label: "Profile", icon: User },
   { to: "/home", label: "Explore", icon: Compass, disabled: true },
   { to: "/home", label: "Friends", icon: Users, disabled: true },
   { to: "/home", label: "Saved", icon: Bookmark, disabled: true },
   { to: "/home", label: "Notifications", icon: Bell, disabled: true },
-] as const;
+];
 
 export function AppShell({ children, right }: { children: ReactNode; right?: ReactNode }) {
   const [open, setOpen] = useState(false);
