@@ -3,7 +3,6 @@ import { useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
 import { GraduationCap, Eye, EyeOff, Loader2 } from "lucide-react";
 
 const searchSchema = z.object({
@@ -52,7 +51,7 @@ function AuthPage() {
           email: parsed.data.email,
           password: parsed.data.password,
           options: {
-            emailRedirectTo: window.location.origin,
+            emailRedirectTo: `${window.location.origin}/auth/callback`,
             data: { full_name: parsed.data.fullName },
           },
         });
@@ -85,14 +84,18 @@ function AuthPage() {
   async function handleGoogle() {
     setOauthLoading(true);
     try {
-      const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin,
+      // Use Supabase directly so it works on any deployed domain
+      // (add your domain to Cloud → Users → Auth Settings → Redirect URLs)
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
       });
-      if (result.error) { toast.error(result.error.message ?? "Google sign-in failed"); return; }
-      if ((result as any).redirected) return;
-      toast.success("Signed in!");
-      navigate({ to: "/home" });
-    } finally {
+      if (error) throw error;
+      // Browser will navigate to Google — nothing more to do here.
+    } catch (err: any) {
+      toast.error(err?.message ?? "Google sign-in failed");
       setOauthLoading(false);
     }
   }

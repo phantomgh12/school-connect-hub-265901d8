@@ -1,10 +1,13 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/app/AppShell";
 import { CreatePost } from "@/components/app/CreatePost";
 import { PostCard, type FeedPost } from "@/components/app/PostCard";
-import { TrendingUp, Users, Plus, Sparkles } from "lucide-react";
+import { StoryRail } from "@/components/app/StoryRail";
+import { TrendingUp, Users, UserPlus, Sparkles, Circle } from "lucide-react";
+import { notify } from "@/lib/notify";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/home")({
   head: () => ({ meta: [{ title: "Home — SchoolConnect" }] }),
@@ -14,11 +17,11 @@ export const Route = createFileRoute("/_authenticated/home")({
 function HomePage() {
   const [userId, setUserId] = useState<string>("");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [, setProfileName] = useState<string>("");
   const [posts, setPosts] = useState<FeedPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [trending, setTrending] = useState<{ tag: string; count: number }[]>([]);
+  const [online, setOnline] = useState<any[]>([]);
 
   const loadFeed = useCallback(async (uid: string) => {
     const { data: rawPosts } = await supabase
@@ -57,15 +60,19 @@ function HomePage() {
     }));
     setPosts(feed);
 
-    // Trending hashtags
     const tagCount: Record<string, number> = {};
     feed.forEach((p) => p.hashtags.forEach((h) => { tagCount[h] = (tagCount[h] ?? 0) + 1; }));
     setTrending(Object.entries(tagCount).map(([tag, count]) => ({ tag, count })).sort((a, b) => b.count - a.count).slice(0, 6));
   }, []);
 
-  const loadSuggestions = useCallback(async (uid: string) => {
-    const { data } = await supabase.from("profiles").select("id,full_name,username,avatar_url,school_name").neq("id", uid).limit(5);
-    setSuggestions(data ?? []);
+  const loadSidebar = useCallback(async (uid: string) => {
+    const [{ data: sug }, { data: on }] = await Promise.all([
+      supabase.from("profiles").select("id,full_name,username,avatar_url,school_name").neq("id", uid).limit(5),
+      supabase.from("profiles").select("id,full_name,avatar_url,school_name")
+        .eq("is_online", true).neq("id", uid).limit(8),
+    ]);
+    setSuggestions(sug ?? []);
+    setOnline(on ?? []);
   }, []);
 
   useEffect(() => {
@@ -76,13 +83,20 @@ function HomePage() {
       setUserId(uid);
       const { data: p } = await supabase.from("profiles").select("full_name,avatar_url").eq("id", uid).maybeSingle();
       setAvatarUrl(p?.avatar_url ?? null);
-      setProfileName(p?.full_name ?? "");
-      await Promise.all([loadFeed(uid), loadSuggestions(uid)]);
+      await Promise.all([loadFeed(uid), loadSidebar(uid)]);
       setLoading(false);
     })();
-  }, [loadFeed, loadSuggestions]);
+  }, [loadFeed, loadSidebar]);
 
   const refresh = () => userId && loadFeed(userId);
+
+  async function addFriend(addresseeId: string) {
+    const { error } = await supabase.from("friendships").insert({ requester_id: userId, addressee_id: addresseeId, status: "pending" });
+    if (error) return toast.error(error.message);
+    await notify({ userId: addresseeId, actorId: userId, type: "friend_request", message: "sent you a friend request" });
+    toast.success("Friend request sent");
+    loadSidebar(userId);
+  }
 
   return (
     <AppShell
@@ -97,9 +111,11 @@ function HomePage() {
             ) : (
               <ul className="grid gap-2">
                 {trending.map((t) => (
-                  <li key={t.tag} className="flex items-center justify-between rounded-xl px-2 py-1.5 text-sm hover:bg-muted">
-                    <span className="font-semibold text-[color:var(--brand)]">#{t.tag}</span>
-                    <span className="text-xs text-muted-foreground">{t.count} post{t.count > 1 ? "s" : ""}</span>
+                  <li key={t.tag}>
+                    <Link to="/search" search={{ q: `#${t.tag}` }} className="flex items-center justify-between rounded-xl px-2 py-1.5 text-sm hover:bg-muted">
+                      <span className="font-semibold text-[color:var(--brand)]">#{t.tag}</span>
+                      <span className="text-xs text-muted-foreground">{t.count} post{t.count > 1 ? "s" : ""}</span>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -114,46 +130,42 @@ function HomePage() {
               {suggestions.length === 0 && <li className="text-sm text-muted-foreground">No suggestions yet.</li>}
               {suggestions.map((s) => (
                 <li key={s.id} className="flex items-center gap-2">
-                  <div className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-full gradient-brand text-xs font-bold text-primary-foreground">
+                  <Link to="/profile/$userId" params={{ userId: s.id }} className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-full gradient-brand text-xs font-bold text-primary-foreground">
                     {s.avatar_url ? <img src={s.avatar_url} className="h-full w-full object-cover" alt="" /> : (s.full_name || "S")[0]}
-                  </div>
+                  </Link>
                   <div className="min-w-0 flex-1">
-                    <div className="truncate text-sm font-semibold">{s.full_name || s.username || "Student"}</div>
+                    <Link to="/profile/$userId" params={{ userId: s.id }} className="block truncate text-sm font-semibold hover:underline">{s.full_name || s.username || "Student"}</Link>
                     <div className="truncate text-xs text-muted-foreground">{s.school_name ?? "SchoolConnect"}</div>
                   </div>
-                  <button className="rounded-full border p-1.5 hover:bg-muted" title="Add friend"><Plus className="h-3.5 w-3.5" /></button>
+                  <button onClick={() => addFriend(s.id)} className="rounded-full border p-1.5 hover:bg-muted" title="Add friend"><UserPlus className="h-3.5 w-3.5" /></button>
                 </li>
               ))}
             </ul>
           </div>
 
           <div className="glass rounded-3xl p-5">
-            <h3 className="mb-2 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-muted-foreground">
-              <Sparkles className="h-4 w-4" /> Coming soon
+            <h3 className="mb-3 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-muted-foreground">
+              <Circle className="h-3 w-3 fill-emerald-500 text-emerald-500" /> Online now
             </h3>
-            <p className="text-xs text-muted-foreground">Stories, chat, friend requests and notifications land in Phase 2.</p>
+            <ul className="grid gap-2">
+              {online.length === 0 && <li className="text-sm text-muted-foreground">No one online yet.</li>}
+              {online.map((o) => (
+                <li key={o.id}>
+                  <Link to="/messages" search={{ with: o.id }} className="flex items-center gap-2 rounded-xl px-2 py-1.5 hover:bg-muted">
+                    <div className="relative grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-full gradient-brand text-xs font-bold text-primary-foreground">
+                      {o.avatar_url ? <img src={o.avatar_url} className="h-full w-full object-cover" alt="" /> : (o.full_name || "S")[0]}
+                      <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-background bg-emerald-500" />
+                    </div>
+                    <div className="min-w-0 flex-1 truncate text-sm font-semibold">{o.full_name || "Student"}</div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
         </>
       }
     >
-      {/* Stories rail placeholder */}
-      <div className="glass mb-4 overflow-hidden rounded-3xl p-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Stories</h2>
-          <span className="text-[10px] font-bold uppercase text-muted-foreground">Coming in Phase 2</span>
-        </div>
-        <div className="mt-3 flex gap-3 overflow-x-auto pb-1">
-          {["Add yours", "You", "Sam", "Ada", "Kojo", "Ama", "Emeka", "Nia"].map((n, i) => (
-            <div key={i} className="flex w-16 shrink-0 flex-col items-center gap-1">
-              <div className={`grid h-14 w-14 place-items-center rounded-full text-xs font-bold text-primary-foreground ${i === 0 ? "border-2 border-dashed border-[color:var(--brand)] bg-background text-[color:var(--brand)]" : "gradient-brand"}`}>
-                {i === 0 ? <Plus className="h-5 w-5" /> : n[0]}
-              </div>
-              <span className="w-full truncate text-center text-[10px] font-semibold text-muted-foreground">{n}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
+      {userId && <StoryRail userId={userId} avatarUrl={avatarUrl} />}
       {userId && <CreatePost userId={userId} avatarUrl={avatarUrl} onPosted={refresh} />}
 
       {loading ? (
