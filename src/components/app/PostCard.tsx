@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Heart, MessageCircle, Bookmark, Share2, MoreHorizontal, Trash2, Pencil, Send, Download, Flag, Loader2 } from "lucide-react";
+import { Heart, MessageCircle, Bookmark, Share2, MoreHorizontal, Trash2, Pencil, Send, Download, Flag, Loader2, Eye, UserPlus, UserCheck } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -16,6 +17,8 @@ export type FeedPost = {
   comment_count: number;
   liked_by_me: boolean;
   saved_by_me: boolean;
+  view_count?: number;
+  share_count?: number;
 };
 
 type Comment = {
@@ -27,6 +30,9 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
   const [liked, setLiked] = useState(post.liked_by_me);
   const [saved, setSaved] = useState(post.saved_by_me);
   const [likeCount, setLikeCount] = useState(post.like_count);
+  const [commentCount, setCommentCount] = useState(post.comment_count);
+  const [viewCount, setViewCount] = useState(post.view_count ?? 0);
+  const [shareCount, setShareCount] = useState(post.share_count ?? 0);
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
   const [commentText, setCommentText] = useState("");
@@ -34,8 +40,33 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
   const [editing, setEditing] = useState(false);
   const [editContent, setEditContent] = useState(post.content ?? "");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
 
   const isMine = post.user_id === currentUserId;
+
+  // Register a view once mounted
+  useEffect(() => {
+    if (!isMine) {
+      supabase.from("post_views").upsert({ post_id: post.id, user_id: currentUserId }, { onConflict: "post_id,user_id" }).then(() => {});
+    }
+    supabase.from("post_views").select("user_id", { count: "exact", head: true }).eq("post_id", post.id).then((r) => setViewCount(r.count ?? 0));
+    supabase.from("post_shares").select("id", { count: "exact", head: true }).eq("post_id", post.id).then((r) => setShareCount(r.count ?? 0));
+    if (!isMine) {
+      supabase.from("follows").select("follower_id").eq("follower_id", currentUserId).eq("following_id", post.user_id).maybeSingle().then((r) => setIsFollowing(!!r.data));
+    }
+    // Realtime like/comment counts
+    const ch = supabase.channel(`post-${post.id}`)
+      .on("postgres_changes", { event: "*", schema: "public", table: "post_likes", filter: `post_id=eq.${post.id}` }, () => {
+        supabase.from("post_likes").select("user_id", { count: "exact", head: true }).eq("post_id", post.id).then((r) => setLikeCount(r.count ?? 0));
+      })
+      .on("postgres_changes", { event: "*", schema: "public", table: "post_comments", filter: `post_id=eq.${post.id}` }, () => {
+        supabase.from("post_comments").select("id", { count: "exact", head: true }).eq("post_id", post.id).then((r) => setCommentCount(r.count ?? 0));
+        if (showComments) loadComments();
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [post.id]);
 
   async function toggleLike() {
     setLiked((v) => !v);
@@ -55,6 +86,19 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
     } else {
       await supabase.from("post_saves").insert({ post_id: post.id, user_id: currentUserId });
       toast.success("Saved");
+    }
+  }
+
+  async function toggleFollow() {
+    if (isFollowing) {
+      await supabase.from("follows").delete().eq("follower_id", currentUserId).eq("following_id", post.user_id);
+      setIsFollowing(false);
+      toast.success("Unfollowed");
+    } else {
+      const { error } = await supabase.from("follows").insert({ follower_id: currentUserId, following_id: post.user_id });
+      if (error) return toast.error(error.message);
+      setIsFollowing(true);
+      toast.success("Following");
     }
   }
 
@@ -103,6 +147,8 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
 
   async function share() {
     const url = `${window.location.origin}/home#post-${post.id}`;
+    await supabase.from("post_shares").insert({ post_id: post.id, user_id: currentUserId });
+    setShareCount((n) => n + 1);
     try {
       if (navigator.share) await navigator.share({ title: "SchoolConnect", text: post.content ?? "", url });
       else { await navigator.clipboard.writeText(url); toast.success("Link copied"); }
@@ -124,18 +170,23 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
   const initials = name.split(" ").map((s) => s[0]).join("").slice(0, 2).toUpperCase();
 
   return (
-    <article id={`post-${post.id}`} className="glass rounded-3xl p-5 animate-fade-up">
+    <article id={`post-${post.id}`} className="glass rounded-3xl p-4 sm:p-5 animate-fade-up">
       <header className="flex items-center gap-3">
-        <div className="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full gradient-brand text-sm font-bold text-primary-foreground">
+        <Link to="/profile/$userId" params={{ userId: post.user_id }} className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full gradient-brand text-sm font-bold text-primary-foreground ring-2 ring-background">
           {post.author?.avatar_url ? <img src={post.author.avatar_url} className="h-full w-full object-cover" alt="" /> : initials}
-        </div>
+        </Link>
         <div className="min-w-0 flex-1">
-          <div className="truncate text-sm font-bold">{name}</div>
+          <Link to="/profile/$userId" params={{ userId: post.user_id }} className="block truncate text-sm font-bold hover:underline">{name}</Link>
           <div className="truncate text-xs text-muted-foreground">
             {post.author?.school_name ? `${post.author.school_name} • ` : ""}
             {timeAgo(post.created_at)}
           </div>
         </div>
+        {!isMine && (
+          <button onClick={toggleFollow} className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold ${isFollowing ? "border bg-background/60 text-muted-foreground" : "gradient-brand text-primary-foreground shadow-brand"}`}>
+            {isFollowing ? <><UserCheck className="h-3 w-3" /> Following</> : <><UserPlus className="h-3 w-3" /> Follow</>}
+          </button>
+        )}
         <div className="relative">
           <button onClick={() => setMenuOpen((v) => !v)} className="rounded-full p-1.5 hover:bg-muted"><MoreHorizontal className="h-4 w-4" /></button>
           {menuOpen && (
@@ -190,17 +241,22 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
       {post.hashtags.length > 0 && (
         <div className="mt-3 flex flex-wrap gap-1.5">
           {post.hashtags.map((h) => (
-            <span key={h} className="rounded-full bg-[color:var(--brand)]/10 px-2.5 py-0.5 text-xs font-semibold text-[color:var(--brand)]">#{h}</span>
+            <Link key={h} to="/search" search={{ q: `#${h}` }} className="rounded-full bg-[color:var(--brand)]/10 px-2.5 py-0.5 text-xs font-semibold text-[color:var(--brand)] hover:bg-[color:var(--brand)]/20">#{h}</Link>
           ))}
         </div>
       )}
 
-      <footer className="mt-4 flex items-center justify-between border-t border-border/60 pt-3">
+      <div className="mt-3 flex items-center gap-3 text-[11px] text-muted-foreground">
+        <span className="inline-flex items-center gap-1"><Eye className="h-3 w-3" /> {viewCount} view{viewCount === 1 ? "" : "s"}</span>
+        {shareCount > 0 && <span className="inline-flex items-center gap-1"><Share2 className="h-3 w-3" /> {shareCount} share{shareCount === 1 ? "" : "s"}</span>}
+      </div>
+
+      <footer className="mt-3 flex items-center justify-between border-t border-border/60 pt-3">
         <button onClick={toggleLike} className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold transition ${liked ? "text-rose-500" : "text-muted-foreground hover:text-foreground"}`}>
           <Heart className={`h-4 w-4 ${liked ? "fill-current" : ""}`} /> {likeCount}
         </button>
         <button onClick={() => setShowComments((v) => !v)} className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold text-muted-foreground hover:text-foreground">
-          <MessageCircle className="h-4 w-4" /> {post.comment_count}
+          <MessageCircle className="h-4 w-4" /> {commentCount}
         </button>
         <button onClick={share} className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold text-muted-foreground hover:text-foreground">
           <Share2 className="h-4 w-4" /> Share

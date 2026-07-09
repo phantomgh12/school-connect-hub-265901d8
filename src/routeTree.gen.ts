@@ -18,9 +18,11 @@ import { Route as AuthenticatedSavedRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated/notifications'
+import { Route as AuthenticatedNewPostRouteImport } from './routes/_authenticated/new-post'
 import { Route as AuthenticatedMessagesRouteImport } from './routes/_authenticated/messages'
 import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated/home'
 import { Route as AuthenticatedFriendsRouteImport } from './routes/_authenticated/friends'
+import { Route as AuthenticatedForYouRouteImport } from './routes/_authenticated/for-you'
 import { Route as AuthenticatedExploreRouteImport } from './routes/_authenticated/explore'
 import { Route as AuthenticatedProfileUserIdRouteImport } from './routes/_authenticated/profile.$userId'
 
@@ -69,6 +71,11 @@ const AuthenticatedNotificationsRoute =
     path: '/notifications',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedNewPostRoute = AuthenticatedNewPostRouteImport.update({
+  id: '/new-post',
+  path: '/new-post',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedMessagesRoute = AuthenticatedMessagesRouteImport.update({
   id: '/messages',
   path: '/messages',
@@ -82,6 +89,11 @@ const AuthenticatedHomeRoute = AuthenticatedHomeRouteImport.update({
 const AuthenticatedFriendsRoute = AuthenticatedFriendsRouteImport.update({
   id: '/friends',
   path: '/friends',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedForYouRoute = AuthenticatedForYouRouteImport.update({
+  id: '/for-you',
+  path: '/for-you',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedExploreRoute = AuthenticatedExploreRouteImport.update({
@@ -100,9 +112,11 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteWithChildren
   '/explore': typeof AuthenticatedExploreRoute
+  '/for-you': typeof AuthenticatedForYouRoute
   '/friends': typeof AuthenticatedFriendsRoute
   '/home': typeof AuthenticatedHomeRoute
   '/messages': typeof AuthenticatedMessagesRoute
+  '/new-post': typeof AuthenticatedNewPostRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/profile': typeof AuthenticatedProfileRouteWithChildren
@@ -115,9 +129,11 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteWithChildren
   '/explore': typeof AuthenticatedExploreRoute
+  '/for-you': typeof AuthenticatedForYouRoute
   '/friends': typeof AuthenticatedFriendsRoute
   '/home': typeof AuthenticatedHomeRoute
   '/messages': typeof AuthenticatedMessagesRoute
+  '/new-post': typeof AuthenticatedNewPostRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/profile': typeof AuthenticatedProfileRouteWithChildren
@@ -132,9 +148,11 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/_authenticated/explore': typeof AuthenticatedExploreRoute
+  '/_authenticated/for-you': typeof AuthenticatedForYouRoute
   '/_authenticated/friends': typeof AuthenticatedFriendsRoute
   '/_authenticated/home': typeof AuthenticatedHomeRoute
   '/_authenticated/messages': typeof AuthenticatedMessagesRoute
+  '/_authenticated/new-post': typeof AuthenticatedNewPostRoute
   '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRouteWithChildren
@@ -149,9 +167,11 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/explore'
+    | '/for-you'
     | '/friends'
     | '/home'
     | '/messages'
+    | '/new-post'
     | '/notifications'
     | '/onboarding'
     | '/profile'
@@ -164,9 +184,11 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/explore'
+    | '/for-you'
     | '/friends'
     | '/home'
     | '/messages'
+    | '/new-post'
     | '/notifications'
     | '/onboarding'
     | '/profile'
@@ -180,9 +202,11 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/explore'
+    | '/_authenticated/for-you'
     | '/_authenticated/friends'
     | '/_authenticated/home'
     | '/_authenticated/messages'
+    | '/_authenticated/new-post'
     | '/_authenticated/notifications'
     | '/_authenticated/onboarding'
     | '/_authenticated/profile'
@@ -263,6 +287,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedNotificationsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/new-post': {
+      id: '/_authenticated/new-post'
+      path: '/new-post'
+      fullPath: '/new-post'
+      preLoaderRoute: typeof AuthenticatedNewPostRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/messages': {
       id: '/_authenticated/messages'
       path: '/messages'
@@ -282,6 +313,13 @@ declare module '@tanstack/react-router' {
       path: '/friends'
       fullPath: '/friends'
       preLoaderRoute: typeof AuthenticatedFriendsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/for-you': {
+      id: '/_authenticated/for-you'
+      path: '/for-you'
+      fullPath: '/for-you'
+      preLoaderRoute: typeof AuthenticatedForYouRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/explore': {
@@ -314,9 +352,11 @@ const AuthenticatedProfileRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedExploreRoute: typeof AuthenticatedExploreRoute
+  AuthenticatedForYouRoute: typeof AuthenticatedForYouRoute
   AuthenticatedFriendsRoute: typeof AuthenticatedFriendsRoute
   AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
   AuthenticatedMessagesRoute: typeof AuthenticatedMessagesRoute
+  AuthenticatedNewPostRoute: typeof AuthenticatedNewPostRoute
   AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRouteWithChildren
@@ -326,9 +366,11 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedExploreRoute: AuthenticatedExploreRoute,
+  AuthenticatedForYouRoute: AuthenticatedForYouRoute,
   AuthenticatedFriendsRoute: AuthenticatedFriendsRoute,
   AuthenticatedHomeRoute: AuthenticatedHomeRoute,
   AuthenticatedMessagesRoute: AuthenticatedMessagesRoute,
+  AuthenticatedNewPostRoute: AuthenticatedNewPostRoute,
   AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRouteWithChildren,
