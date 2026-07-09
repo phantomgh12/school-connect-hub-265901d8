@@ -76,6 +76,7 @@ function HomePage() {
   }, []);
 
   useEffect(() => {
+    let ch: any;
     (async () => {
       const { data: u } = await supabase.auth.getUser();
       const uid = u.user?.id;
@@ -85,7 +86,13 @@ function HomePage() {
       setAvatarUrl(p?.avatar_url ?? null);
       await Promise.all([loadFeed(uid), loadSidebar(uid)]);
       setLoading(false);
+      // Realtime new posts
+      ch = supabase.channel(`feed-${uid}`)
+        .on("postgres_changes", { event: "INSERT", schema: "public", table: "posts" }, () => loadFeed(uid))
+        .on("postgres_changes", { event: "DELETE", schema: "public", table: "posts" }, () => loadFeed(uid))
+        .subscribe();
     })();
+    return () => { if (ch) supabase.removeChannel(ch); };
   }, [loadFeed, loadSidebar]);
 
   const refresh = () => userId && loadFeed(userId);
