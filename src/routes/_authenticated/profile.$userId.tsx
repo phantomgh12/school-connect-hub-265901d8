@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/app/AppShell";
 import { PostCard, type FeedPost } from "@/components/app/PostCard";
-import { GraduationCap, MapPin, School, MessageCircle, UserPlus, UserCheck, Clock, Loader2, Circle } from "lucide-react";
+import { GraduationCap, MapPin, School, MessageCircle, UserPlus, UserCheck, Clock, Loader2, Circle, Heart, Eye } from "lucide-react";
 import { notify } from "@/lib/notify";
 import { toast } from "sonner";
 
