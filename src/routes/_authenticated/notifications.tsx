@@ -18,12 +18,10 @@ function NotificationsPage() {
   const [loading, setLoading] = useState(true);
   const [uid, setUid] = useState("");
 
-  async function load() {
-    const { data: u } = await supabase.auth.getUser();
-    const id = u.user?.id;
-    if (!id) return;
-    setUid(id);
-    const { data } = await supabase.from("notifications").select("*").eq("user_id", id).order("created_at", { ascending: false }).limit(80);
+  async function load(id?: string) {
+    const userId = id ?? uid;
+    if (!userId) return;
+    const { data } = await supabase.from("notifications").select("*").eq("user_id", userId).order("created_at", { ascending: false }).limit(100);
     setItems(data ?? []);
     const actorIds = [...new Set((data ?? []).map((n: any) => n.actor_id).filter(Boolean))];
     if (actorIds.length) {
@@ -33,7 +31,19 @@ function NotificationsPage() {
     setLoading(false);
   }
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    let ch: any;
+    supabase.auth.getUser().then(({ data }) => {
+      if (!data.user) return;
+      setUid(data.user.id);
+      load(data.user.id);
+      ch = supabase.channel(`notif-${data.user.id}`)
+        .on("postgres_changes", { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${data.user!.id}` }, () => load(data.user!.id))
+        .subscribe();
+    });
+    return () => { if (ch) supabase.removeChannel(ch); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function markAll() {
     await supabase.from("notifications").update({ read: true }).eq("user_id", uid).eq("read", false);
@@ -47,6 +57,19 @@ function NotificationsPage() {
   }
 
   const unreadCount = items.filter(i => !i.read).length;
+
+  const iconFor = (type: string) => {
+    if (type.includes("like")) return "❤️";
+    if (type.includes("comment")) return "💬";
+    if (type.includes("follow")) return "➕";
+    if (type.includes("friend_request")) return "👋";
+    if (type.includes("friend_accepted")) return "🎉";
+    if (type.includes("share")) return "🔁";
+    if (type.includes("save")) return "🔖";
+    if (type.includes("story")) return "✨";
+    if (type.includes("message")) return "💌";
+    return "🔔";
+  };
 
   return (
     <AppShell>
@@ -76,13 +99,14 @@ function NotificationsPage() {
             return (
               <li key={n.id}>
                 <button onClick={() => markOne(n.id)} className={`glass flex w-full items-center gap-3 rounded-2xl p-3 text-left hover:bg-muted ${!n.read ? "border-l-4 border-[color:var(--brand)]" : ""}`}>
-                  <div className="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full gradient-brand text-xs font-bold text-primary-foreground">
+                  <span className="text-xl">{iconFor(n.type)}</span>
+                  <div className="relative grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full gradient-brand text-xs font-bold text-primary-foreground">
                     {actor?.avatar_url ? <img src={actor.avatar_url} className="h-full w-full object-cover" alt="" /> : (actor?.full_name || "•")[0]}
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="text-sm">
-                      {actor && <Link to="/profile/$userId" params={{ userId: actor.id }} className="font-bold hover:underline">{actor.full_name || "Someone"}</Link>}{" "}
-                      <span className="text-muted-foreground">{n.message ?? n.type}</span>
+                      {actor ? <Link to="/profile/$userId" params={{ userId: actor.id }} className="font-bold hover:underline">{actor.full_name || "Someone"}</Link> : <span className="font-bold">SchoolConnect</span>}{" "}
+                      <span className="text-muted-foreground">{n.message ?? n.type.replace(/_/g, " ")}</span>
                     </div>
                     <div className="text-[11px] text-muted-foreground">{new Date(n.created_at).toLocaleString()}</div>
                   </div>
