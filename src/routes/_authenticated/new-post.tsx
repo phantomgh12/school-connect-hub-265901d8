@@ -36,6 +36,9 @@ function NewPostPage() {
 
   async function submit() {
     if (!content.trim() && !files.length) return toast.error("Add some content first");
+    const tags = extractHashtags(content);
+    if (tags.length < 1) return toast.error("Add at least 1 hashtag (e.g. #school)");
+    if (tags.length > 5) return toast.error("Maximum 5 hashtags allowed");
     setBusy(true);
     try {
       const media_urls: string[] = [];
@@ -46,7 +49,7 @@ function NewPostPage() {
         content: content.trim() || null,
         media_urls,
         post_type,
-        hashtags: extractHashtags(content),
+        hashtags: tags,
       });
       if (error) throw error;
       toast.success("Posted! 🎉");
@@ -98,13 +101,14 @@ function NewPostPage() {
           </div>
         )}
 
-        {hashtags.length > 0 && (
-          <div className="mt-3 flex flex-wrap gap-1.5">
-            {hashtags.map((h) => (
-              <span key={h} className="inline-flex items-center gap-1 rounded-full bg-[color:var(--brand)]/10 px-2.5 py-0.5 text-xs font-semibold text-[color:var(--brand)]"><Hash className="h-3 w-3" />{h}</span>
-            ))}
-          </div>
-        )}
+        <div className="mt-3 flex flex-wrap items-center gap-1.5">
+          {hashtags.map((h) => (
+            <span key={h} className="inline-flex items-center gap-1 rounded-full bg-[color:var(--brand)]/10 px-2.5 py-0.5 text-xs font-semibold text-[color:var(--brand)]"><Hash className="h-3 w-3" />{h}</span>
+          ))}
+          <span className={`ml-auto text-[11px] font-semibold ${hashtags.length < 1 || hashtags.length > 5 ? "text-rose-500" : "text-muted-foreground"}`}>
+            {hashtags.length}/5 hashtags {hashtags.length < 1 ? "• add at least 1" : hashtags.length > 5 ? "• too many" : "✓"}
+          </span>
+        </div>
 
         <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-border/60 pt-4">
           <div className="flex flex-wrap items-center gap-1.5">

@@ -314,8 +314,10 @@ export type Database = {
           id: string
           media_urls: string[]
           post_type: string
+          shares_count: number
           updated_at: string
           user_id: string
+          views_count: number
         }
         Insert: {
           content?: string | null
@@ -324,8 +326,10 @@ export type Database = {
           id?: string
           media_urls?: string[]
           post_type?: string
+          shares_count?: number
           updated_at?: string
           user_id: string
+          views_count?: number
         }
         Update: {
           content?: string | null
@@ -334,8 +338,10 @@ export type Database = {
           id?: string
           media_urls?: string[]
           post_type?: string
+          shares_count?: number
           updated_at?: string
           user_id?: string
+          views_count?: number
         }
         Relationships: []
       }

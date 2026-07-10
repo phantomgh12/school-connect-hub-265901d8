@@ -193,3 +193,6 @@
 
 @utility animate-float { animation: float-slow 7s ease-in-out infinite; }
 @utility animate-fade-up { animation: fade-up 0.7s ease-out both; }
+
+/* Prevent horizontal scroll globally */
+html, body { overflow-x: hidden; max-width: 100vw; }

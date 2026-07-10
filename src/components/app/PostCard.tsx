@@ -44,17 +44,13 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
 
   const isMine = post.user_id === currentUserId;
 
-  // Register a view once mounted
+  // Register a view once mounted (owner-only viewer list; public counters live on posts)
   useEffect(() => {
     if (!isMine) {
       supabase.from("post_views").upsert({ post_id: post.id, user_id: currentUserId }, { onConflict: "post_id,user_id" }).then(() => {});
-    }
-    supabase.from("post_views").select("user_id", { count: "exact", head: true }).eq("post_id", post.id).then((r) => setViewCount(r.count ?? 0));
-    supabase.from("post_shares").select("id", { count: "exact", head: true }).eq("post_id", post.id).then((r) => setShareCount(r.count ?? 0));
-    if (!isMine) {
       supabase.from("follows").select("follower_id").eq("follower_id", currentUserId).eq("following_id", post.user_id).maybeSingle().then((r) => setIsFollowing(!!r.data));
     }
-    // Realtime like/comment counts
+    // Realtime like/comment/view/share counts via the posts row
     const ch = supabase.channel(`post-${post.id}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "post_likes", filter: `post_id=eq.${post.id}` }, () => {
         supabase.from("post_likes").select("user_id", { count: "exact", head: true }).eq("post_id", post.id).then((r) => setLikeCount(r.count ?? 0));
@@ -63,7 +59,15 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
         supabase.from("post_comments").select("id", { count: "exact", head: true }).eq("post_id", post.id).then((r) => setCommentCount(r.count ?? 0));
         if (showComments) loadComments();
       })
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "posts", filter: `id=eq.${post.id}` }, (payload: any) => {
+        if (typeof payload.new?.views_count === "number") setViewCount(payload.new.views_count);
+        if (typeof payload.new?.shares_count === "number") setShareCount(payload.new.shares_count);
+      })
       .subscribe();
+    // Fetch fresh public counts
+    supabase.from("posts").select("views_count,shares_count").eq("id", post.id).maybeSingle().then((r) => {
+      if (r.data) { setViewCount(r.data.views_count ?? 0); setShareCount(r.data.shares_count ?? 0); }
+    });
     return () => { supabase.removeChannel(ch); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [post.id]);
