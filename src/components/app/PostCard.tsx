@@ -174,8 +174,8 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
   const initials = name.split(" ").map((s) => s[0]).join("").slice(0, 2).toUpperCase();
 
   return (
-    <article id={`post-${post.id}`} className="glass rounded-3xl p-4 sm:p-5 animate-fade-up">
-      <header className="flex items-center gap-3">
+    <article id={`post-${post.id}`} className="glass w-full max-w-full overflow-hidden rounded-3xl p-4 sm:p-5 animate-fade-up">
+      <header className="flex min-w-0 items-center gap-2 sm:gap-3">
         <Link to="/profile/$userId" params={{ userId: post.user_id }} className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full gradient-brand text-sm font-bold text-primary-foreground ring-2 ring-background">
           {post.author?.avatar_url ? <img src={post.author.avatar_url} className="h-full w-full object-cover" alt="" /> : initials}
         </Link>
@@ -187,11 +187,11 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
           </div>
         </div>
         {!isMine && (
-          <button onClick={toggleFollow} className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold ${isFollowing ? "border bg-background/60 text-muted-foreground" : "gradient-brand text-primary-foreground shadow-brand"}`}>
-            {isFollowing ? <><UserCheck className="h-3 w-3" /> Following</> : <><UserPlus className="h-3 w-3" /> Follow</>}
+          <button onClick={toggleFollow} className={`shrink-0 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold ${isFollowing ? "border bg-background/60 text-muted-foreground" : "gradient-brand text-primary-foreground shadow-brand"}`}>
+            {isFollowing ? <><UserCheck className="h-3 w-3" /> <span className="hidden xs:inline">Following</span></> : <><UserPlus className="h-3 w-3" /> <span className="hidden xs:inline">Follow</span></>}
           </button>
         )}
-        <div className="relative">
+        <div className="relative shrink-0">
           <button onClick={() => setMenuOpen((v) => !v)} className="rounded-full p-1.5 hover:bg-muted"><MoreHorizontal className="h-4 w-4" /></button>
           {menuOpen && (
             <div className="absolute right-0 top-8 z-10 w-40 overflow-hidden rounded-xl border bg-popover shadow-lg">
@@ -209,6 +209,7 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
         </div>
       </header>
 
+
       {editing ? (
         <div className="mt-3">
           <textarea value={editContent} onChange={(e) => setEditContent(e.target.value)} rows={3} className="w-full rounded-2xl border bg-background/60 p-3 text-sm outline-none" />
@@ -219,11 +220,12 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
         </div>
       ) : (
         post.content && (
-          <p className="mt-3 whitespace-pre-wrap text-[15px] leading-relaxed">
+          <p className="mt-3 whitespace-pre-wrap break-words text-[15px] leading-relaxed">
             {renderContent(post.content)}
           </p>
         )
       )}
+
 
       {post.media_urls.length > 0 && (
         <div className={`mt-3 grid gap-2 overflow-hidden rounded-2xl ${post.media_urls.length > 1 ? "grid-cols-2" : "grid-cols-1"}`}>
