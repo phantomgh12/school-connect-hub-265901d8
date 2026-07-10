@@ -18,6 +18,7 @@ import { Route as AuthenticatedSavedRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated/notifications'
+import { Route as AuthenticatedNewStoryRouteImport } from './routes/_authenticated/new-story'
 import { Route as AuthenticatedNewPostRouteImport } from './routes/_authenticated/new-post'
 import { Route as AuthenticatedMessagesRouteImport } from './routes/_authenticated/messages'
 import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated/home'
@@ -71,6 +72,11 @@ const AuthenticatedNotificationsRoute =
     path: '/notifications',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedNewStoryRoute = AuthenticatedNewStoryRouteImport.update({
+  id: '/new-story',
+  path: '/new-story',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedNewPostRoute = AuthenticatedNewPostRouteImport.update({
   id: '/new-post',
   path: '/new-post',
@@ -117,6 +123,7 @@ export interface FileRoutesByFullPath {
   '/home': typeof AuthenticatedHomeRoute
   '/messages': typeof AuthenticatedMessagesRoute
   '/new-post': typeof AuthenticatedNewPostRoute
+  '/new-story': typeof AuthenticatedNewStoryRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/profile': typeof AuthenticatedProfileRouteWithChildren
@@ -134,6 +141,7 @@ export interface FileRoutesByTo {
   '/home': typeof AuthenticatedHomeRoute
   '/messages': typeof AuthenticatedMessagesRoute
   '/new-post': typeof AuthenticatedNewPostRoute
+  '/new-story': typeof AuthenticatedNewStoryRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/profile': typeof AuthenticatedProfileRouteWithChildren
@@ -153,6 +161,7 @@ export interface FileRoutesById {
   '/_authenticated/home': typeof AuthenticatedHomeRoute
   '/_authenticated/messages': typeof AuthenticatedMessagesRoute
   '/_authenticated/new-post': typeof AuthenticatedNewPostRoute
+  '/_authenticated/new-story': typeof AuthenticatedNewStoryRoute
   '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRouteWithChildren
@@ -172,6 +181,7 @@ export interface FileRouteTypes {
     | '/home'
     | '/messages'
     | '/new-post'
+    | '/new-story'
     | '/notifications'
     | '/onboarding'
     | '/profile'
@@ -189,6 +199,7 @@ export interface FileRouteTypes {
     | '/home'
     | '/messages'
     | '/new-post'
+    | '/new-story'
     | '/notifications'
     | '/onboarding'
     | '/profile'
@@ -207,6 +218,7 @@ export interface FileRouteTypes {
     | '/_authenticated/home'
     | '/_authenticated/messages'
     | '/_authenticated/new-post'
+    | '/_authenticated/new-story'
     | '/_authenticated/notifications'
     | '/_authenticated/onboarding'
     | '/_authenticated/profile'
@@ -287,6 +299,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedNotificationsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/new-story': {
+      id: '/_authenticated/new-story'
+      path: '/new-story'
+      fullPath: '/new-story'
+      preLoaderRoute: typeof AuthenticatedNewStoryRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/new-post': {
       id: '/_authenticated/new-post'
       path: '/new-post'
@@ -357,6 +376,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
   AuthenticatedMessagesRoute: typeof AuthenticatedMessagesRoute
   AuthenticatedNewPostRoute: typeof AuthenticatedNewPostRoute
+  AuthenticatedNewStoryRoute: typeof AuthenticatedNewStoryRoute
   AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRouteWithChildren
@@ -371,6 +391,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedHomeRoute: AuthenticatedHomeRoute,
   AuthenticatedMessagesRoute: AuthenticatedMessagesRoute,
   AuthenticatedNewPostRoute: AuthenticatedNewPostRoute,
+  AuthenticatedNewStoryRoute: AuthenticatedNewStoryRoute,
   AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRouteWithChildren,
@@ -399,13 +420,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
