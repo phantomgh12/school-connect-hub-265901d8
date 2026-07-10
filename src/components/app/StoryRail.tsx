@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { Plus, Eye } from "lucide-react";
-import { StoryComposer } from "./StoryComposer";
 import { StoryViewer, type StoryItem } from "./StoryViewer";
+
 
 type Group = { user_id: string; author: { full_name: string | null; avatar_url: string | null } | null; items: StoryItem[]; unseen: number };
 
-export function StoryRail({ userId, avatarUrl }: { userId: string; avatarUrl: string | null }) {
+export function StoryRail({ userId, avatarUrl: _avatarUrl }: { userId: string; avatarUrl: string | null }) {
   const [groups, setGroups] = useState<Group[]>([]);
-  const [openComposer, setOpenComposer] = useState(false);
   const [viewerIdx, setViewerIdx] = useState<number | null>(null);
+
 
   async function load() {
     // RLS restricts to friends+self already, but be defensive
@@ -60,13 +61,14 @@ export function StoryRail({ userId, avatarUrl }: { userId: string; avatarUrl: st
       </div>
       <div className="flex gap-3 overflow-x-auto pb-1">
         {/* Your story tile */}
-        <button onClick={() => setOpenComposer(true)} className="relative flex h-40 w-24 shrink-0 flex-col items-stretch overflow-hidden rounded-2xl border-2 border-dashed border-[color:var(--brand)]/50 bg-muted/40 text-left">
+        <Link to="/new-story" className="relative flex h-40 w-24 shrink-0 flex-col items-stretch overflow-hidden rounded-2xl border-2 border-dashed border-[color:var(--brand)]/50 bg-muted/40 text-left">
           <div className="flex-1 gradient-brand opacity-80" />
           <div className="absolute inset-0 grid place-items-center">
             <div className="grid h-9 w-9 place-items-center rounded-full bg-white text-[color:var(--brand)] shadow-lg"><Plus className="h-5 w-5" /></div>
           </div>
           <div className="absolute bottom-1.5 left-0 right-0 truncate px-2 text-center text-[11px] font-bold text-white drop-shadow">Your story</div>
-        </button>
+        </Link>
+
         {groups.filter(g => g.user_id !== userId).map((g, idx) => {
           const cover = g.items[g.items.length - 1];
           const name = g.author?.full_name || "Story";
@@ -105,10 +107,10 @@ export function StoryRail({ userId, avatarUrl }: { userId: string; avatarUrl: st
         )}
       </div>
 
-      {openComposer && <StoryComposer userId={userId} onClose={() => setOpenComposer(false)} onCreated={load} />}
       {viewerIdx != null && activeItems.length > 0 && (
         <StoryViewer stories={activeItems} startIndex={0} currentUserId={userId} onClose={() => { setViewerIdx(null); load(); }} />
       )}
+
     </div>
   );
 }
