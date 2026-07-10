@@ -1,10 +1,11 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import heroImg from "@/assets/hero.jpg";
 import {
   MessageCircle, Users, Sparkles, GraduationCap, Camera, Bell,
   ShieldCheck, Globe2, Zap, Heart, Star, ArrowRight, Menu,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -18,6 +19,10 @@ export const Route = createFileRoute("/")({
 });
 
 function Landing() {
+  const nav = useNavigate();
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => { if (data.user) nav({ to: "/home" }); });
+  }, [nav]);
   return (
     <div className="min-h-screen hero-surface">
       <Nav />
