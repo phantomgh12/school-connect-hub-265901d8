@@ -176,15 +176,18 @@ function MessagesPage() {
               <>
                 <div className="flex items-center gap-3 border-b border-border/60 p-3">
                   <button onClick={() => setActive(null)} className="rounded-full p-1.5 hover:bg-muted md:hidden"><ArrowLeft className="h-4 w-4" /></button>
-                  <div className="relative grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-full gradient-brand text-xs font-bold text-primary-foreground">
-                    {active.other.avatar_url ? <img src={active.other.avatar_url} className="h-full w-full object-cover" alt="" /> : (active.other.full_name || "S")[0]}
-                    {active.other.is_online && <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-background bg-emerald-500" />}
-                  </div>
-                  <div>
-                    <div className="text-sm font-bold">{active.other.full_name || "Student"}</div>
-                    <div className="text-[11px] text-muted-foreground">{active.other.is_online ? "Online" : "Offline"}</div>
-                  </div>
+                  <Link to="/profile/$userId" params={{ userId: active.other.id }} className="flex min-w-0 flex-1 items-center gap-3 hover:opacity-80">
+                    <div className="relative grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-full gradient-brand text-xs font-bold text-primary-foreground">
+                      {active.other.avatar_url ? <img src={active.other.avatar_url} className="h-full w-full object-cover" alt="" /> : (active.other.full_name || "S")[0]}
+                      {active.other.is_online && <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-background bg-emerald-500" />}
+                    </div>
+                    <div className="min-w-0">
+                      <div className="truncate text-sm font-bold hover:underline">{active.other.full_name || "Student"}</div>
+                      <div className="text-[11px] text-muted-foreground">{active.other.is_online ? "Online" : "Offline"}</div>
+                    </div>
+                  </Link>
                 </div>
+
                 <div className="flex-1 space-y-2 overflow-y-auto p-4">
                   {msgs.map((m) => (
                     <div key={m.id} className={`flex ${m.sender_id === uid ? "justify-end" : "justify-start"}`}>
