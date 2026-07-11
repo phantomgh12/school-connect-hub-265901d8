@@ -365,6 +365,7 @@ export type Database = {
           phone: string | null
           region: string | null
           school_name: string | null
+          school_slug: string | null
           school_type: Database["public"]["Enums"]["school_type"] | null
           updated_at: string
           username: string | null
@@ -388,6 +389,7 @@ export type Database = {
           phone?: string | null
           region?: string | null
           school_name?: string | null
+          school_slug?: string | null
           school_type?: Database["public"]["Enums"]["school_type"] | null
           updated_at?: string
           username?: string | null
@@ -411,6 +413,7 @@ export type Database = {
           phone?: string | null
           region?: string | null
           school_name?: string | null
+          school_slug?: string | null
           school_type?: Database["public"]["Enums"]["school_type"] | null
           updated_at?: string
           username?: string | null
@@ -598,6 +601,7 @@ export type Database = {
         Args: { _me: string; _other: string }
         Returns: number
       }
+      normalize_school: { Args: { _name: string }; Returns: string }
     }
     Enums: {
       friendship_status: "pending" | "accepted" | "blocked"

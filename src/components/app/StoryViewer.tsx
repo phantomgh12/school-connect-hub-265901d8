@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { X, Send, Heart, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import { notify } from "@/lib/notify";
+
 
 export type StoryItem = {
   id: string;
@@ -42,6 +44,17 @@ export function StoryViewer({ stories, startIndex, currentUserId, onClose }: { s
     return () => clearInterval(iv);
   }, [i, story, stories.length, currentUserId, onClose]);
 
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      else if (e.key === "ArrowRight") setI((n) => Math.min(stories.length - 1, n + 1));
+      else if (e.key === "ArrowLeft") setI((n) => Math.max(0, n - 1));
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [stories.length, onClose]);
+
+
   if (!story) return null;
   const name = story.author?.full_name || "Student";
 
@@ -60,8 +73,8 @@ export function StoryViewer({ stories, startIndex, currentUserId, onClose }: { s
   }
 
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-black/90 p-2 backdrop-blur">
-      <div className="relative w-full max-w-md">
+    <div className="fixed inset-0 z-50 grid place-items-center bg-black/95 backdrop-blur sm:p-4">
+      <div className="relative flex h-[100dvh] w-full flex-col sm:h-auto sm:max-h-[95vh] sm:w-auto sm:max-w-[420px]">
         {/* Progress bars */}
         <div className="absolute left-0 right-0 top-0 z-10 flex gap-1 p-2">
           {stories.map((_, idx) => (
@@ -71,24 +84,28 @@ export function StoryViewer({ stories, startIndex, currentUserId, onClose }: { s
           ))}
         </div>
 
-        <div className="absolute left-3 right-3 top-6 z-10 flex items-center gap-2">
-          <div className="grid h-8 w-8 place-items-center overflow-hidden rounded-full gradient-brand text-xs font-bold text-white">
-            {story.author?.avatar_url ? <img src={story.author.avatar_url} className="h-full w-full object-cover" alt="" /> : name[0]}
-          </div>
-          <div className="text-sm font-semibold text-white drop-shadow">{name}</div>
+        <div className="absolute left-3 right-3 top-6 z-20 flex items-center gap-2">
+          <Link to="/profile/$userId" params={{ userId: story.user_id }} onClick={onClose} className="flex min-w-0 items-center gap-2 hover:opacity-80">
+            <div className="grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-full gradient-brand text-xs font-bold text-white">
+              {story.author?.avatar_url ? <img src={story.author.avatar_url} className="h-full w-full object-cover" alt="" /> : name[0]}
+            </div>
+            <div className="truncate text-sm font-semibold text-white drop-shadow">{name}</div>
+          </Link>
           <button onClick={onClose} className="ml-auto rounded-full bg-white/20 p-1.5 text-white hover:bg-white/30"><X className="h-4 w-4" /></button>
         </div>
 
-        <div className="relative overflow-hidden rounded-3xl bg-black">
+
+        <div className="relative flex-1 overflow-hidden bg-black sm:flex-none sm:rounded-3xl">
           {story.media_type === "video" && story.media_url ? (
-            <video src={story.media_url} autoPlay muted playsInline className="max-h-[80vh] w-full object-contain" />
+            <video src={story.media_url} autoPlay muted playsInline className="h-full max-h-[100dvh] w-full object-contain sm:max-h-[85vh]" />
           ) : story.media_type === "photo" && story.media_url ? (
-            <img src={story.media_url} className="max-h-[80vh] w-full object-contain" alt="" />
+            <img src={story.media_url} className="h-full max-h-[100dvh] w-full object-contain sm:max-h-[85vh]" alt="" />
           ) : (
-            <div className="grid min-h-[70vh] w-full place-items-center p-6 text-center" style={{ background: story.background ?? "linear-gradient(135deg,#6d5cf0,#22d3ee)" }}>
+            <div className="grid h-full min-h-[70vh] w-full place-items-center p-6 text-center" style={{ background: story.background ?? "linear-gradient(135deg,#6d5cf0,#22d3ee)" }}>
               <span className="text-3xl font-black text-white drop-shadow-lg">{story.caption}</span>
             </div>
           )}
+
           {story.caption && story.media_type !== "text" && (
             <div className="absolute bottom-20 left-4 right-4 rounded-2xl bg-black/50 p-3 text-sm font-semibold text-white backdrop-blur">{story.caption}</div>
           )}
