@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { X, Send, Heart, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import { notify } from "@/lib/notify";
+
 
 export type StoryItem = {
   id: string;
