@@ -73,8 +73,8 @@ export function StoryViewer({ stories, startIndex, currentUserId, onClose }: { s
   }
 
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-black/90 p-2 backdrop-blur">
-      <div className="relative w-full max-w-md">
+    <div className="fixed inset-0 z-50 grid place-items-center bg-black/95 backdrop-blur sm:p-4">
+      <div className="relative flex h-[100dvh] w-full flex-col sm:h-auto sm:max-h-[95vh] sm:w-auto sm:max-w-[420px]">
         {/* Progress bars */}
         <div className="absolute left-0 right-0 top-0 z-10 flex gap-1 p-2">
           {stories.map((_, idx) => (
@@ -84,13 +84,16 @@ export function StoryViewer({ stories, startIndex, currentUserId, onClose }: { s
           ))}
         </div>
 
-        <div className="absolute left-3 right-3 top-6 z-10 flex items-center gap-2">
-          <div className="grid h-8 w-8 place-items-center overflow-hidden rounded-full gradient-brand text-xs font-bold text-white">
-            {story.author?.avatar_url ? <img src={story.author.avatar_url} className="h-full w-full object-cover" alt="" /> : name[0]}
-          </div>
-          <div className="text-sm font-semibold text-white drop-shadow">{name}</div>
+        <div className="absolute left-3 right-3 top-6 z-20 flex items-center gap-2">
+          <Link to="/profile/$userId" params={{ userId: story.user_id }} onClick={onClose} className="flex min-w-0 items-center gap-2 hover:opacity-80">
+            <div className="grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-full gradient-brand text-xs font-bold text-white">
+              {story.author?.avatar_url ? <img src={story.author.avatar_url} className="h-full w-full object-cover" alt="" /> : name[0]}
+            </div>
+            <div className="truncate text-sm font-semibold text-white drop-shadow">{name}</div>
+          </Link>
           <button onClick={onClose} className="ml-auto rounded-full bg-white/20 p-1.5 text-white hover:bg-white/30"><X className="h-4 w-4" /></button>
         </div>
+
 
         <div className="relative overflow-hidden rounded-3xl bg-black">
           {story.media_type === "video" && story.media_url ? (
