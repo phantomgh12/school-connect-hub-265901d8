@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,6 +6,7 @@ import { AppShell } from "@/components/app/AppShell";
 import { MessageCircle, Send, ArrowLeft, Loader2 } from "lucide-react";
 import { notify } from "@/lib/notify";
 import { toast } from "sonner";
+
 
 const searchSchema = z.object({ with: z.string().optional() });
 
