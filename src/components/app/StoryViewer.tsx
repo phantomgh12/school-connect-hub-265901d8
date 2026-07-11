@@ -95,16 +95,17 @@ export function StoryViewer({ stories, startIndex, currentUserId, onClose }: { s
         </div>
 
 
-        <div className="relative overflow-hidden rounded-3xl bg-black">
+        <div className="relative flex-1 overflow-hidden bg-black sm:flex-none sm:rounded-3xl">
           {story.media_type === "video" && story.media_url ? (
-            <video src={story.media_url} autoPlay muted playsInline className="max-h-[80vh] w-full object-contain" />
+            <video src={story.media_url} autoPlay muted playsInline className="h-full max-h-[100dvh] w-full object-contain sm:max-h-[85vh]" />
           ) : story.media_type === "photo" && story.media_url ? (
-            <img src={story.media_url} className="max-h-[80vh] w-full object-contain" alt="" />
+            <img src={story.media_url} className="h-full max-h-[100dvh] w-full object-contain sm:max-h-[85vh]" alt="" />
           ) : (
-            <div className="grid min-h-[70vh] w-full place-items-center p-6 text-center" style={{ background: story.background ?? "linear-gradient(135deg,#6d5cf0,#22d3ee)" }}>
+            <div className="grid h-full min-h-[70vh] w-full place-items-center p-6 text-center" style={{ background: story.background ?? "linear-gradient(135deg,#6d5cf0,#22d3ee)" }}>
               <span className="text-3xl font-black text-white drop-shadow-lg">{story.caption}</span>
             </div>
           )}
+
           {story.caption && story.media_type !== "text" && (
             <div className="absolute bottom-20 left-4 right-4 rounded-2xl bg-black/50 p-3 text-sm font-semibold text-white backdrop-blur">{story.caption}</div>
           )}
