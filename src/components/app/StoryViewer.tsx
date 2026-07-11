@@ -44,6 +44,17 @@ export function StoryViewer({ stories, startIndex, currentUserId, onClose }: { s
     return () => clearInterval(iv);
   }, [i, story, stories.length, currentUserId, onClose]);
 
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      else if (e.key === "ArrowRight") setI((n) => Math.min(stories.length - 1, n + 1));
+      else if (e.key === "ArrowLeft") setI((n) => Math.max(0, n - 1));
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [stories.length, onClose]);
+
+
   if (!story) return null;
   const name = story.author?.full_name || "Student";
 
