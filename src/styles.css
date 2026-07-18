@@ -50,91 +50,87 @@
 :root {
   --radius: 1rem;
 
-  /* Facebook Classic Light Web Interface */
-  --background: oklch(0.98 0.005 240);
-  --foreground: oklch(0.2 0.015 240);
+  --background: oklch(0.99 0.005 260);
+  --foreground: oklch(0.18 0.03 265);
 
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.2 0.015 240);
+  --card-foreground: oklch(0.18 0.03 265);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.2 0.015 240);
+  --popover-foreground: oklch(0.18 0.03 265);
 
-  /* Primary Accent: Official Facebook Blue (#1877F2) */
-  --primary: oklch(0.57 0.21 250);
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.93 0.01 240);
-  --secondary-foreground: oklch(0.2 0.015 240);
-  --muted: oklch(0.95 0.008 240);
-  --muted-foreground: oklch(0.48 0.015 240);
-  --accent: oklch(0.91 0.02 240);
-  --accent-foreground: oklch(0.15 0.02 240);
-  --destructive: oklch(0.57 0.22 25);
-  --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.89 0.01 240);
-  --input: oklch(0.91 0.01 240);
-  --ring: oklch(0.57 0.21 250);
+  --primary: oklch(0.55 0.22 275);
+  --primary-foreground: oklch(0.99 0.005 260);
+  --secondary: oklch(0.96 0.015 265);
+  --secondary-foreground: oklch(0.22 0.04 265);
+  --muted: oklch(0.96 0.01 265);
+  --muted-foreground: oklch(0.5 0.03 265);
+  --accent: oklch(0.94 0.04 200);
+  --accent-foreground: oklch(0.22 0.04 265);
+  --destructive: oklch(0.62 0.24 27);
+  --destructive-foreground: oklch(0.99 0.005 260);
+  --border: oklch(0.9 0.015 265);
+  --input: oklch(0.92 0.012 265);
+  --ring: oklch(0.55 0.22 275);
 
-  /* Brand palette: Meta Blue variants & UI Messenger tints */
-  --brand: oklch(0.57 0.21 250);       
-  --brand-2: oklch(0.64 0.18 220);    
-  --brand-3: oklch(0.52 0.23 270);    
+  /* Brand palette */
+  --brand: oklch(0.6 0.24 285);       /* violet-indigo */
+  --brand-2: oklch(0.72 0.17 210);    /* cyan */
+  --brand-3: oklch(0.78 0.18 155);    /* emerald */
 
-  --glass: oklch(1 0 0 / 0.75);
+  --glass: oklch(1 0 0 / 0.65);
   --glass-border: oklch(1 0 0 / 0.5);
 
   --gradient-brand: linear-gradient(135deg,
-    oklch(0.57 0.21 250),
-    oklch(0.64 0.18 220),
-    oklch(0.52 0.23 270));
+    oklch(0.6 0.24 285),
+    oklch(0.65 0.2 250),
+    oklch(0.72 0.17 210));
   --gradient-warm: linear-gradient(135deg,
-    oklch(0.62 0.22 25),
-    oklch(0.7 0.18 40));
-  --gradient-hero: radial-gradient(1200px 600px at 10% -10%, oklch(0.92 0.04 250 / 0.5), transparent 60%),
-                   radial-gradient(1000px 500px at 110% 10%, oklch(0.93 0.03 220 / 0.4), transparent 60%),
-                   radial-gradient(900px 500px at 50% 110%, oklch(0.94 0.04 270 / 0.3), transparent 60%),
-                   oklch(0.98 0.005 240);
+    oklch(0.72 0.19 340),
+    oklch(0.7 0.2 30));
+  --gradient-hero: radial-gradient(1200px 600px at 10% -10%, oklch(0.85 0.15 285 / 0.6), transparent 60%),
+                   radial-gradient(1000px 500px at 110% 10%, oklch(0.85 0.15 200 / 0.5), transparent 60%),
+                   radial-gradient(900px 500px at 50% 110%, oklch(0.9 0.14 155 / 0.45), transparent 60%),
+                   oklch(0.99 0.005 260);
 
-  --shadow-glass: 0 10px 40px -12px oklch(0.2 0.02 240 / 0.1),
-                  0 2px 8px -2px oklch(0.2 0.02 240 / 0.04);
-  --shadow-brand: 0 20px 50px -20px oklch(0.57 0.21 250 / 0.3);
+  --shadow-glass: 0 10px 40px -12px oklch(0.4 0.15 275 / 0.25),
+                  0 2px 8px -2px oklch(0.4 0.15 275 / 0.08);
+  --shadow-brand: 0 20px 50px -20px oklch(0.55 0.22 275 / 0.55);
 }
 
 .dark {
-  /* Facebook Dark Mode Architecture */
-  --background: oklch(0.18 0.01 240);
-  --foreground: oklch(0.96 0.005 240);
+  --background: oklch(0.14 0.02 265);
+  --foreground: oklch(0.97 0.005 260);
 
-  --card: oklch(0.24 0.015 240);
-  --card-foreground: oklch(0.96 0.005 240);
-  --popover: oklch(0.24 0.015 240);
-  --popover-foreground: oklch(0.96 0.005 240);
+  --card: oklch(0.19 0.03 265);
+  --card-foreground: oklch(0.97 0.005 260);
+  --popover: oklch(0.19 0.03 265);
+  --popover-foreground: oklch(0.97 0.005 260);
 
-  /* Primary Accent: High-Visibility Facebook Blue for Dark Interfaces */
-  --primary: oklch(0.62 0.19 250);
-  --primary-foreground: oklch(0.14 0.01 240);
-  --secondary: oklch(0.28 0.015 240);
-  --secondary-foreground: oklch(0.96 0.005 240);
-  --muted: oklch(0.28 0.015 240);
-  --muted-foreground: oklch(0.7 0.01 240);
-  --accent: oklch(0.32 0.02 240);
-  --accent-foreground: oklch(0.96 0.005 240);
-  --destructive: oklch(0.62 0.21 25);
-  --destructive-foreground: oklch(0.96 0.005 240);
+  --primary: oklch(0.72 0.19 280);
+  --primary-foreground: oklch(0.14 0.02 265);
+  --secondary: oklch(0.24 0.03 265);
+  --secondary-foreground: oklch(0.97 0.005 260);
+  --muted: oklch(0.24 0.03 265);
+  --muted-foreground: oklch(0.7 0.03 265);
+  --accent: oklch(0.28 0.05 210);
+  --accent-foreground: oklch(0.97 0.005 260);
+  --destructive: oklch(0.7 0.2 22);
+  --destructive-foreground: oklch(0.97 0.005 260);
   --border: oklch(1 0 0 / 0.1);
   --input: oklch(1 0 0 / 0.15);
-  --ring: oklch(0.62 0.19 250);
+  --ring: oklch(0.72 0.19 280);
 
-  --brand: oklch(0.62 0.19 250);
-  --brand-2: oklch(0.68 0.16 220);
-  --brand-3: oklch(0.58 0.2 270);
+  --brand: oklch(0.72 0.2 285);
+  --brand-2: oklch(0.78 0.16 210);
+  --brand-3: oklch(0.82 0.17 155);
 
-  --glass: oklch(0.22 0.015 240 / 0.7);
+  --glass: oklch(0.2 0.03 265 / 0.6);
   --glass-border: oklch(1 0 0 / 0.1);
 
-  --gradient-hero: radial-gradient(1200px 600px at 10% -10%, oklch(0.28 0.08 250 / 0.3), transparent 60%),
-                   radial-gradient(1000px 500px at 110% 10%, oklch(0.26 0.06 220 / 0.25), transparent 60%),
-                   radial-gradient(900px 500px at 50% 110%, oklch(0.25 0.07 270 / 0.2), transparent 60%),
-                   oklch(0.18 0.01 240);
+  --gradient-hero: radial-gradient(1200px 600px at 10% -10%, oklch(0.4 0.2 285 / 0.5), transparent 60%),
+                   radial-gradient(1000px 500px at 110% 10%, oklch(0.4 0.18 210 / 0.4), transparent 60%),
+                   radial-gradient(900px 500px at 50% 110%, oklch(0.4 0.18 155 / 0.35), transparent 60%),
+                   oklch(0.14 0.02 265);
 }
 
 @layer base {
