@@ -110,6 +110,8 @@ function HomePage() {
     <AppShell
       right={
         <>
+          {userId && <NetworkStatsCard userId={userId} />}
+          {userId && <SchoolCommunityCard userId={userId} />}
           <div className="glass rounded-3xl p-5">
             <h3 className="mb-3 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-muted-foreground">
               <TrendingUp className="h-4 w-4" /> Trending
