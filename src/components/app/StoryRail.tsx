@@ -9,7 +9,7 @@ type Group = { user_id: string; author: { full_name: string | null; avatar_url: 
 
 export function StoryRail({ userId, avatarUrl: _avatarUrl }: { userId: string; avatarUrl: string | null }) {
   const [groups, setGroups] = useState<Group[]>([]);
-  const [viewerIdx, setViewerIdx] = useState<number | null>(null);
+  const [viewerUser, setViewerUser] = useState<string | null>(null);
 
 
   async function load() {

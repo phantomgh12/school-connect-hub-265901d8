@@ -191,6 +191,8 @@ export function AppShell({ children, right }: { children: ReactNode; right?: Rea
           })}
         </ul>
       </nav>
+
+      <InstallAppPrompt />
     </div>
   );
 }
