@@ -6,6 +6,7 @@ import { CreatePost } from "@/components/app/CreatePost";
 import { PostCard, type FeedPost } from "@/components/app/PostCard";
 import { StoryRail } from "@/components/app/StoryRail";
 import { TrendingUp, Users, UserPlus, Sparkles, Circle } from "lucide-react";
+import { NetworkStatsCard, SchoolCommunityCard } from "@/components/app/NetworkPanels";
 import { notify } from "@/lib/notify";
 import { toast } from "sonner";
 
