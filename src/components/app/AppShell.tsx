@@ -4,6 +4,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useTheme } from "@/lib/theme";
 import { toast } from "sonner";
+import { InstallAppPrompt } from "@/components/app/InstallAppPrompt";
 
 type NavItem = { to: string; label: string; icon: typeof Home };
 const NAV: NavItem[] = [
