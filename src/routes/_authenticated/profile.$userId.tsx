@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { VerifiedBadge } from "@/components/app/VerifiedBadge";
 import { AppShell } from "@/components/app/AppShell";
 import { PostCard, type FeedPost } from "@/components/app/PostCard";
 import { GraduationCap, MapPin, School, MessageCircle, UserPlus, UserCheck, Clock, Loader2, Circle, Heart, Eye } from "lucide-react";
@@ -85,7 +86,10 @@ function UserProfilePage() {
             {profile.is_online && <Circle className="absolute bottom-2 right-2 h-5 w-5 fill-emerald-500 text-emerald-500 drop-shadow" />}
           </div>
           <div className="min-w-0">
-            <h1 className="truncate text-3xl font-black tracking-tight sm:text-4xl">{profile.full_name || "Student"}</h1>
+            <h1 className="flex min-w-0 items-center gap-2 truncate text-2xl font-extrabold tracking-tight sm:text-3xl">
+              <span className="truncate">{profile.full_name || "Student"}</span>
+              <VerifiedBadge verified={profile.verified} className="h-5 w-5" />
+            </h1>
             <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
               {profile.username && <span>@{profile.username}</span>}
               {profile.school_name && <span className="inline-flex items-center gap-1"><School className="h-4 w-4" />{profile.school_name}</span>}

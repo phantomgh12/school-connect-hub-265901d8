@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Heart, MessageCircle, Bookmark, Share2, MoreHorizontal, Trash2, Pencil, Send, Download, Flag, Loader2, Eye, UserPlus, UserCheck } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
+import { VerifiedBadge } from "@/components/app/VerifiedBadge";
 import { toast } from "sonner";
 
 export type FeedPost = {
@@ -180,7 +181,10 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
           {post.author?.avatar_url ? <img src={post.author.avatar_url} className="h-full w-full object-cover" alt="" /> : initials}
         </Link>
         <div className="min-w-0 flex-1">
-          <Link to="/profile/$userId" params={{ userId: post.user_id }} className="block truncate text-sm font-bold hover:underline">{name}</Link>
+          <span className="flex min-w-0 items-center gap-1">
+            <Link to="/profile/$userId" params={{ userId: post.user_id }} className="truncate text-sm font-bold hover:underline">{name}</Link>
+            <VerifiedBadge userId={post.user_id} className="h-3.5 w-3.5" />
+          </span>
           <div className="truncate text-xs text-muted-foreground">
             {post.author?.school_name ? `${post.author.school_name} • ` : ""}
             {timeAgo(post.created_at)}
