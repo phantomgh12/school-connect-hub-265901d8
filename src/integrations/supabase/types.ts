@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_actions: {
+        Row: {
+          action: string
+          admin_id: string
+          created_at: string
+          details: Json | null
+          id: string
+          target_id: string | null
+          target_type: string | null
+        }
+        Insert: {
+          action: string
+          admin_id: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          target_id?: string | null
+          target_type?: string | null
+        }
+        Update: {
+          action?: string
+          admin_id?: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          target_id?: string | null
+          target_type?: string | null
+        }
+        Relationships: []
+      }
       conversations: {
         Row: {
           created_at: string
@@ -80,6 +110,39 @@ export type Database = {
           requester_id?: string
           status?: Database["public"]["Enums"]["friendship_status"]
           updated_at?: string
+        }
+        Relationships: []
+      }
+      invites: {
+        Row: {
+          code: string
+          confirmed: boolean
+          confirmed_at: string | null
+          created_at: string
+          id: string
+          invitee_email: string | null
+          invitee_id: string | null
+          inviter_id: string
+        }
+        Insert: {
+          code?: string
+          confirmed?: boolean
+          confirmed_at?: string | null
+          created_at?: string
+          id?: string
+          invitee_email?: string | null
+          invitee_id?: string | null
+          inviter_id: string
+        }
+        Update: {
+          code?: string
+          confirmed?: boolean
+          confirmed_at?: string | null
+          created_at?: string
+          id?: string
+          invitee_email?: string | null
+          invitee_id?: string | null
+          inviter_id?: string
         }
         Relationships: []
       }
@@ -348,6 +411,8 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          ban_reason: string | null
+          banned: boolean
           bio: string | null
           city: string | null
           country: string | null
@@ -367,11 +432,17 @@ export type Database = {
           school_name: string | null
           school_slug: string | null
           school_type: Database["public"]["Enums"]["school_type"] | null
+          suspended_until: string | null
           updated_at: string
           username: string | null
+          verification_tier: string | null
+          verified: boolean
+          verified_at: string | null
         }
         Insert: {
           avatar_url?: string | null
+          ban_reason?: string | null
+          banned?: boolean
           bio?: string | null
           city?: string | null
           country?: string | null
@@ -391,11 +462,17 @@ export type Database = {
           school_name?: string | null
           school_slug?: string | null
           school_type?: Database["public"]["Enums"]["school_type"] | null
+          suspended_until?: string | null
           updated_at?: string
           username?: string | null
+          verification_tier?: string | null
+          verified?: boolean
+          verified_at?: string | null
         }
         Update: {
           avatar_url?: string | null
+          ban_reason?: string | null
+          banned?: boolean
           bio?: string | null
           city?: string | null
           country?: string | null
@@ -415,8 +492,72 @@ export type Database = {
           school_name?: string | null
           school_slug?: string | null
           school_type?: Database["public"]["Enums"]["school_type"] | null
+          suspended_until?: string | null
           updated_at?: string
           username?: string | null
+          verification_tier?: string | null
+          verified?: boolean
+          verified_at?: string | null
+        }
+        Relationships: []
+      }
+      reports: {
+        Row: {
+          created_at: string
+          details: string | null
+          handled_at: string | null
+          handled_by: string | null
+          id: string
+          reason: string
+          reporter_id: string
+          status: string
+          target_id: string
+          target_type: string
+          target_user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          details?: string | null
+          handled_at?: string | null
+          handled_by?: string | null
+          id?: string
+          reason: string
+          reporter_id: string
+          status?: string
+          target_id: string
+          target_type: string
+          target_user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          details?: string | null
+          handled_at?: string | null
+          handled_by?: string | null
+          id?: string
+          reason?: string
+          reporter_id?: string
+          status?: string
+          target_id?: string
+          target_type?: string
+          target_user_id?: string | null
+        }
+        Relationships: []
+      }
+      site_settings: {
+        Row: {
+          key: string
+          updated_at: string
+          value: Json
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value: Json
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: Json
         }
         Relationships: []
       }
@@ -591,19 +732,94 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      verification_requests: {
+        Row: {
+          created_at: string
+          id: string
+          note: string | null
+          review_note: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          route: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          route: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          route?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
       are_friends: { Args: { _a: string; _b: string }; Returns: boolean }
+      claim_invite: { Args: { _code: string }; Returns: Json }
+      confirm_invite: {
+        Args: { _code: string; _confirm: boolean }
+        Returns: Json
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       mutual_friends_count: {
         Args: { _me: string; _other: string }
         Returns: number
       }
       normalize_school: { Args: { _name: string }; Returns: string }
+      signup_rank: { Args: { _user_id: string }; Returns: number }
+      verification_eligibility: { Args: { _user_id: string }; Returns: Json }
     }
     Enums: {
+      app_role: "admin" | "moderator" | "user"
       friendship_status: "pending" | "accepted" | "blocked"
       school_type:
         | "primary"
@@ -739,6 +955,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["admin", "moderator", "user"],
       friendship_status: ["pending", "accepted", "blocked"],
       school_type: [
         "primary",
