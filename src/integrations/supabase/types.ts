@@ -798,6 +798,11 @@ export type Database = {
     }
     Functions: {
       are_friends: { Args: { _a: string; _b: string }; Returns: boolean }
+      claim_invite: { Args: { _code: string }; Returns: Json }
+      confirm_invite: {
+        Args: { _code: string; _confirm: boolean }
+        Returns: Json
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
