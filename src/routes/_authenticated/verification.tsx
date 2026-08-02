@@ -38,6 +38,7 @@ function VerificationPage() {
   const [request, setRequest] = useState<{ status: string; route: string } | null>(null);
   const [code, setCode] = useState<string>("");
   const [busy, setBusy] = useState(false);
+  const [pendingInvite, setPendingInvite] = useState<{ code: string; name: string } | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -57,6 +58,11 @@ function VerificationPage() {
       setEnabled(s.data?.value === true);
       setRequest(r.data ?? null);
       if (inv.data?.code) setCode(inv.data.code);
+      const mine = await supabase.from("invites").select("code,inviter_id,confirmed").eq("invitee_id", u.user.id).eq("confirmed", false).limit(1).maybeSingle();
+      if (mine.data) {
+        const who = await supabase.from("profiles").select("full_name").eq("id", mine.data.inviter_id).maybeSingle();
+        setPendingInvite({ code: mine.data.code, name: who.data?.full_name || "A member" });
+      }
     })();
   }, []);
 
@@ -123,6 +129,21 @@ function VerificationPage() {
             </section>
           ))}
         </div>
+
+        {pendingInvite && (
+          <section className="card-flat rounded-2xl p-4 sm:p-5">
+            <h2 className="text-sm font-bold">Did {pendingInvite.name} invite you?</h2>
+            <p className="mt-1 text-xs text-muted-foreground">Your answer counts towards their invite verification.</p>
+            <div className="mt-3 flex gap-2">
+              <button
+                onClick={async () => { await supabase.rpc("confirm_invite", { _code: pendingInvite.code, _confirm: true }); setPendingInvite(null); toast.success("Thanks — confirmed"); }}
+                className="rounded-xl bg-primary px-4 py-2 text-sm font-bold text-primary-foreground">Yes, they did</button>
+              <button
+                onClick={async () => { await supabase.rpc("confirm_invite", { _code: pendingInvite.code, _confirm: false }); setPendingInvite(null); }}
+                className="rounded-xl border px-4 py-2 text-sm font-bold hover:bg-muted">No</button>
+            </div>
+          </section>
+        )}
 
         <section className="card-flat rounded-2xl p-4 sm:p-5">
           <h2 className="text-sm font-bold">Your invite link</h2>
