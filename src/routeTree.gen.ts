@@ -13,6 +13,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
+import { Route as AuthenticatedVerificationRouteImport } from './routes/_authenticated/verification'
 import { Route as AuthenticatedSearchRouteImport } from './routes/_authenticated/search'
 import { Route as AuthenticatedSavedRouteImport } from './routes/_authenticated/saved'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
@@ -46,6 +47,12 @@ const AuthCallbackRoute = AuthCallbackRouteImport.update({
   path: '/callback',
   getParentRoute: () => AuthRoute,
 } as any)
+const AuthenticatedVerificationRoute =
+  AuthenticatedVerificationRouteImport.update({
+    id: '/verification',
+    path: '/verification',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedSearchRoute = AuthenticatedSearchRouteImport.update({
   id: '/search',
   path: '/search',
@@ -129,6 +136,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof AuthenticatedProfileRouteWithChildren
   '/saved': typeof AuthenticatedSavedRoute
   '/search': typeof AuthenticatedSearchRoute
+  '/verification': typeof AuthenticatedVerificationRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/profile/$userId': typeof AuthenticatedProfileUserIdRoute
 }
@@ -147,6 +155,7 @@ export interface FileRoutesByTo {
   '/profile': typeof AuthenticatedProfileRouteWithChildren
   '/saved': typeof AuthenticatedSavedRoute
   '/search': typeof AuthenticatedSearchRoute
+  '/verification': typeof AuthenticatedVerificationRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/profile/$userId': typeof AuthenticatedProfileUserIdRoute
 }
@@ -167,6 +176,7 @@ export interface FileRoutesById {
   '/_authenticated/profile': typeof AuthenticatedProfileRouteWithChildren
   '/_authenticated/saved': typeof AuthenticatedSavedRoute
   '/_authenticated/search': typeof AuthenticatedSearchRoute
+  '/_authenticated/verification': typeof AuthenticatedVerificationRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/_authenticated/profile/$userId': typeof AuthenticatedProfileUserIdRoute
 }
@@ -187,6 +197,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/saved'
     | '/search'
+    | '/verification'
     | '/auth/callback'
     | '/profile/$userId'
   fileRoutesByTo: FileRoutesByTo
@@ -205,6 +216,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/saved'
     | '/search'
+    | '/verification'
     | '/auth/callback'
     | '/profile/$userId'
   id:
@@ -224,6 +236,7 @@ export interface FileRouteTypes {
     | '/_authenticated/profile'
     | '/_authenticated/saved'
     | '/_authenticated/search'
+    | '/_authenticated/verification'
     | '/auth/callback'
     | '/_authenticated/profile/$userId'
   fileRoutesById: FileRoutesById
@@ -263,6 +276,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth/callback'
       preLoaderRoute: typeof AuthCallbackRouteImport
       parentRoute: typeof AuthRoute
+    }
+    '/_authenticated/verification': {
+      id: '/_authenticated/verification'
+      path: '/verification'
+      fullPath: '/verification'
+      preLoaderRoute: typeof AuthenticatedVerificationRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/search': {
       id: '/_authenticated/search'
@@ -382,6 +402,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRouteWithChildren
   AuthenticatedSavedRoute: typeof AuthenticatedSavedRoute
   AuthenticatedSearchRoute: typeof AuthenticatedSearchRoute
+  AuthenticatedVerificationRoute: typeof AuthenticatedVerificationRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -397,6 +418,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedProfileRoute: AuthenticatedProfileRouteWithChildren,
   AuthenticatedSavedRoute: AuthenticatedSavedRoute,
   AuthenticatedSearchRoute: AuthenticatedSearchRoute,
+  AuthenticatedVerificationRoute: AuthenticatedVerificationRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
