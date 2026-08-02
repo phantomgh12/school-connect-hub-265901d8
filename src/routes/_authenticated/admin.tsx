@@ -49,7 +49,7 @@ function AdminPage() {
   }, []);
 
   const log = useCallback(async (action: string, target_type?: string, target_id?: string, details?: Record<string, unknown>) => {
-    await supabase.from("admin_actions").insert({ admin_id: uid, action, target_type: target_type ?? null, target_id: target_id ?? null, details: details ?? null });
+    await supabase.from("admin_actions").insert({ admin_id: uid, action, target_type: target_type ?? null, target_id: target_id ?? null, details: (details ?? null) as never });
   }, [uid]);
 
   if (checking) {
@@ -223,7 +223,7 @@ function Members({ log }: { log: LogFn }) {
   useEffect(() => { load(); }, [load]);
 
   async function patch(id: string, values: Record<string, unknown>, action: string) {
-    const { error } = await supabase.from("profiles").update(values).eq("id", id);
+    const { error } = await supabase.from("profiles").update(values as never).eq("id", id);
     if (error) return toast.error(error.message);
     await log(action, "profile", id, values);
     toast.success("Done");
