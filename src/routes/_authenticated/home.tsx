@@ -1,217 +1,235 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/app/AppShell";
 import { CreatePost } from "@/components/app/CreatePost";
 import { PostCard, type FeedPost } from "@/components/app/PostCard";
 import { StoryRail } from "@/components/app/StoryRail";
-import { TrendingUp, Users, UserPlus, Sparkles, Circle } from "lucide-react";
+import { SkeletonPost, SkeletonCard } from "@/components/app/Skeletons";
 import { NetworkStatsCard, SchoolCommunityCard } from "@/components/app/NetworkPanels";
-import { notify } from "@/lib/notify";
-import { toast } from "sonner";
+import { DailyRewardsCard, ReferralProgressCard, SchoolRankingsCard, TrendingCard, UpcomingEventsCard, SuggestedFriendsCard } from "@/components/app/SidePanels";
+import { fetchFeedPage, loadViewerContext, postPrompts, type FeedTab, type ViewerContext } from "@/lib/feed";
+import { School, Sparkles, UserCheck, Flame, Clock } from "lucide-react";
+
+type Search = { tab?: FeedTab };
 
 export const Route = createFileRoute("/_authenticated/home")({
-  head: () => ({ meta: [{ title: "Home — SchoolConnect" }] }),
+  validateSearch: (s: Record<string, unknown>): Search => ({
+    tab: (["foryou", "following", "trending", "latest"] as const).includes(s["tab"] as FeedTab) ? (s["tab"] as FeedTab) : undefined,
+  }),
+  head: () => ({
+    meta: [
+      { title: "Home Feed — SchoolConnect" },
+      { name: "description", content: "Your personalised student feed: For You, Following, Trending and Latest posts from your school community." },
+      { property: "og:title", content: "Home Feed — SchoolConnect" },
+      { property: "og:description", content: "A personalised feed for students and alumni." },
+    ],
+  }),
   component: HomePage,
 });
 
+const TABS: { key: FeedTab; label: string; icon: typeof Sparkles }[] = [
+  { key: "foryou", label: "For You", icon: Sparkles },
+  { key: "following", label: "Following", icon: UserCheck },
+  { key: "trending", label: "Trending", icon: Flame },
+  { key: "latest", label: "Latest", icon: Clock },
+];
+
 function HomePage() {
-  const [userId, setUserId] = useState<string>("");
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const { tab = "foryou" } = Route.useSearch();
+  const nav = Route.useNavigate();
+  const [uid, setUid] = useState("");
+  const [profile, setProfile] = useState<any>(null);
+  const [ctx, setCtx] = useState<ViewerContext | null>(null);
   const [posts, setPosts] = useState<FeedPost[]>([]);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
-  const [suggestions, setSuggestions] = useState<any[]>([]);
-  const [trending, setTrending] = useState<{ tag: string; count: number }[]>([]);
-  const [online, setOnline] = useState<any[]>([]);
-
-  const loadFeed = useCallback(async (uid: string) => {
-    const { data: rawPosts } = await supabase
-      .from("posts")
-      .select("id,user_id,content,media_urls,post_type,hashtags,created_at")
-      .order("created_at", { ascending: false })
-      .limit(50);
-
-    const ids = (rawPosts ?? []).map((p: any) => p.id);
-    const authorIds = [...new Set((rawPosts ?? []).map((p: any) => p.user_id))];
-    const safeIds = ids.length ? ids : ["00000000-0000-0000-0000-000000000000"];
-    const [{ data: likes }, { data: comments }, { data: myLikes }, { data: mySaves }, { data: authors }] = await Promise.all([
-      supabase.from("post_likes").select("post_id").in("post_id", safeIds),
-      supabase.from("post_comments").select("post_id").in("post_id", safeIds),
-      supabase.from("post_likes").select("post_id").eq("user_id", uid),
-      supabase.from("post_saves").select("post_id").eq("user_id", uid),
-      authorIds.length
-        ? supabase.from("profiles").select("id,full_name,username,avatar_url,school_name").in("id", authorIds)
-        : Promise.resolve({ data: [] as any[] }),
-    ]);
-    const authorMap = new Map((authors ?? []).map((a: any) => [a.id, a]));
-    const likeCount: Record<string, number> = {};
-    likes?.forEach((l: any) => { likeCount[l.post_id] = (likeCount[l.post_id] ?? 0) + 1; });
-    const commentCount: Record<string, number> = {};
-    comments?.forEach((c: any) => { commentCount[c.post_id] = (commentCount[c.post_id] ?? 0) + 1; });
-    const likedSet = new Set(myLikes?.map((l: any) => l.post_id));
-    const savedSet = new Set(mySaves?.map((s: any) => s.post_id));
-
-    const feed: FeedPost[] = (rawPosts ?? []).map((p: any) => ({
-      ...p,
-      author: authorMap.get(p.user_id) ?? null,
-      like_count: likeCount[p.id] ?? 0,
-      comment_count: commentCount[p.id] ?? 0,
-      liked_by_me: likedSet.has(p.id),
-      saved_by_me: savedSet.has(p.id),
-    }));
-    setPosts(feed);
-
-    const tagCount: Record<string, number> = {};
-    feed.forEach((p) => p.hashtags.forEach((h) => { tagCount[h] = (tagCount[h] ?? 0) + 1; }));
-    setTrending(Object.entries(tagCount).map(([tag, count]) => ({ tag, count })).sort((a, b) => b.count - a.count).slice(0, 6));
-  }, []);
-
-  const loadSidebar = useCallback(async (uid: string) => {
-    const [{ data: sug }, { data: on }] = await Promise.all([
-      supabase.from("profiles").select("id,full_name,username,avatar_url,school_name").neq("id", uid).limit(5),
-      supabase.from("profiles").select("id,full_name,avatar_url,school_name")
-        .eq("is_online", true).neq("id", uid).limit(8),
-    ]);
-    setSuggestions(sug ?? []);
-    setOnline(on ?? []);
-  }, []);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const sentinel = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    let ch: any;
     (async () => {
       const { data: u } = await supabase.auth.getUser();
-      const uid = u.user?.id;
-      if (!uid) return;
-      setUserId(uid);
-      const { data: p } = await supabase.from("profiles").select("full_name,avatar_url").eq("id", uid).maybeSingle();
-      setAvatarUrl(p?.avatar_url ?? null);
-      await Promise.all([loadFeed(uid), loadSidebar(uid)]);
-      setLoading(false);
-      // Realtime new posts
-      ch = supabase.channel(`feed-${uid}`)
-        .on("postgres_changes", { event: "INSERT", schema: "public", table: "posts" }, () => loadFeed(uid))
-        .on("postgres_changes", { event: "DELETE", schema: "public", table: "posts" }, () => loadFeed(uid))
-        .subscribe();
+      if (!u.user) return;
+      setUid(u.user.id);
+      const [{ data: p }, c] = await Promise.all([
+        supabase.from("profiles").select("full_name,avatar_url,school_name,school_slug").eq("id", u.user.id).maybeSingle(),
+        loadViewerContext(u.user.id),
+      ]);
+      setProfile(p);
+      setCtx(c);
+      supabase.rpc("touch_streak").then(() => {});
     })();
-    return () => { if (ch) supabase.removeChannel(ch); };
-  }, [loadFeed, loadSidebar]);
+  }, []);
 
-  const refresh = () => userId && loadFeed(userId);
+  const loadPage = useCallback(async (p: number, replace: boolean) => {
+    if (!ctx) return;
+    const res = await fetchFeedPage(tab, ctx, p);
+    setPosts((prev) => (replace ? res.posts : [...prev, ...res.posts.filter((x) => !prev.some((y) => y.id === x.id))]));
+    setHasMore(res.hasMore);
+    setLoading(false);
+    setLoadingMore(false);
+  }, [ctx, tab]);
 
-  async function addFriend(addresseeId: string) {
-    const { error } = await supabase.from("friendships").insert({ requester_id: userId, addressee_id: addresseeId, status: "pending" });
-    if (error) return toast.error(error.message);
-    await notify({ userId: addresseeId, actorId: userId, type: "friend_request", message: "sent you a friend request" });
-    toast.success("Friend request sent");
-    loadSidebar(userId);
-  }
+  useEffect(() => {
+    if (!ctx) return;
+    setLoading(true);
+    setPage(0);
+    loadPage(0, true);
+  }, [ctx, tab, loadPage]);
+
+  // Infinite scroll
+  useEffect(() => {
+    const el = sentinel.current;
+    if (!el || !hasMore || loading) return;
+    const io = new IntersectionObserver(([e]) => {
+      if (e?.isIntersecting && !loadingMore) {
+        setLoadingMore(true);
+        const next = page + 1;
+        setPage(next);
+        loadPage(next, false);
+      }
+    }, { rootMargin: "600px" });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [hasMore, loading, loadingMore, page, loadPage]);
+
+  // Realtime: new posts refresh the top of the feed
+  useEffect(() => {
+    if (!uid) return;
+    const ch = supabase.channel(`feed-${uid}`)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "posts" }, () => loadPage(0, true))
+      .on("postgres_changes", { event: "DELETE", schema: "public", table: "posts" }, () => loadPage(0, true))
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, [uid, loadPage]);
+
+  const refresh = () => loadPage(0, true);
+  const prompts = postPrompts(uid || "a", profile?.school_name);
 
   return (
     <AppShell
       right={
         <>
-          {userId && <NetworkStatsCard userId={userId} />}
-          {userId && <SchoolCommunityCard userId={userId} />}
-          <div className="glass rounded-3xl p-5">
-            <h3 className="mb-3 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-muted-foreground">
-              <TrendingUp className="h-4 w-4" /> Trending
-            </h3>
-            {trending.length === 0 ? (
-              <p className="text-sm text-muted-foreground">Post with #hashtags to start trends.</p>
-            ) : (
-              <ul className="grid gap-2">
-                {trending.map((t) => (
-                  <li key={t.tag}>
-                    <Link to="/search" search={{ q: `#${t.tag}` }} className="flex items-center justify-between rounded-xl px-2 py-1.5 text-sm hover:bg-muted">
-                      <span className="font-semibold text-[color:var(--brand)]">#{t.tag}</span>
-                      <span className="text-xs text-muted-foreground">{t.count} post{t.count > 1 ? "s" : ""}</span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-
-          <div className="glass rounded-3xl p-5">
-            <h3 className="mb-3 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-muted-foreground">
-              <Users className="h-4 w-4" /> Suggested friends
-            </h3>
-            <ul className="grid gap-3">
-              {suggestions.length === 0 && <li className="text-sm text-muted-foreground">No suggestions yet.</li>}
-              {suggestions.map((s) => (
-                <li key={s.id} className="flex items-center gap-2">
-                  <Link to="/profile/$userId" params={{ userId: s.id }} className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-full gradient-brand text-xs font-bold text-primary-foreground">
-                    {s.avatar_url ? <img src={s.avatar_url} className="h-full w-full object-cover" alt="" /> : (s.full_name || "S")[0]}
-                  </Link>
-                  <div className="min-w-0 flex-1">
-                    <Link to="/profile/$userId" params={{ userId: s.id }} className="block truncate text-sm font-semibold hover:underline">{s.full_name || s.username || "Student"}</Link>
-                    <div className="truncate text-xs text-muted-foreground">{s.school_name ?? "SchoolConnect"}</div>
-                  </div>
-                  <button onClick={() => addFriend(s.id)} className="rounded-full border p-1.5 hover:bg-muted" title="Add friend"><UserPlus className="h-3.5 w-3.5" /></button>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="glass rounded-3xl p-5">
-            <h3 className="mb-3 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-muted-foreground">
-              <Circle className="h-3 w-3 fill-emerald-500 text-emerald-500" /> Online now
-            </h3>
-            <ul className="grid gap-2">
-              {online.length === 0 && <li className="text-sm text-muted-foreground">No one online yet.</li>}
-              {online.map((o) => (
-                <li key={o.id}>
-                  <Link to="/messages" search={{ with: o.id }} className="flex items-center gap-2 rounded-xl px-2 py-1.5 hover:bg-muted">
-                    <div className="relative grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-full gradient-brand text-xs font-bold text-primary-foreground">
-                      {o.avatar_url ? <img src={o.avatar_url} className="h-full w-full object-cover" alt="" /> : (o.full_name || "S")[0]}
-                      <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-background bg-emerald-500" />
-                    </div>
-                    <div className="min-w-0 flex-1 truncate text-sm font-semibold">{o.full_name || "Student"}</div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <DailyRewardsCard />
+          <TrendingCard />
+          <SuggestedFriendsCard uid={uid} />
+          <SchoolRankingsCard />
+          <UpcomingEventsCard />
+          <ReferralProgressCard uid={uid} />
+          {uid && <NetworkStatsCard userId={uid} />}
+          {uid && <SchoolCommunityCard userId={uid} />}
         </>
       }
     >
-      {userId && <StoryRail userId={userId} avatarUrl={avatarUrl} />}
-      {userId && <CreatePost userId={userId} avatarUrl={avatarUrl} onPosted={refresh} />}
+      {uid && <StoryRail userId={uid} avatarUrl={profile?.avatar_url ?? null} />}
+
+      {/* What's happening at your school */}
+      <WhatsHappening schoolSlug={profile?.school_slug ?? null} schoolName={profile?.school_name ?? null} uid={uid} />
+
+      {uid && <CreatePost userId={uid} avatarUrl={profile?.avatar_url ?? null} onPosted={refresh} />}
+
+      {/* Feed tabs */}
+      <div className="glass sticky top-14 z-30 mt-4 flex gap-1 overflow-x-auto rounded-2xl p-1.5 no-scrollbar">
+        {TABS.map((t) => {
+          const active = t.key === tab;
+          return (
+            <button
+              key={t.key}
+              onClick={() => nav({ search: { tab: t.key }, replace: true })}
+              className={`press flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-xl px-3 py-2 text-sm font-bold transition-colors ${
+                active ? "bg-primary text-primary-foreground shadow-soft" : "text-muted-foreground hover:bg-muted"
+              }`}
+            >
+              <t.icon className="h-4 w-4" /> {t.label}
+            </button>
+          );
+        })}
+      </div>
 
       {loading ? (
-        <div className="mt-4 grid gap-4">
-          {[0, 1, 2].map((i) => <SkeletonPost key={i} />)}
-        </div>
+        <div className="mt-4 grid gap-4">{[0, 1, 2].map((i) => <SkeletonPost key={i} />)}</div>
       ) : posts.length === 0 ? (
-        <div className="glass mt-4 rounded-3xl p-10 text-center">
-          <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl gradient-brand shadow-brand"><Sparkles className="h-6 w-6 text-primary-foreground" /></div>
-          <h3 className="mt-4 text-lg font-bold">Your feed is empty</h3>
-          <p className="mt-1 text-sm text-muted-foreground">Be the first to share something with your school community!</p>
+        <div className="glass mt-4 rounded-2xl p-8 text-center">
+          <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-primary shadow-soft"><Sparkles className="h-6 w-6 text-primary-foreground" /></div>
+          <h3 className="mt-4 text-lg font-bold">{tab === "following" ? "Follow classmates to fill this tab" : "Nothing here yet"}</h3>
+          <p className="mt-1 text-sm text-muted-foreground">Try one of these to get started:</p>
+          <ul className="mt-3 grid gap-2 text-left">
+            {prompts.map((p) => (
+              <li key={p}>
+                <Link to="/new-post" className="block rounded-xl border bg-card px-3 py-2.5 text-sm font-medium hover-lift">{p}</Link>
+              </li>
+            ))}
+          </ul>
         </div>
       ) : (
         <div className="mt-4 grid gap-4">
-          {posts.map((p) => <PostCard key={p.id} post={p} currentUserId={userId} onChange={refresh} />)}
+          {posts.map((p) => <PostCard key={p.id} post={p} currentUserId={uid} onChange={refresh} />)}
+          {hasMore && <div ref={sentinel}>{loadingMore && <SkeletonPost />}</div>}
         </div>
       )}
     </AppShell>
   );
 }
 
-function SkeletonPost() {
+function WhatsHappening({ schoolSlug, schoolName, uid }: { schoolSlug: string | null; schoolName: string | null; uid: string }) {
+  const [data, setData] = useState<{ members: number; posts: number; online: number; events: any[] } | null>(null);
+
+  useEffect(() => {
+    if (!uid) return;
+    (async () => {
+      const base = supabase.from("profiles").select("id", { count: "exact", head: true });
+      const [{ count: members }, { count: online }, { data: events }] = await Promise.all([
+        schoolSlug ? base.eq("school_slug", schoolSlug) : base,
+        schoolSlug
+          ? supabase.from("profiles").select("id", { count: "exact", head: true }).eq("school_slug", schoolSlug).eq("is_online", true)
+          : supabase.from("profiles").select("id", { count: "exact", head: true }).eq("is_online", true),
+        supabase.from("school_events").select("id,title,starts_at").gte("starts_at", new Date().toISOString()).order("starts_at").limit(2),
+      ]);
+      const { count: posts } = await supabase.from("posts").select("id", { count: "exact", head: true })
+        .gte("created_at", new Date(Date.now() - 86_400_000).toISOString());
+      setData({ members: members ?? 0, posts: posts ?? 0, online: online ?? 0, events: events ?? [] });
+    })();
+  }, [schoolSlug, uid]);
+
+  if (!data) return <div className="mt-4"><SkeletonCard lines={1} /></div>;
+
   return (
-    <div className="glass animate-pulse rounded-3xl p-5">
-      <div className="flex items-center gap-3">
-        <div className="h-10 w-10 rounded-full bg-muted" />
-        <div className="flex-1 space-y-2">
-          <div className="h-3 w-32 rounded bg-muted" />
-          <div className="h-2 w-20 rounded bg-muted" />
-        </div>
+    <section className="glass mt-4 rounded-2xl p-5">
+      <div className="flex items-center gap-2">
+        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-primary"><School className="h-4 w-4 text-primary-foreground" /></span>
+        <h2 className="min-w-0 truncate text-base font-black">What's happening at {schoolName || "your school"}?</h2>
       </div>
-      <div className="mt-4 space-y-2">
-        <div className="h-3 w-full rounded bg-muted" />
-        <div className="h-3 w-4/5 rounded bg-muted" />
+      <div className="mt-4 grid grid-cols-3 gap-2">
+        {[
+          { label: "Members", value: data.members },
+          { label: "Online now", value: data.online },
+          { label: "Posts today", value: data.posts },
+        ].map((s) => (
+          <div key={s.label} className="rounded-xl border bg-card p-3 text-center">
+            <div className="text-lg font-black text-primary">{s.value}</div>
+            <div className="text-[11px] font-medium text-muted-foreground">{s.label}</div>
+          </div>
+        ))}
       </div>
-      <div className="mt-4 h-40 rounded-xl bg-muted" />
-    </div>
+      {data.events.length > 0 && (
+        <ul className="mt-3 grid gap-1.5">
+          {data.events.map((e) => (
+            <li key={e.id}>
+              <Link to="/events" className="flex items-center justify-between rounded-xl px-2 py-1.5 text-sm hover:bg-muted">
+                <span className="min-w-0 truncate font-semibold">{e.title}</span>
+                <span className="shrink-0 text-xs text-muted-foreground">{new Date(e.starts_at).toLocaleDateString()}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+      <div className="mt-3 flex flex-wrap gap-2">
+        <Link to="/communities" className="press rounded-full bg-primary px-3.5 py-1.5 text-xs font-bold text-primary-foreground">Open community</Link>
+        <Link to="/confessions" className="press rounded-full border px-3.5 py-1.5 text-xs font-bold hover:bg-muted">Confessions</Link>
+        <Link to="/events" className="press rounded-full border px-3.5 py-1.5 text-xs font-bold hover:bg-muted">Events</Link>
+      </div>
+    </section>
   );
 }

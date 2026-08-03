@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      achievements: {
+        Row: {
+          created_at: string
+          description: string
+          icon: string
+          key: string
+          title: string
+          xp: number
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          icon?: string
+          key: string
+          title: string
+          xp?: number
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          icon?: string
+          key?: string
+          title?: string
+          xp?: number
+        }
+        Relationships: []
+      }
       admin_actions: {
         Row: {
           action: string
@@ -44,6 +71,122 @@ export type Database = {
         }
         Relationships: []
       }
+      challenge_progress: {
+        Row: {
+          challenge_id: string
+          completed_at: string | null
+          progress: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          completed_at?: string | null
+          progress?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          completed_at?: string | null
+          progress?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_progress_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      challenges: {
+        Row: {
+          active: boolean
+          created_at: string
+          description: string
+          ends_at: string | null
+          goal: number
+          id: string
+          kind: string
+          starts_at: string
+          title: string
+          xp_reward: number
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          description: string
+          ends_at?: string | null
+          goal?: number
+          id?: string
+          kind?: string
+          starts_at?: string
+          title: string
+          xp_reward?: number
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          description?: string
+          ends_at?: string | null
+          goal?: number
+          id?: string
+          kind?: string
+          starts_at?: string
+          title?: string
+          xp_reward?: number
+        }
+        Relationships: []
+      }
+      confessions: {
+        Row: {
+          author_id: string
+          content: string
+          created_at: string
+          flagged_terms: string[]
+          id: string
+          likes_count: number
+          reviewed_at: string | null
+          reviewed_by: string | null
+          risk_score: number
+          school_slug: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          content: string
+          created_at?: string
+          flagged_terms?: string[]
+          id?: string
+          likes_count?: number
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          risk_score?: number
+          school_slug?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          content?: string
+          created_at?: string
+          flagged_terms?: string[]
+          id?: string
+          likes_count?: number
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          risk_score?: number
+          school_slug?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       conversations: {
         Row: {
           created_at: string
@@ -67,6 +210,32 @@ export type Database = {
           user_b?: string
         }
         Relationships: []
+      }
+      event_rsvps: {
+        Row: {
+          created_at: string
+          event_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_rsvps_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "school_events"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       follows: {
         Row: {
@@ -217,6 +386,35 @@ export type Database = {
         }
         Relationships: []
       }
+      poll_votes: {
+        Row: {
+          created_at: string
+          option_index: number
+          poll_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          option_index: number
+          poll_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          option_index?: number
+          poll_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "poll_votes_poll_id_fkey"
+            columns: ["poll_id"]
+            isOneToOne: false
+            referencedRelation: "school_polls"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       post_comments: {
         Row: {
           content: string
@@ -255,6 +453,41 @@ export type Database = {
           },
           {
             foreignKeyName: "post_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      post_interactions: {
+        Row: {
+          created_at: string
+          dwell_ms: number
+          id: string
+          post_id: string
+          user_id: string
+          watch_ms: number
+        }
+        Insert: {
+          created_at?: string
+          dwell_ms?: number
+          id?: string
+          post_id: string
+          user_id: string
+          watch_ms?: number
+        }
+        Update: {
+          created_at?: string
+          dwell_ms?: number
+          id?: string
+          post_id?: string
+          user_id?: string
+          watch_ms?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_interactions_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
             referencedRelation: "posts"
@@ -371,40 +604,55 @@ export type Database = {
       }
       posts: {
         Row: {
+          comments_count: number
           content: string | null
           created_at: string
           hashtags: string[]
           id: string
+          likes_count: number
           media_urls: string[]
           post_type: string
+          saves_count: number
           shares_count: number
+          trending_score: number
           updated_at: string
           user_id: string
           views_count: number
+          watch_ms: number
         }
         Insert: {
+          comments_count?: number
           content?: string | null
           created_at?: string
           hashtags?: string[]
           id?: string
+          likes_count?: number
           media_urls?: string[]
           post_type?: string
+          saves_count?: number
           shares_count?: number
+          trending_score?: number
           updated_at?: string
           user_id: string
           views_count?: number
+          watch_ms?: number
         }
         Update: {
+          comments_count?: number
           content?: string | null
           created_at?: string
           hashtags?: string[]
           id?: string
+          likes_count?: number
           media_urls?: string[]
           post_type?: string
+          saves_count?: number
           shares_count?: number
+          trending_score?: number
           updated_at?: string
           user_id?: string
           views_count?: number
+          watch_ms?: number
         }
         Relationships: []
       }
@@ -540,6 +788,78 @@ export type Database = {
           target_id?: string
           target_type?: string
           target_user_id?: string | null
+        }
+        Relationships: []
+      }
+      school_events: {
+        Row: {
+          cover_url: string | null
+          created_at: string
+          created_by: string
+          description: string | null
+          ends_at: string | null
+          id: string
+          location: string | null
+          school_slug: string | null
+          starts_at: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          cover_url?: string | null
+          created_at?: string
+          created_by: string
+          description?: string | null
+          ends_at?: string | null
+          id?: string
+          location?: string | null
+          school_slug?: string | null
+          starts_at: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          cover_url?: string | null
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          ends_at?: string | null
+          id?: string
+          location?: string | null
+          school_slug?: string | null
+          starts_at?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      school_polls: {
+        Row: {
+          created_at: string
+          created_by: string
+          ends_at: string | null
+          id: string
+          options: string[]
+          question: string
+          school_slug: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          ends_at?: string | null
+          id?: string
+          options: string[]
+          question: string
+          school_slug?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          ends_at?: string | null
+          id?: string
+          options?: string[]
+          question?: string
+          school_slug?: string | null
         }
         Relationships: []
       }
@@ -732,6 +1052,92 @@ export type Database = {
         }
         Relationships: []
       }
+      user_achievements: {
+        Row: {
+          achievement_key: string
+          earned_at: string
+          user_id: string
+        }
+        Insert: {
+          achievement_key: string
+          earned_at?: string
+          user_id: string
+        }
+        Update: {
+          achievement_key?: string
+          earned_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_achievements_achievement_key_fkey"
+            columns: ["achievement_key"]
+            isOneToOne: false
+            referencedRelation: "achievements"
+            referencedColumns: ["key"]
+          },
+        ]
+      }
+      user_gamification: {
+        Row: {
+          created_at: string
+          last_login_date: string | null
+          level: number
+          longest_streak: number
+          streak_days: number
+          theme: string | null
+          updated_at: string
+          user_id: string
+          week_start: string
+          weekly_xp: number
+          xp: number
+        }
+        Insert: {
+          created_at?: string
+          last_login_date?: string | null
+          level?: number
+          longest_streak?: number
+          streak_days?: number
+          theme?: string | null
+          updated_at?: string
+          user_id: string
+          week_start?: string
+          weekly_xp?: number
+          xp?: number
+        }
+        Update: {
+          created_at?: string
+          last_login_date?: string | null
+          level?: number
+          longest_streak?: number
+          streak_days?: number
+          theme?: string | null
+          updated_at?: string
+          user_id?: string
+          week_start?: string
+          weekly_xp?: number
+          xp?: number
+        }
+        Relationships: []
+      }
+      user_interests: {
+        Row: {
+          created_at: string
+          interest: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          interest: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          interest?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -798,6 +1204,7 @@ export type Database = {
     }
     Functions: {
       are_friends: { Args: { _a: string; _b: string }; Returns: boolean }
+      award_xp: { Args: { _amount: number; _reason?: string }; Returns: Json }
       claim_invite: { Args: { _code: string }; Returns: Json }
       confirm_invite: {
         Args: { _code: string; _confirm: boolean }
@@ -815,7 +1222,12 @@ export type Database = {
         Returns: number
       }
       normalize_school: { Args: { _name: string }; Returns: string }
+      recompute_post_trending: {
+        Args: { _post_id: string }
+        Returns: undefined
+      }
       signup_rank: { Args: { _user_id: string }; Returns: number }
+      touch_streak: { Args: never; Returns: Json }
       verification_eligibility: { Args: { _user_id: string }; Returns: Json }
     }
     Enums: {
