@@ -15,6 +15,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as AuthenticatedVerificationRouteImport } from './routes/_authenticated/verification'
 import { Route as AuthenticatedTrendingRouteImport } from './routes/_authenticated/trending'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedSearchRouteImport } from './routes/_authenticated/search'
 import { Route as AuthenticatedSavedRouteImport } from './routes/_authenticated/saved'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
@@ -28,6 +29,8 @@ import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated/h
 import { Route as AuthenticatedFriendsRouteImport } from './routes/_authenticated/friends'
 import { Route as AuthenticatedForYouRouteImport } from './routes/_authenticated/for-you'
 import { Route as AuthenticatedExploreRouteImport } from './routes/_authenticated/explore'
+import { Route as AuthenticatedEventsRouteImport } from './routes/_authenticated/events'
+import { Route as AuthenticatedConfessionsRouteImport } from './routes/_authenticated/confessions'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedCommunitiesIndexRouteImport } from './routes/_authenticated/communities.index'
 import { Route as AuthenticatedProfileUserIdRouteImport } from './routes/_authenticated/profile.$userId'
@@ -61,6 +64,11 @@ const AuthenticatedVerificationRoute =
 const AuthenticatedTrendingRoute = AuthenticatedTrendingRouteImport.update({
   id: '/trending',
   path: '/trending',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedSearchRoute = AuthenticatedSearchRouteImport.update({
@@ -130,6 +138,17 @@ const AuthenticatedExploreRoute = AuthenticatedExploreRouteImport.update({
   path: '/explore',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedEventsRoute = AuthenticatedEventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedConfessionsRoute =
+  AuthenticatedConfessionsRouteImport.update({
+    id: '/confessions',
+    path: '/confessions',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -158,6 +177,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteWithChildren
   '/admin': typeof AuthenticatedAdminRoute
+  '/confessions': typeof AuthenticatedConfessionsRoute
+  '/events': typeof AuthenticatedEventsRoute
   '/explore': typeof AuthenticatedExploreRoute
   '/for-you': typeof AuthenticatedForYouRoute
   '/friends': typeof AuthenticatedFriendsRoute
@@ -171,6 +192,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof AuthenticatedProfileRouteWithChildren
   '/saved': typeof AuthenticatedSavedRoute
   '/search': typeof AuthenticatedSearchRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/trending': typeof AuthenticatedTrendingRoute
   '/verification': typeof AuthenticatedVerificationRoute
   '/auth/callback': typeof AuthCallbackRoute
@@ -182,6 +204,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteWithChildren
   '/admin': typeof AuthenticatedAdminRoute
+  '/confessions': typeof AuthenticatedConfessionsRoute
+  '/events': typeof AuthenticatedEventsRoute
   '/explore': typeof AuthenticatedExploreRoute
   '/for-you': typeof AuthenticatedForYouRoute
   '/friends': typeof AuthenticatedFriendsRoute
@@ -195,6 +219,7 @@ export interface FileRoutesByTo {
   '/profile': typeof AuthenticatedProfileRouteWithChildren
   '/saved': typeof AuthenticatedSavedRoute
   '/search': typeof AuthenticatedSearchRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/trending': typeof AuthenticatedTrendingRoute
   '/verification': typeof AuthenticatedVerificationRoute
   '/auth/callback': typeof AuthCallbackRoute
@@ -208,6 +233,8 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/confessions': typeof AuthenticatedConfessionsRoute
+  '/_authenticated/events': typeof AuthenticatedEventsRoute
   '/_authenticated/explore': typeof AuthenticatedExploreRoute
   '/_authenticated/for-you': typeof AuthenticatedForYouRoute
   '/_authenticated/friends': typeof AuthenticatedFriendsRoute
@@ -221,6 +248,7 @@ export interface FileRoutesById {
   '/_authenticated/profile': typeof AuthenticatedProfileRouteWithChildren
   '/_authenticated/saved': typeof AuthenticatedSavedRoute
   '/_authenticated/search': typeof AuthenticatedSearchRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/trending': typeof AuthenticatedTrendingRoute
   '/_authenticated/verification': typeof AuthenticatedVerificationRoute
   '/auth/callback': typeof AuthCallbackRoute
@@ -234,6 +262,8 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/admin'
+    | '/confessions'
+    | '/events'
     | '/explore'
     | '/for-you'
     | '/friends'
@@ -247,6 +277,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/saved'
     | '/search'
+    | '/settings'
     | '/trending'
     | '/verification'
     | '/auth/callback'
@@ -258,6 +289,8 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/admin'
+    | '/confessions'
+    | '/events'
     | '/explore'
     | '/for-you'
     | '/friends'
@@ -271,6 +304,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/saved'
     | '/search'
+    | '/settings'
     | '/trending'
     | '/verification'
     | '/auth/callback'
@@ -283,6 +317,8 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/admin'
+    | '/_authenticated/confessions'
+    | '/_authenticated/events'
     | '/_authenticated/explore'
     | '/_authenticated/for-you'
     | '/_authenticated/friends'
@@ -296,6 +332,7 @@ export interface FileRouteTypes {
     | '/_authenticated/profile'
     | '/_authenticated/saved'
     | '/_authenticated/search'
+    | '/_authenticated/settings'
     | '/_authenticated/trending'
     | '/_authenticated/verification'
     | '/auth/callback'
@@ -352,6 +389,13 @@ declare module '@tanstack/react-router' {
       path: '/trending'
       fullPath: '/trending'
       preLoaderRoute: typeof AuthenticatedTrendingRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/search': {
@@ -445,6 +489,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedExploreRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/events': {
+      id: '/_authenticated/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof AuthenticatedEventsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/confessions': {
+      id: '/_authenticated/confessions'
+      path: '/confessions'
+      fullPath: '/confessions'
+      preLoaderRoute: typeof AuthenticatedConfessionsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
       path: '/admin'
@@ -489,6 +547,8 @@ const AuthenticatedProfileRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedConfessionsRoute: typeof AuthenticatedConfessionsRoute
+  AuthenticatedEventsRoute: typeof AuthenticatedEventsRoute
   AuthenticatedExploreRoute: typeof AuthenticatedExploreRoute
   AuthenticatedForYouRoute: typeof AuthenticatedForYouRoute
   AuthenticatedFriendsRoute: typeof AuthenticatedFriendsRoute
@@ -502,6 +562,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRouteWithChildren
   AuthenticatedSavedRoute: typeof AuthenticatedSavedRoute
   AuthenticatedSearchRoute: typeof AuthenticatedSearchRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedTrendingRoute: typeof AuthenticatedTrendingRoute
   AuthenticatedVerificationRoute: typeof AuthenticatedVerificationRoute
   AuthenticatedCommunitiesSlugRoute: typeof AuthenticatedCommunitiesSlugRoute
@@ -510,6 +571,8 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedConfessionsRoute: AuthenticatedConfessionsRoute,
+  AuthenticatedEventsRoute: AuthenticatedEventsRoute,
   AuthenticatedExploreRoute: AuthenticatedExploreRoute,
   AuthenticatedForYouRoute: AuthenticatedForYouRoute,
   AuthenticatedFriendsRoute: AuthenticatedFriendsRoute,
@@ -523,6 +586,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedProfileRoute: AuthenticatedProfileRouteWithChildren,
   AuthenticatedSavedRoute: AuthenticatedSavedRoute,
   AuthenticatedSearchRoute: AuthenticatedSearchRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedTrendingRoute: AuthenticatedTrendingRoute,
   AuthenticatedVerificationRoute: AuthenticatedVerificationRoute,
   AuthenticatedCommunitiesSlugRoute: AuthenticatedCommunitiesSlugRoute,
@@ -550,3 +614,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
