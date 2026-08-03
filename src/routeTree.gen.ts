@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as AuthenticatedVerificationRouteImport } from './routes/_authenticated/verification'
+import { Route as AuthenticatedTrendingRouteImport } from './routes/_authenticated/trending'
 import { Route as AuthenticatedSearchRouteImport } from './routes/_authenticated/search'
 import { Route as AuthenticatedSavedRouteImport } from './routes/_authenticated/saved'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
@@ -22,6 +23,7 @@ import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authen
 import { Route as AuthenticatedNewStoryRouteImport } from './routes/_authenticated/new-story'
 import { Route as AuthenticatedNewPostRouteImport } from './routes/_authenticated/new-post'
 import { Route as AuthenticatedMessagesRouteImport } from './routes/_authenticated/messages'
+import { Route as AuthenticatedLeaderboardsRouteImport } from './routes/_authenticated/leaderboards'
 import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated/home'
 import { Route as AuthenticatedFriendsRouteImport } from './routes/_authenticated/friends'
 import { Route as AuthenticatedForYouRouteImport } from './routes/_authenticated/for-you'
@@ -29,6 +31,7 @@ import { Route as AuthenticatedExploreRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedCommunitiesIndexRouteImport } from './routes/_authenticated/communities.index'
 import { Route as AuthenticatedProfileUserIdRouteImport } from './routes/_authenticated/profile.$userId'
+import { Route as AuthenticatedCommunitiesSlugRouteImport } from './routes/_authenticated/communities.$slug'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -55,6 +58,11 @@ const AuthenticatedVerificationRoute =
     path: '/verification',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedTrendingRoute = AuthenticatedTrendingRouteImport.update({
+  id: '/trending',
+  path: '/trending',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedSearchRoute = AuthenticatedSearchRouteImport.update({
   id: '/search',
   path: '/search',
@@ -96,6 +104,12 @@ const AuthenticatedMessagesRoute = AuthenticatedMessagesRouteImport.update({
   path: '/messages',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedLeaderboardsRoute =
+  AuthenticatedLeaderboardsRouteImport.update({
+    id: '/leaderboards',
+    path: '/leaderboards',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedHomeRoute = AuthenticatedHomeRouteImport.update({
   id: '/home',
   path: '/home',
@@ -133,6 +147,12 @@ const AuthenticatedProfileUserIdRoute =
     path: '/$userId',
     getParentRoute: () => AuthenticatedProfileRoute,
   } as any)
+const AuthenticatedCommunitiesSlugRoute =
+  AuthenticatedCommunitiesSlugRouteImport.update({
+    id: '/communities/$slug',
+    path: '/communities/$slug',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -142,6 +162,7 @@ export interface FileRoutesByFullPath {
   '/for-you': typeof AuthenticatedForYouRoute
   '/friends': typeof AuthenticatedFriendsRoute
   '/home': typeof AuthenticatedHomeRoute
+  '/leaderboards': typeof AuthenticatedLeaderboardsRoute
   '/messages': typeof AuthenticatedMessagesRoute
   '/new-post': typeof AuthenticatedNewPostRoute
   '/new-story': typeof AuthenticatedNewStoryRoute
@@ -150,8 +171,10 @@ export interface FileRoutesByFullPath {
   '/profile': typeof AuthenticatedProfileRouteWithChildren
   '/saved': typeof AuthenticatedSavedRoute
   '/search': typeof AuthenticatedSearchRoute
+  '/trending': typeof AuthenticatedTrendingRoute
   '/verification': typeof AuthenticatedVerificationRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/communities/$slug': typeof AuthenticatedCommunitiesSlugRoute
   '/profile/$userId': typeof AuthenticatedProfileUserIdRoute
   '/communities/': typeof AuthenticatedCommunitiesIndexRoute
 }
@@ -163,6 +186,7 @@ export interface FileRoutesByTo {
   '/for-you': typeof AuthenticatedForYouRoute
   '/friends': typeof AuthenticatedFriendsRoute
   '/home': typeof AuthenticatedHomeRoute
+  '/leaderboards': typeof AuthenticatedLeaderboardsRoute
   '/messages': typeof AuthenticatedMessagesRoute
   '/new-post': typeof AuthenticatedNewPostRoute
   '/new-story': typeof AuthenticatedNewStoryRoute
@@ -171,8 +195,10 @@ export interface FileRoutesByTo {
   '/profile': typeof AuthenticatedProfileRouteWithChildren
   '/saved': typeof AuthenticatedSavedRoute
   '/search': typeof AuthenticatedSearchRoute
+  '/trending': typeof AuthenticatedTrendingRoute
   '/verification': typeof AuthenticatedVerificationRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/communities/$slug': typeof AuthenticatedCommunitiesSlugRoute
   '/profile/$userId': typeof AuthenticatedProfileUserIdRoute
   '/communities': typeof AuthenticatedCommunitiesIndexRoute
 }
@@ -186,6 +212,7 @@ export interface FileRoutesById {
   '/_authenticated/for-you': typeof AuthenticatedForYouRoute
   '/_authenticated/friends': typeof AuthenticatedFriendsRoute
   '/_authenticated/home': typeof AuthenticatedHomeRoute
+  '/_authenticated/leaderboards': typeof AuthenticatedLeaderboardsRoute
   '/_authenticated/messages': typeof AuthenticatedMessagesRoute
   '/_authenticated/new-post': typeof AuthenticatedNewPostRoute
   '/_authenticated/new-story': typeof AuthenticatedNewStoryRoute
@@ -194,8 +221,10 @@ export interface FileRoutesById {
   '/_authenticated/profile': typeof AuthenticatedProfileRouteWithChildren
   '/_authenticated/saved': typeof AuthenticatedSavedRoute
   '/_authenticated/search': typeof AuthenticatedSearchRoute
+  '/_authenticated/trending': typeof AuthenticatedTrendingRoute
   '/_authenticated/verification': typeof AuthenticatedVerificationRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/_authenticated/communities/$slug': typeof AuthenticatedCommunitiesSlugRoute
   '/_authenticated/profile/$userId': typeof AuthenticatedProfileUserIdRoute
   '/_authenticated/communities/': typeof AuthenticatedCommunitiesIndexRoute
 }
@@ -209,6 +238,7 @@ export interface FileRouteTypes {
     | '/for-you'
     | '/friends'
     | '/home'
+    | '/leaderboards'
     | '/messages'
     | '/new-post'
     | '/new-story'
@@ -217,8 +247,10 @@ export interface FileRouteTypes {
     | '/profile'
     | '/saved'
     | '/search'
+    | '/trending'
     | '/verification'
     | '/auth/callback'
+    | '/communities/$slug'
     | '/profile/$userId'
     | '/communities/'
   fileRoutesByTo: FileRoutesByTo
@@ -230,6 +262,7 @@ export interface FileRouteTypes {
     | '/for-you'
     | '/friends'
     | '/home'
+    | '/leaderboards'
     | '/messages'
     | '/new-post'
     | '/new-story'
@@ -238,8 +271,10 @@ export interface FileRouteTypes {
     | '/profile'
     | '/saved'
     | '/search'
+    | '/trending'
     | '/verification'
     | '/auth/callback'
+    | '/communities/$slug'
     | '/profile/$userId'
     | '/communities'
   id:
@@ -252,6 +287,7 @@ export interface FileRouteTypes {
     | '/_authenticated/for-you'
     | '/_authenticated/friends'
     | '/_authenticated/home'
+    | '/_authenticated/leaderboards'
     | '/_authenticated/messages'
     | '/_authenticated/new-post'
     | '/_authenticated/new-story'
@@ -260,8 +296,10 @@ export interface FileRouteTypes {
     | '/_authenticated/profile'
     | '/_authenticated/saved'
     | '/_authenticated/search'
+    | '/_authenticated/trending'
     | '/_authenticated/verification'
     | '/auth/callback'
+    | '/_authenticated/communities/$slug'
     | '/_authenticated/profile/$userId'
     | '/_authenticated/communities/'
   fileRoutesById: FileRoutesById
@@ -307,6 +345,13 @@ declare module '@tanstack/react-router' {
       path: '/verification'
       fullPath: '/verification'
       preLoaderRoute: typeof AuthenticatedVerificationRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/trending': {
+      id: '/_authenticated/trending'
+      path: '/trending'
+      fullPath: '/trending'
+      preLoaderRoute: typeof AuthenticatedTrendingRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/search': {
@@ -365,6 +410,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMessagesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/leaderboards': {
+      id: '/_authenticated/leaderboards'
+      path: '/leaderboards'
+      fullPath: '/leaderboards'
+      preLoaderRoute: typeof AuthenticatedLeaderboardsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/home': {
       id: '/_authenticated/home'
       path: '/home'
@@ -414,6 +466,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProfileUserIdRouteImport
       parentRoute: typeof AuthenticatedProfileRoute
     }
+    '/_authenticated/communities/$slug': {
+      id: '/_authenticated/communities/$slug'
+      path: '/communities/$slug'
+      fullPath: '/communities/$slug'
+      preLoaderRoute: typeof AuthenticatedCommunitiesSlugRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -434,6 +493,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedForYouRoute: typeof AuthenticatedForYouRoute
   AuthenticatedFriendsRoute: typeof AuthenticatedFriendsRoute
   AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
+  AuthenticatedLeaderboardsRoute: typeof AuthenticatedLeaderboardsRoute
   AuthenticatedMessagesRoute: typeof AuthenticatedMessagesRoute
   AuthenticatedNewPostRoute: typeof AuthenticatedNewPostRoute
   AuthenticatedNewStoryRoute: typeof AuthenticatedNewStoryRoute
@@ -442,7 +502,9 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRouteWithChildren
   AuthenticatedSavedRoute: typeof AuthenticatedSavedRoute
   AuthenticatedSearchRoute: typeof AuthenticatedSearchRoute
+  AuthenticatedTrendingRoute: typeof AuthenticatedTrendingRoute
   AuthenticatedVerificationRoute: typeof AuthenticatedVerificationRoute
+  AuthenticatedCommunitiesSlugRoute: typeof AuthenticatedCommunitiesSlugRoute
   AuthenticatedCommunitiesIndexRoute: typeof AuthenticatedCommunitiesIndexRoute
 }
 
@@ -452,6 +514,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedForYouRoute: AuthenticatedForYouRoute,
   AuthenticatedFriendsRoute: AuthenticatedFriendsRoute,
   AuthenticatedHomeRoute: AuthenticatedHomeRoute,
+  AuthenticatedLeaderboardsRoute: AuthenticatedLeaderboardsRoute,
   AuthenticatedMessagesRoute: AuthenticatedMessagesRoute,
   AuthenticatedNewPostRoute: AuthenticatedNewPostRoute,
   AuthenticatedNewStoryRoute: AuthenticatedNewStoryRoute,
@@ -460,7 +523,9 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedProfileRoute: AuthenticatedProfileRouteWithChildren,
   AuthenticatedSavedRoute: AuthenticatedSavedRoute,
   AuthenticatedSearchRoute: AuthenticatedSearchRoute,
+  AuthenticatedTrendingRoute: AuthenticatedTrendingRoute,
   AuthenticatedVerificationRoute: AuthenticatedVerificationRoute,
+  AuthenticatedCommunitiesSlugRoute: AuthenticatedCommunitiesSlugRoute,
   AuthenticatedCommunitiesIndexRoute: AuthenticatedCommunitiesIndexRoute,
 }
 
