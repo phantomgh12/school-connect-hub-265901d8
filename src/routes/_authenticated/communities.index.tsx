@@ -5,7 +5,7 @@ import { AppShell } from "@/components/app/AppShell";
 import { SkeletonCard } from "@/components/app/Skeletons";
 import { School } from "lucide-react";
 
-export const Route = createFileRoute("/_authenticated/communities")({
+export const Route = createFileRoute("/_authenticated/communities/")({
   head: () => ({
     meta: [
       { title: "School Communities — SchoolConnect" },

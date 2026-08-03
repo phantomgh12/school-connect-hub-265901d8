@@ -27,6 +27,7 @@ import { Route as AuthenticatedFriendsRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedForYouRouteImport } from './routes/_authenticated/for-you'
 import { Route as AuthenticatedExploreRouteImport } from './routes/_authenticated/explore'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedCommunitiesIndexRouteImport } from './routes/_authenticated/communities.index'
 import { Route as AuthenticatedProfileUserIdRouteImport } from './routes/_authenticated/profile.$userId'
 
 const AuthRoute = AuthRouteImport.update({
@@ -120,6 +121,12 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedCommunitiesIndexRoute =
+  AuthenticatedCommunitiesIndexRouteImport.update({
+    id: '/communities/',
+    path: '/communities/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedProfileUserIdRoute =
   AuthenticatedProfileUserIdRouteImport.update({
     id: '/$userId',
@@ -146,6 +153,7 @@ export interface FileRoutesByFullPath {
   '/verification': typeof AuthenticatedVerificationRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/profile/$userId': typeof AuthenticatedProfileUserIdRoute
+  '/communities/': typeof AuthenticatedCommunitiesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -166,6 +174,7 @@ export interface FileRoutesByTo {
   '/verification': typeof AuthenticatedVerificationRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/profile/$userId': typeof AuthenticatedProfileUserIdRoute
+  '/communities': typeof AuthenticatedCommunitiesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -188,6 +197,7 @@ export interface FileRoutesById {
   '/_authenticated/verification': typeof AuthenticatedVerificationRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/_authenticated/profile/$userId': typeof AuthenticatedProfileUserIdRoute
+  '/_authenticated/communities/': typeof AuthenticatedCommunitiesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -210,6 +220,7 @@ export interface FileRouteTypes {
     | '/verification'
     | '/auth/callback'
     | '/profile/$userId'
+    | '/communities/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -230,6 +241,7 @@ export interface FileRouteTypes {
     | '/verification'
     | '/auth/callback'
     | '/profile/$userId'
+    | '/communities'
   id:
     | '__root__'
     | '/'
@@ -251,6 +263,7 @@ export interface FileRouteTypes {
     | '/_authenticated/verification'
     | '/auth/callback'
     | '/_authenticated/profile/$userId'
+    | '/_authenticated/communities/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -387,6 +400,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/communities/': {
+      id: '/_authenticated/communities/'
+      path: '/communities'
+      fullPath: '/communities/'
+      preLoaderRoute: typeof AuthenticatedCommunitiesIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/profile/$userId': {
       id: '/_authenticated/profile/$userId'
       path: '/$userId'
@@ -423,6 +443,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSavedRoute: typeof AuthenticatedSavedRoute
   AuthenticatedSearchRoute: typeof AuthenticatedSearchRoute
   AuthenticatedVerificationRoute: typeof AuthenticatedVerificationRoute
+  AuthenticatedCommunitiesIndexRoute: typeof AuthenticatedCommunitiesIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -440,6 +461,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSavedRoute: AuthenticatedSavedRoute,
   AuthenticatedSearchRoute: AuthenticatedSearchRoute,
   AuthenticatedVerificationRoute: AuthenticatedVerificationRoute,
+  AuthenticatedCommunitiesIndexRoute: AuthenticatedCommunitiesIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
