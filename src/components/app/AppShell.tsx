@@ -9,6 +9,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useTheme } from "@/lib/theme";
 import { toast } from "sonner";
 import { InstallAppPrompt } from "@/components/app/InstallAppPrompt";
+import { FirstPostGate } from "@/components/app/FirstPostGate";
+import { NotificationBell } from "@/components/app/NotificationBell";
 
 type NavItem = { to: string; label: string; icon: typeof Home; search?: Record<string, string> };
 
@@ -88,7 +90,7 @@ export function AppShell({ children, right }: { children: ReactNode; right?: Rea
     const iv = setInterval(async () => {
       const { data: u } = await supabase.auth.getUser();
       if (u.user) supabase.from("profiles").update({ is_online: true, last_seen_at: new Date().toISOString() }).eq("id", u.user.id).then(() => {});
-    }, 30000);
+    }, 120000);
 
     return () => {
       mounted = false;
@@ -146,7 +148,7 @@ export function AppShell({ children, right }: { children: ReactNode; right?: Rea
   );
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen overflow-x-clip bg-background">
       {/* ---- Fixed top bar ---- */}
       <header className="glass-blur sticky top-0 z-50">
         <div className="mx-auto grid h-14 w-full max-w-[1500px] grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 px-3 sm:px-4">
@@ -175,14 +177,7 @@ export function AppShell({ children, right }: { children: ReactNode; right?: Rea
             <Link to="/new-post" className="press hidden items-center gap-1.5 rounded-full bg-primary px-3.5 py-2 text-sm font-bold text-primary-foreground shadow-soft sm:inline-flex">
               <PlusSquare className="h-4 w-4" /> Post
             </Link>
-            <Link to="/notifications" className="press relative rounded-full p-2 hover:bg-muted" aria-label="Notifications">
-              <Bell className="h-5 w-5" />
-              {unread > 0 && (
-                <span className="absolute right-0 top-0 grid h-4 min-w-4 place-items-center rounded-full bg-destructive px-1 text-[9px] font-bold text-destructive-foreground">
-                  {unread > 9 ? "9+" : unread}
-                </span>
-              )}
-            </Link>
+            <NotificationBell uid={uid} unread={unread} onRead={() => setUnread(0)} />
             <Link to="/messages" className="press relative hidden rounded-full p-2 hover:bg-muted sm:inline-flex" aria-label="Messages">
               <MessageCircle className="h-5 w-5" />
               {unreadMsgs > 0 && (
@@ -217,8 +212,8 @@ export function AppShell({ children, right }: { children: ReactNode; right?: Rea
       )}
 
       {/* ---- Main 3-column frame ---- */}
-      <div className="mx-auto flex w-full max-w-[1500px] gap-0 px-0 sm:px-4">
-        <aside className="sticky top-14 hidden h-[calc(100dvh-3.5rem)] shrink-0 overflow-y-auto py-4 pr-2 no-scrollbar md:block md:w-[76px] xl:w-[248px] xl:pr-4">
+      <div className="mx-auto flex w-full max-w-[1500px] items-start gap-0 px-0 sm:px-4">
+        <aside className="sticky top-14 z-30 hidden h-[calc(100dvh-3.5rem)] shrink-0 overflow-y-auto overscroll-contain py-4 pb-24 pr-2 no-scrollbar md:block md:w-[76px] xl:w-[248px] xl:pr-4">
           <NavLinks compact />
           <button onClick={signOut} className="mt-2 flex w-full items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-semibold hover:bg-muted md:justify-center xl:justify-start">
             <LogOut className="h-5 w-5 shrink-0" />
@@ -226,11 +221,11 @@ export function AppShell({ children, right }: { children: ReactNode; right?: Rea
           </button>
         </aside>
 
-        <main className="min-w-0 flex-1 px-3 py-4 pb-28 sm:px-4 lg:pb-8">
+        <main className="relative z-10 min-w-0 flex-1 overflow-x-clip px-3 py-4 pb-28 sm:px-4 lg:pb-8">
           <div className="mx-auto w-full max-w-[680px]">{children}</div>
         </main>
 
-        <aside className="sticky top-14 hidden h-[calc(100dvh-3.5rem)] w-[330px] shrink-0 overflow-y-auto py-4 pl-4 no-scrollbar lg:block">
+        <aside className="sticky top-14 z-20 hidden h-[calc(100dvh-3.5rem)] w-[330px] shrink-0 overflow-y-auto overscroll-contain py-4 pb-24 pl-4 no-scrollbar lg:block">
           <div className="grid gap-4">{right}</div>
         </aside>
       </div>
@@ -265,6 +260,7 @@ export function AppShell({ children, right }: { children: ReactNode; right?: Rea
         </ul>
       </nav>
 
+      <FirstPostGate />
       <InstallAppPrompt />
     </div>
   );
