@@ -59,7 +59,7 @@ export function CreatePost({ userId, avatarUrl, onPosted }: { userId: string; av
                   {f.type.startsWith("video") ? (
                     <video src={URL.createObjectURL(f)} className="h-24 w-full object-cover" />
                   ) : (
-                    <img src={URL.createObjectURL(f)} className="h-24 w-full object-cover" alt="" />
+                    <img src={URL.createObjectURL(f)} className="h-24 w-full object-cover" alt="" loading="lazy" decoding="async" />
                   )}
                   <button onClick={() => setFiles((p) => p.filter((_, j) => j !== i))} className="absolute right-1 top-1 rounded-full bg-background/90 p-1">
                     <X className="h-3 w-3" />
@@ -95,7 +95,7 @@ export function CreatePost({ userId, avatarUrl, onPosted }: { userId: string; av
 function Avatar({ url }: { url?: string | null }) {
   return (
     <div className="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full gradient-brand text-sm font-bold text-primary-foreground">
-      {url ? <img src={url} alt="" className="h-full w-full object-cover" /> : "🎓"}
+      {url ? <img src={url} alt="" className="h-full w-full object-cover" loading="lazy" decoding="async" /> : "🎓"}
     </div>
   );
 }

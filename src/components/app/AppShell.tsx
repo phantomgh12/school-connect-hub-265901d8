@@ -190,7 +190,7 @@ export function AppShell({ children, right }: { children: ReactNode; right?: Rea
               {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </button>
             <Link to="/profile" aria-label="Profile" className="press ml-0.5 grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-full bg-primary text-xs font-bold text-primary-foreground">
-              {avatar ? <img src={avatar} alt="" className="h-full w-full object-cover" /> : <User className="h-4 w-4" />}
+              {avatar ? <img src={avatar} alt="" className="h-full w-full object-cover" loading="lazy" decoding="async" /> : <User className="h-4 w-4" />}
             </Link>
           </div>
         </div>

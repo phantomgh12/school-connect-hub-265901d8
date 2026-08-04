@@ -103,7 +103,7 @@ export function SchoolCommunityCard({ userId }: { userId: string }) {
         {members.map((m) => (
           <li key={m.id} className="flex items-center gap-2">
             <Link to="/profile/$userId" params={{ userId: m.id }} className="relative grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-full gradient-brand text-xs font-bold text-primary-foreground">
-              {m.avatar_url ? <img src={m.avatar_url} className="h-full w-full object-cover" alt="" /> : (m.full_name || "S")[0]}
+              {m.avatar_url ? <img src={m.avatar_url} className="h-full w-full object-cover" alt="" loading="lazy" decoding="async" /> : (m.full_name || "S")[0]}
             </Link>
             <Link to="/profile/$userId" params={{ userId: m.id }} className="min-w-0 flex-1 truncate text-sm font-semibold hover:underline">
               {m.full_name || m.username || "Student"}

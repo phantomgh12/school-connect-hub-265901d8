@@ -137,7 +137,7 @@ function Hero() {
         <div className="absolute -inset-6 -z-10 rounded-[3rem] gradient-brand opacity-20 blur-3xl" />
         <div className="glass overflow-hidden rounded-[2rem] p-2 animate-float">
           <img src={heroImg} alt="Students connecting" width={1600} height={1200}
-            className="w-full rounded-[1.6rem] object-cover" />
+            className="w-full rounded-[1.6rem] object-cover" loading="lazy" decoding="async" />
         </div>
         <div className="glass absolute -left-4 bottom-6 hidden items-center gap-3 rounded-2xl p-3 sm:flex">
           <div className="grid h-10 w-10 place-items-center rounded-xl bg-[color:var(--brand-3)]/20 text-[color:var(--brand-3)]"><Heart className="h-5 w-5" /></div>

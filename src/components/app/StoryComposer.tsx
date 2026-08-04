@@ -72,7 +72,7 @@ export function StoryComposer({ userId, onClose, onCreated }: { userId: string; 
                 {file.type.startsWith("video") ? (
                   <video src={URL.createObjectURL(file)} className="max-h-72 w-full object-contain" controls />
                 ) : (
-                  <img src={URL.createObjectURL(file)} className="max-h-72 w-full object-contain" alt="" />
+                  <img src={URL.createObjectURL(file)} className="max-h-72 w-full object-contain" alt="" loading="lazy" decoding="async" />
                 )}
                 <button onClick={() => setFile(null)} className="absolute right-2 top-2 rounded-full bg-background/90 p-1"><X className="h-4 w-4" /></button>
               </div>

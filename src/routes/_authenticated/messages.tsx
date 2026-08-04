@@ -151,7 +151,7 @@ function MessagesPage() {
                   <li key={c.id}>
                     <button onClick={() => { setActive(c); loadMessages(c.id, uid); }} className={`flex w-full items-center gap-3 border-b border-border/60 p-3 text-left hover:bg-muted ${active?.id === c.id ? "bg-muted" : ""}`}>
                       <div className="relative grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full gradient-brand text-xs font-bold text-primary-foreground">
-                        {c.other.avatar_url ? <img src={c.other.avatar_url} className="h-full w-full object-cover" alt="" /> : (c.other.full_name || "S")[0]}
+                        {c.other.avatar_url ? <img src={c.other.avatar_url} className="h-full w-full object-cover" alt="" loading="lazy" decoding="async" /> : (c.other.full_name || "S")[0]}
                         {c.other.is_online && <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-background bg-emerald-500" />}
                       </div>
                       <div className="min-w-0 flex-1">
@@ -178,7 +178,7 @@ function MessagesPage() {
                   <button onClick={() => setActive(null)} className="rounded-full p-1.5 hover:bg-muted md:hidden"><ArrowLeft className="h-4 w-4" /></button>
                   <Link to="/profile/$userId" params={{ userId: active.other.id }} className="flex min-w-0 flex-1 items-center gap-3 hover:opacity-80">
                     <div className="relative grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-full gradient-brand text-xs font-bold text-primary-foreground">
-                      {active.other.avatar_url ? <img src={active.other.avatar_url} className="h-full w-full object-cover" alt="" /> : (active.other.full_name || "S")[0]}
+                      {active.other.avatar_url ? <img src={active.other.avatar_url} className="h-full w-full object-cover" alt="" loading="lazy" decoding="async" /> : (active.other.full_name || "S")[0]}
                       {active.other.is_online && <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-background bg-emerald-500" />}
                     </div>
                     <div className="min-w-0">

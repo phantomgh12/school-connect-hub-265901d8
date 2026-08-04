@@ -80,7 +80,7 @@ export function InstallAppPrompt() {
   return (
     <div className="fixed inset-0 z-[100] grid place-items-center bg-background/95 px-4 backdrop-blur-md lg:hidden">
       <div className="glass w-full max-w-sm rounded-3xl p-6 text-center animate-fade-up">
-        <img src="/app-icon-192.png" alt="" width={72} height={72} className="mx-auto h-18 w-18 rounded-3xl shadow-soft" />
+        <img src="/app-icon-192.png" alt="" width={72} height={72} className="mx-auto h-18 w-18 rounded-3xl shadow-soft" loading="lazy" decoding="async" />
         <h2 className="mt-4 text-xl font-black tracking-tight">Install the SchoolConnect app</h2>
         <p className="mt-2 text-sm text-muted-foreground">
           The app uses far less data, loads instantly, and keeps you signed in. Install it to continue with the best experience.

@@ -101,7 +101,7 @@ function NotificationsPage() {
                 <button onClick={() => markOne(n.id)} className={`glass flex w-full items-center gap-3 rounded-2xl p-3 text-left hover:bg-muted ${!n.read ? "border-l-4 border-[color:var(--brand)]" : ""}`}>
                   <span className="text-xl">{iconFor(n.type)}</span>
                   <div className="relative grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full gradient-brand text-xs font-bold text-primary-foreground">
-                    {actor?.avatar_url ? <img src={actor.avatar_url} className="h-full w-full object-cover" alt="" /> : (actor?.full_name || "•")[0]}
+                    {actor?.avatar_url ? <img src={actor.avatar_url} className="h-full w-full object-cover" alt="" loading="lazy" decoding="async" /> : (actor?.full_name || "•")[0]}
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="text-sm">

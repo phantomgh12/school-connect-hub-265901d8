@@ -76,12 +76,12 @@ function UserProfilePage() {
     <AppShell>
       <div className="glass overflow-hidden rounded-[2rem]">
         <div className="h-40 sm:h-56">
-          {profile.cover_url ? <img src={profile.cover_url} alt="" className="h-full w-full object-cover" /> : <div className="h-full w-full gradient-brand" />}
+          {profile.cover_url ? <img src={profile.cover_url} alt="" className="h-full w-full object-cover" loading="lazy" decoding="async" /> : <div className="h-full w-full gradient-brand" />}
         </div>
         <div className="grid gap-6 px-6 pb-6 pt-4 sm:grid-cols-[auto_1fr_auto] sm:items-end sm:px-8">
           <div className="relative -mt-16 h-28 w-28 sm:h-32 sm:w-32">
             <div className="grid h-full w-full place-items-center overflow-hidden rounded-full border-4 border-background gradient-brand text-3xl font-black text-primary-foreground shadow-brand">
-              {profile.avatar_url ? <img src={profile.avatar_url} alt="" className="h-full w-full object-cover" /> : initials}
+              {profile.avatar_url ? <img src={profile.avatar_url} alt="" className="h-full w-full object-cover" loading="lazy" decoding="async" /> : initials}
             </div>
             {profile.is_online && <Circle className="absolute bottom-2 right-2 h-5 w-5 fill-emerald-500 text-emerald-500 drop-shadow" />}
           </div>

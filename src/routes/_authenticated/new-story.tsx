@@ -83,7 +83,7 @@ function NewStoryPage() {
                 {file.type.startsWith("video") ? (
                   <video src={URL.createObjectURL(file)} className="max-h-[420px] w-full object-contain" controls />
                 ) : (
-                  <img src={URL.createObjectURL(file)} className="max-h-[420px] w-full object-contain" alt="" />
+                  <img src={URL.createObjectURL(file)} className="max-h-[420px] w-full object-contain" alt="" loading="lazy" decoding="async" />
                 )}
                 <button onClick={() => setFile(null)} className="absolute right-2 top-2 rounded-full bg-background/90 px-3 py-1 text-xs font-bold">Change</button>
               </div>
