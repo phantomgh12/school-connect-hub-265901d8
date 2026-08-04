@@ -272,7 +272,7 @@ function Members({ log }: { log: LogFn }) {
             <li key={p.id} className="card-flat rounded-2xl p-3">
               <div className="flex min-w-0 items-center gap-3">
                 {p.avatar_url
-                  ? <img src={p.avatar_url} alt="" className="h-10 w-10 shrink-0 rounded-full object-cover" />
+                  ? <img src={p.avatar_url} alt="" className="h-10 w-10 shrink-0 rounded-full object-cover" loading="lazy" decoding="async" />
                   : <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-muted text-xs font-bold">{(p.full_name ?? "S").slice(0, 2).toUpperCase()}</span>}
                 <div className="min-w-0 flex-1">
                   <p className="flex min-w-0 items-center gap-1 truncate text-sm font-bold">

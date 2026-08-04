@@ -112,7 +112,7 @@ export function StoryViewer({ stories, startIndex, currentUserId, onClose }: { s
           <div className="mt-2.5 flex items-center gap-2">
             <Link to="/profile/$userId" params={{ userId: story.user_id }} onClick={onClose} className="flex min-w-0 items-center gap-2 hover:opacity-80">
               <div className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-full gradient-brand text-xs font-bold text-white">
-                {story.author?.avatar_url ? <img src={story.author.avatar_url} className="h-full w-full object-cover" alt="" /> : name[0]}
+                {story.author?.avatar_url ? <img src={story.author.avatar_url} className="h-full w-full object-cover" alt="" loading="lazy" decoding="async" /> : name[0]}
               </div>
               <div className="min-w-0">
                 <div className="truncate text-sm font-bold text-white">{name}</div>
@@ -135,7 +135,7 @@ export function StoryViewer({ stories, startIndex, currentUserId, onClose }: { s
           {story.media_type === "video" && story.media_url ? (
             <video key={story.id} src={story.media_url} autoPlay muted playsInline className="h-full w-full object-contain" />
           ) : story.media_type === "photo" && story.media_url ? (
-            <img src={story.media_url} className="h-full w-full object-contain" alt={story.caption ?? "Story"} />
+            <img src={story.media_url} className="h-full w-full object-contain" alt={story.caption ?? "Story"} loading="lazy" decoding="async" />
           ) : (
             <div className="grid h-full w-full place-items-center p-6 text-center" style={{ background: story.background ?? "linear-gradient(135deg,#6d5cf0,#22d3ee)" }}>
               <span className="max-w-full break-words text-2xl font-black leading-snug text-white drop-shadow-lg sm:text-3xl">{story.caption}</span>

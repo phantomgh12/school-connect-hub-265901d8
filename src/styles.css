@@ -247,3 +247,16 @@
 
 /* Prevent horizontal scroll globally */
 html, body { overflow-x: hidden; max-width: 100vw; }
+
+/* ---------------- Mobile overflow guards ----------------
+ * Long words, URLs and fixed-width children are the usual cause of content
+ * bleeding off the right edge on phones. These keep everything on screen. */
+@layer base {
+  html, body { overflow-x: clip; }
+  p, h1, h2, h3, h4, span, li, a, td, div { overflow-wrap: anywhere; }
+  pre, code { white-space: pre-wrap; word-break: break-word; }
+  [class*="grid-cols"] > *,
+  [class*="flex"] > * { min-width: 0; }
+  img, video, canvas, iframe { height: auto; max-width: 100%; }
+  table { display: block; max-width: 100%; overflow-x: auto; }
+}

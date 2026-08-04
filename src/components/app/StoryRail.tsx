@@ -66,7 +66,7 @@ export function StoryRail({ userId, avatarUrl: _avatarUrl }: { userId: string; a
           <div className="relative h-40 w-24 shrink-0">
             <button onClick={() => setViewerUser(userId)} className="h-full w-full overflow-hidden rounded-2xl border border-border/60 bg-black text-left">
               {mine.items[mine.items.length - 1]?.media_url ? (
-                <img src={mine.items[mine.items.length - 1].media_url!} alt="" className="h-full w-full object-cover" />
+                <img src={mine.items[mine.items.length - 1].media_url!} alt="" className="h-full w-full object-cover" loading="lazy" decoding="async" />
               ) : (
                 <div className="grid h-full w-full place-items-center p-2 text-center" style={{ background: mine.items[mine.items.length - 1]?.background ?? "linear-gradient(135deg,#6d5cf0,#22d3ee)" }}>
                   <span className="text-xs font-black text-white drop-shadow">{mine.items[mine.items.length - 1]?.caption}</span>
@@ -100,7 +100,7 @@ export function StoryRail({ userId, avatarUrl: _avatarUrl }: { userId: string; a
                 {cover?.media_type === "video" && cover.media_url ? (
                   <video src={cover.media_url} muted className="h-full w-full object-cover" />
                 ) : cover?.media_url ? (
-                  <img src={cover.media_url} alt="" className="h-full w-full object-cover" />
+                  <img src={cover.media_url} alt="" className="h-full w-full object-cover" loading="lazy" decoding="async" />
                 ) : (
                   <div className="grid h-full w-full place-items-center p-2 text-center" style={{ background: cover?.background ?? "linear-gradient(135deg,#6d5cf0,#22d3ee)" }}>
                     <span className="text-xs font-black text-white drop-shadow">{cover?.caption ?? name}</span>
@@ -109,7 +109,7 @@ export function StoryRail({ userId, avatarUrl: _avatarUrl }: { userId: string; a
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-1.5">
                   <div className="flex items-center gap-1.5">
                     <div className="grid h-6 w-6 shrink-0 place-items-center overflow-hidden rounded-full border-2 border-white bg-muted text-[10px] font-bold">
-                      {g.author?.avatar_url ? <img src={g.author.avatar_url} className="h-full w-full object-cover" alt="" /> : name[0]}
+                      {g.author?.avatar_url ? <img src={g.author.avatar_url} className="h-full w-full object-cover" alt="" loading="lazy" decoding="async" /> : name[0]}
                     </div>
                     <span className="truncate text-[10px] font-bold text-white">{name}</span>
                   </div>

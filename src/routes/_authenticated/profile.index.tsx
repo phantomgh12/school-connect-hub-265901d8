@@ -7,12 +7,13 @@ import type { Tables } from "@/integrations/supabase/types";
 import { AppShell } from "@/components/app/AppShell";
 import { PostCard, type FeedPost } from "@/components/app/PostCard";
 import { uploadToBucket } from "@/lib/upload";
+import { BadgeGrid } from "@/components/app/BadgeGrid";
 import {
   GraduationCap, MapPin, Cake, Users, School, Heart, Sparkles,
   Pencil, Loader2, Camera, ImagePlus,
 } from "lucide-react";
 
-export const Route = createFileRoute("/_authenticated/profile")({
+export const Route = createFileRoute("/_authenticated/profile/")({
   head: () => ({ meta: [{ title: "My profile — SchoolConnect" }] }),
   component: ProfilePage,
 });
@@ -91,7 +92,7 @@ function ProfilePage() {
       <div className="glass overflow-hidden rounded-[2rem]">
         <div className="relative h-40 sm:h-56">
           {profile?.cover_url ? (
-            <img src={profile.cover_url} alt="" className="h-full w-full object-cover" />
+            <img src={profile.cover_url} alt="" className="h-full w-full object-cover" loading="lazy" decoding="async" />
           ) : (
             <div className="h-full w-full gradient-brand" />
           )}
@@ -108,7 +109,7 @@ function ProfilePage() {
         <div className="grid gap-6 px-6 pb-6 pt-4 sm:grid-cols-[auto_1fr_auto] sm:items-end sm:px-8">
           <div className="relative -mt-16 h-28 w-28 sm:h-32 sm:w-32">
             <div className="grid h-full w-full place-items-center overflow-hidden rounded-full border-4 border-background gradient-brand text-3xl font-black text-primary-foreground shadow-brand">
-              {profile?.avatar_url ? <img src={profile.avatar_url} alt="" className="h-full w-full object-cover" /> : initials}
+              {profile?.avatar_url ? <img src={profile.avatar_url} alt="" className="h-full w-full object-cover" loading="lazy" decoding="async" /> : initials}
             </div>
             <input ref={avatarRef} type="file" hidden accept="image/*" onChange={(e) => handleUpload(e.target.files?.[0], "avatar")} />
             <button
@@ -184,7 +185,7 @@ function ProfilePage() {
           <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-muted-foreground">Photos</h3>
           <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
             {photoPosts.flatMap((p) => p.media_urls).slice(0, 12).map((url, i) => (
-              <img key={i} src={url} alt="" className="aspect-square w-full rounded-xl object-cover" />
+              <img key={i} src={url} alt="" className="aspect-square w-full rounded-xl object-cover" loading="lazy" decoding="async" />
             ))}
           </div>
         </section>
@@ -203,6 +204,7 @@ function ProfilePage() {
           </div>
         )}
       </section>
+    {uid && <div className="mt-6"><BadgeGrid userId={uid} /></div>}
     </AppShell>
   );
 }
