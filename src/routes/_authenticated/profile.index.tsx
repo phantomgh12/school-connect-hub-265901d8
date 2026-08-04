@@ -12,7 +12,7 @@ import {
   Pencil, Loader2, Camera, ImagePlus,
 } from "lucide-react";
 
-export const Route = createFileRoute("/_authenticated/profile")({
+export const Route = createFileRoute("/_authenticated/profile/")({
   head: () => ({ meta: [{ title: "My profile — SchoolConnect" }] }),
   component: ProfilePage,
 });
