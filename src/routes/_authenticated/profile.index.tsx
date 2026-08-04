@@ -7,6 +7,7 @@ import type { Tables } from "@/integrations/supabase/types";
 import { AppShell } from "@/components/app/AppShell";
 import { PostCard, type FeedPost } from "@/components/app/PostCard";
 import { uploadToBucket } from "@/lib/upload";
+import { BadgeGrid } from "@/components/app/BadgeGrid";
 import {
   GraduationCap, MapPin, Cake, Users, School, Heart, Sparkles,
   Pencil, Loader2, Camera, ImagePlus,
@@ -87,6 +88,8 @@ function ProfilePage() {
 
   return (
     <AppShell>
+      {uid && <div className="mb-6"><BadgeGrid userId={uid} /></div>}
+
       {/* Cover + header */}
       <div className="glass overflow-hidden rounded-[2rem]">
         <div className="relative h-40 sm:h-56">
