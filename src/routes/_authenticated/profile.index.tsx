@@ -8,6 +8,7 @@ import { AppShell } from "@/components/app/AppShell";
 import { PostCard, type FeedPost } from "@/components/app/PostCard";
 import { uploadToBucket } from "@/lib/upload";
 import { BadgeGrid } from "@/components/app/BadgeGrid";
+import { ProfileStats } from "@/components/app/ProfileStats";
 import {
   GraduationCap, MapPin, Cake, Users, School, Heart, Sparkles,
   Pencil, Loader2, Camera, ImagePlus,
