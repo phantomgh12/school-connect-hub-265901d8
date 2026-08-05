@@ -3,6 +3,7 @@ import {
   Home, User, Bell, Search, Users, Bookmark, LogOut, Sun, Moon, GraduationCap,
   Menu, X, MessageCircle, PlusSquare, Film, BadgeCheck, Shield, Sparkles,
   School, CalendarDays, Trophy, Settings, Flame, UserCheck, MessageSquareDashed,
+  Gift, ShoppingBag, Award,
 } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
