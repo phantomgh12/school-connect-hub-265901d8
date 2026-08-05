@@ -8,6 +8,7 @@ import { AppShell } from "@/components/app/AppShell";
 import { PostCard, type FeedPost } from "@/components/app/PostCard";
 import { uploadToBucket } from "@/lib/upload";
 import { BadgeGrid } from "@/components/app/BadgeGrid";
+import { ProfileStats } from "@/components/app/ProfileStats";
 import {
   GraduationCap, MapPin, Cake, Users, School, Heart, Sparkles,
   Pencil, Loader2, Camera, ImagePlus,
@@ -135,13 +136,8 @@ function ProfilePage() {
             </div>
             {profile?.bio && <p className="mt-3 max-w-2xl text-sm text-foreground/80">{profile.bio}</p>}
           </div>
-          <div className="grid grid-cols-3 gap-2 text-center">
-            {[[String(posts.length), "Posts"], [String(photoPosts.length), "Photos"], [String(videoPosts.length), "Videos"]].map(([n, l]) => (
-              <div key={l} className="rounded-2xl border bg-background/60 px-3 py-2">
-                <div className="text-lg font-black">{n}</div>
-                <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{l}</div>
-              </div>
-            ))}
+          <div className="min-w-0 sm:w-72">
+            <ProfileStats userId={uid} />
           </div>
         </div>
         <div className="flex flex-wrap justify-end gap-2 border-t border-border/60 px-6 py-3 sm:px-8">

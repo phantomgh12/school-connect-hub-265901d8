@@ -15,9 +15,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as AuthenticatedVerificationRouteImport } from './routes/_authenticated/verification'
 import { Route as AuthenticatedTrendingRouteImport } from './routes/_authenticated/trending'
+import { Route as AuthenticatedShopRouteImport } from './routes/_authenticated/shop'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedSearchRouteImport } from './routes/_authenticated/search'
 import { Route as AuthenticatedSavedRouteImport } from './routes/_authenticated/saved'
+import { Route as AuthenticatedRewardsRouteImport } from './routes/_authenticated/rewards'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated/notifications'
 import { Route as AuthenticatedNewStoryRouteImport } from './routes/_authenticated/new-story'
@@ -30,6 +32,7 @@ import { Route as AuthenticatedForYouRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedExploreRouteImport } from './routes/_authenticated/explore'
 import { Route as AuthenticatedEventsRouteImport } from './routes/_authenticated/events'
 import { Route as AuthenticatedConfessionsRouteImport } from './routes/_authenticated/confessions'
+import { Route as AuthenticatedBadgesRouteImport } from './routes/_authenticated/badges'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedProfileIndexRouteImport } from './routes/_authenticated/profile.index'
 import { Route as AuthenticatedCommunitiesIndexRouteImport } from './routes/_authenticated/communities.index'
@@ -66,6 +69,11 @@ const AuthenticatedTrendingRoute = AuthenticatedTrendingRouteImport.update({
   path: '/trending',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedShopRoute = AuthenticatedShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -79,6 +87,11 @@ const AuthenticatedSearchRoute = AuthenticatedSearchRouteImport.update({
 const AuthenticatedSavedRoute = AuthenticatedSavedRouteImport.update({
   id: '/saved',
   path: '/saved',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedRewardsRoute = AuthenticatedRewardsRouteImport.update({
+  id: '/rewards',
+  path: '/rewards',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
@@ -144,6 +157,11 @@ const AuthenticatedConfessionsRoute =
     path: '/confessions',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedBadgesRoute = AuthenticatedBadgesRouteImport.update({
+  id: '/badges',
+  path: '/badges',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -178,6 +196,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteWithChildren
   '/admin': typeof AuthenticatedAdminRoute
+  '/badges': typeof AuthenticatedBadgesRoute
   '/confessions': typeof AuthenticatedConfessionsRoute
   '/events': typeof AuthenticatedEventsRoute
   '/explore': typeof AuthenticatedExploreRoute
@@ -190,9 +209,11 @@ export interface FileRoutesByFullPath {
   '/new-story': typeof AuthenticatedNewStoryRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/rewards': typeof AuthenticatedRewardsRoute
   '/saved': typeof AuthenticatedSavedRoute
   '/search': typeof AuthenticatedSearchRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/shop': typeof AuthenticatedShopRoute
   '/trending': typeof AuthenticatedTrendingRoute
   '/verification': typeof AuthenticatedVerificationRoute
   '/auth/callback': typeof AuthCallbackRoute
@@ -205,6 +226,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteWithChildren
   '/admin': typeof AuthenticatedAdminRoute
+  '/badges': typeof AuthenticatedBadgesRoute
   '/confessions': typeof AuthenticatedConfessionsRoute
   '/events': typeof AuthenticatedEventsRoute
   '/explore': typeof AuthenticatedExploreRoute
@@ -217,9 +239,11 @@ export interface FileRoutesByTo {
   '/new-story': typeof AuthenticatedNewStoryRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/rewards': typeof AuthenticatedRewardsRoute
   '/saved': typeof AuthenticatedSavedRoute
   '/search': typeof AuthenticatedSearchRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/shop': typeof AuthenticatedShopRoute
   '/trending': typeof AuthenticatedTrendingRoute
   '/verification': typeof AuthenticatedVerificationRoute
   '/auth/callback': typeof AuthCallbackRoute
@@ -234,6 +258,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/badges': typeof AuthenticatedBadgesRoute
   '/_authenticated/confessions': typeof AuthenticatedConfessionsRoute
   '/_authenticated/events': typeof AuthenticatedEventsRoute
   '/_authenticated/explore': typeof AuthenticatedExploreRoute
@@ -246,9 +271,11 @@ export interface FileRoutesById {
   '/_authenticated/new-story': typeof AuthenticatedNewStoryRoute
   '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
+  '/_authenticated/rewards': typeof AuthenticatedRewardsRoute
   '/_authenticated/saved': typeof AuthenticatedSavedRoute
   '/_authenticated/search': typeof AuthenticatedSearchRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/shop': typeof AuthenticatedShopRoute
   '/_authenticated/trending': typeof AuthenticatedTrendingRoute
   '/_authenticated/verification': typeof AuthenticatedVerificationRoute
   '/auth/callback': typeof AuthCallbackRoute
@@ -263,6 +290,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/admin'
+    | '/badges'
     | '/confessions'
     | '/events'
     | '/explore'
@@ -275,9 +303,11 @@ export interface FileRouteTypes {
     | '/new-story'
     | '/notifications'
     | '/onboarding'
+    | '/rewards'
     | '/saved'
     | '/search'
     | '/settings'
+    | '/shop'
     | '/trending'
     | '/verification'
     | '/auth/callback'
@@ -290,6 +320,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/admin'
+    | '/badges'
     | '/confessions'
     | '/events'
     | '/explore'
@@ -302,9 +333,11 @@ export interface FileRouteTypes {
     | '/new-story'
     | '/notifications'
     | '/onboarding'
+    | '/rewards'
     | '/saved'
     | '/search'
     | '/settings'
+    | '/shop'
     | '/trending'
     | '/verification'
     | '/auth/callback'
@@ -318,6 +351,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/admin'
+    | '/_authenticated/badges'
     | '/_authenticated/confessions'
     | '/_authenticated/events'
     | '/_authenticated/explore'
@@ -330,9 +364,11 @@ export interface FileRouteTypes {
     | '/_authenticated/new-story'
     | '/_authenticated/notifications'
     | '/_authenticated/onboarding'
+    | '/_authenticated/rewards'
     | '/_authenticated/saved'
     | '/_authenticated/search'
     | '/_authenticated/settings'
+    | '/_authenticated/shop'
     | '/_authenticated/trending'
     | '/_authenticated/verification'
     | '/auth/callback'
@@ -392,6 +428,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTrendingRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/shop': {
+      id: '/_authenticated/shop'
+      path: '/shop'
+      fullPath: '/shop'
+      preLoaderRoute: typeof AuthenticatedShopRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/settings': {
       id: '/_authenticated/settings'
       path: '/settings'
@@ -411,6 +454,13 @@ declare module '@tanstack/react-router' {
       path: '/saved'
       fullPath: '/saved'
       preLoaderRoute: typeof AuthenticatedSavedRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/rewards': {
+      id: '/_authenticated/rewards'
+      path: '/rewards'
+      fullPath: '/rewards'
+      preLoaderRoute: typeof AuthenticatedRewardsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/onboarding': {
@@ -497,6 +547,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedConfessionsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/badges': {
+      id: '/_authenticated/badges'
+      path: '/badges'
+      fullPath: '/badges'
+      preLoaderRoute: typeof AuthenticatedBadgesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
       path: '/admin'
@@ -537,6 +594,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedBadgesRoute: typeof AuthenticatedBadgesRoute
   AuthenticatedConfessionsRoute: typeof AuthenticatedConfessionsRoute
   AuthenticatedEventsRoute: typeof AuthenticatedEventsRoute
   AuthenticatedExploreRoute: typeof AuthenticatedExploreRoute
@@ -549,9 +607,11 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedNewStoryRoute: typeof AuthenticatedNewStoryRoute
   AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
+  AuthenticatedRewardsRoute: typeof AuthenticatedRewardsRoute
   AuthenticatedSavedRoute: typeof AuthenticatedSavedRoute
   AuthenticatedSearchRoute: typeof AuthenticatedSearchRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedShopRoute: typeof AuthenticatedShopRoute
   AuthenticatedTrendingRoute: typeof AuthenticatedTrendingRoute
   AuthenticatedVerificationRoute: typeof AuthenticatedVerificationRoute
   AuthenticatedCommunitiesSlugRoute: typeof AuthenticatedCommunitiesSlugRoute
@@ -562,6 +622,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedBadgesRoute: AuthenticatedBadgesRoute,
   AuthenticatedConfessionsRoute: AuthenticatedConfessionsRoute,
   AuthenticatedEventsRoute: AuthenticatedEventsRoute,
   AuthenticatedExploreRoute: AuthenticatedExploreRoute,
@@ -574,9 +635,11 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedNewStoryRoute: AuthenticatedNewStoryRoute,
   AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
+  AuthenticatedRewardsRoute: AuthenticatedRewardsRoute,
   AuthenticatedSavedRoute: AuthenticatedSavedRoute,
   AuthenticatedSearchRoute: AuthenticatedSearchRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedShopRoute: AuthenticatedShopRoute,
   AuthenticatedTrendingRoute: AuthenticatedTrendingRoute,
   AuthenticatedVerificationRoute: AuthenticatedVerificationRoute,
   AuthenticatedCommunitiesSlugRoute: AuthenticatedCommunitiesSlugRoute,

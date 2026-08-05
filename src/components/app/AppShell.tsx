@@ -3,6 +3,7 @@ import {
   Home, User, Bell, Search, Users, Bookmark, LogOut, Sun, Moon, GraduationCap,
   Menu, X, MessageCircle, PlusSquare, Film, BadgeCheck, Shield, Sparkles,
   School, CalendarDays, Trophy, Settings, Flame, UserCheck, MessageSquareDashed,
+  Gift, ShoppingBag, Award,
 } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -27,6 +28,9 @@ const NAV: NavItem[] = [
   { to: "/saved", label: "Saved", icon: Bookmark },
   { to: "/events", label: "Events", icon: CalendarDays },
   { to: "/leaderboards", label: "Leaderboards", icon: Trophy },
+  { to: "/rewards", label: "Rewards", icon: Gift },
+  { to: "/shop", label: "Shop", icon: ShoppingBag },
+  { to: "/badges", label: "Badges", icon: Award },
   { to: "/verification", label: "Verification", icon: BadgeCheck },
   { to: "/settings", label: "Settings", icon: Settings },
 ];
