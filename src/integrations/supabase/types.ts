@@ -71,6 +71,38 @@ export type Database = {
         }
         Relationships: []
       }
+      box_openings: {
+        Row: {
+          box_id: string
+          created_at: string
+          id: string
+          reward: Json
+          user_id: string
+        }
+        Insert: {
+          box_id: string
+          created_at?: string
+          id?: string
+          reward: Json
+          user_id: string
+        }
+        Update: {
+          box_id?: string
+          created_at?: string
+          id?: string
+          reward?: Json
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "box_openings_box_id_fkey"
+            columns: ["box_id"]
+            isOneToOne: false
+            referencedRelation: "reward_boxes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       challenge_progress: {
         Row: {
           challenge_id: string
@@ -349,6 +381,80 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      mission_progress: {
+        Row: {
+          claimed: boolean
+          mission_id: string
+          period_start: string
+          progress: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          claimed?: boolean
+          mission_id: string
+          period_start?: string
+          progress?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          claimed?: boolean
+          mission_id?: string
+          period_start?: string
+          progress?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mission_progress_mission_id_fkey"
+            columns: ["mission_id"]
+            isOneToOne: false
+            referencedRelation: "missions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      missions: {
+        Row: {
+          active: boolean
+          cadence: string
+          coin_reward: number
+          created_at: string
+          description: string
+          goal: number
+          id: string
+          kind: string
+          title: string
+          xp_reward: number
+        }
+        Insert: {
+          active?: boolean
+          cadence?: string
+          coin_reward?: number
+          created_at?: string
+          description: string
+          goal?: number
+          id?: string
+          kind: string
+          title: string
+          xp_reward?: number
+        }
+        Update: {
+          active?: boolean
+          cadence?: string
+          coin_reward?: number
+          created_at?: string
+          description?: string
+          goal?: number
+          id?: string
+          kind?: string
+          title?: string
+          xp_reward?: number
+        }
+        Relationships: []
       }
       notifications: {
         Row: {
@@ -791,6 +897,36 @@ export type Database = {
         }
         Relationships: []
       }
+      reward_boxes: {
+        Row: {
+          active: boolean
+          cost_coins: number
+          created_at: string
+          description: string
+          id: string
+          name: string
+          rewards: Json
+        }
+        Insert: {
+          active?: boolean
+          cost_coins?: number
+          created_at?: string
+          description?: string
+          id: string
+          name: string
+          rewards?: Json
+        }
+        Update: {
+          active?: boolean
+          cost_coins?: number
+          created_at?: string
+          description?: string
+          id?: string
+          name?: string
+          rewards?: Json
+        }
+        Relationships: []
+      }
       school_events: {
         Row: {
           cover_url: string | null
@@ -863,6 +999,137 @@ export type Database = {
         }
         Relationships: []
       }
+      school_war_scores: {
+        Row: {
+          points: number
+          school_slug: string
+          updated_at: string
+          war_id: string
+        }
+        Insert: {
+          points?: number
+          school_slug: string
+          updated_at?: string
+          war_id: string
+        }
+        Update: {
+          points?: number
+          school_slug?: string
+          updated_at?: string
+          war_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "school_war_scores_war_id_fkey"
+            columns: ["war_id"]
+            isOneToOne: false
+            referencedRelation: "school_wars"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      school_wars: {
+        Row: {
+          active: boolean
+          created_at: string
+          description: string
+          ends_at: string
+          id: string
+          starts_at: string
+          title: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          description?: string
+          ends_at?: string
+          id?: string
+          starts_at?: string
+          title: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          description?: string
+          ends_at?: string
+          id?: string
+          starts_at?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      seasons: {
+        Row: {
+          active: boolean
+          created_at: string
+          description: string
+          ends_at: string | null
+          id: string
+          name: string
+          starts_at: string
+          theme: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          description?: string
+          ends_at?: string | null
+          id?: string
+          name: string
+          starts_at?: string
+          theme?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          description?: string
+          ends_at?: string | null
+          id?: string
+          name?: string
+          starts_at?: string
+          theme?: string
+        }
+        Relationships: []
+      }
+      shop_items: {
+        Row: {
+          active: boolean
+          category: string
+          created_at: string
+          description: string
+          id: string
+          min_level: number
+          name: string
+          price: number
+          rarity: string
+          value: string
+        }
+        Insert: {
+          active?: boolean
+          category: string
+          created_at?: string
+          description?: string
+          id: string
+          min_level?: number
+          name: string
+          price?: number
+          rarity?: string
+          value: string
+        }
+        Update: {
+          active?: boolean
+          category?: string
+          created_at?: string
+          description?: string
+          id?: string
+          min_level?: number
+          name?: string
+          price?: number
+          rarity?: string
+          value?: string
+        }
+        Relationships: []
+      }
       site_settings: {
         Row: {
           key: string
@@ -878,6 +1145,33 @@ export type Database = {
           key?: string
           updated_at?: string
           value?: Json
+        }
+        Relationships: []
+      }
+      spin_results: {
+        Row: {
+          created_at: string
+          id: string
+          label: string
+          reward_amount: number
+          reward_kind: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          label: string
+          reward_amount?: number
+          reward_kind: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          label?: string
+          reward_amount?: number
+          reward_kind?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -1080,10 +1374,18 @@ export type Database = {
       }
       user_gamification: {
         Row: {
+          boxes_available: number
+          coins: number
           created_at: string
+          equipped_bubble: string | null
+          equipped_frame: string | null
+          equipped_name_color: string | null
+          equipped_theme: string | null
           last_login_date: string | null
+          last_spin_date: string | null
           level: number
           longest_streak: number
+          reputation: number
           streak_days: number
           theme: string | null
           updated_at: string
@@ -1093,10 +1395,18 @@ export type Database = {
           xp: number
         }
         Insert: {
+          boxes_available?: number
+          coins?: number
           created_at?: string
+          equipped_bubble?: string | null
+          equipped_frame?: string | null
+          equipped_name_color?: string | null
+          equipped_theme?: string | null
           last_login_date?: string | null
+          last_spin_date?: string | null
           level?: number
           longest_streak?: number
+          reputation?: number
           streak_days?: number
           theme?: string | null
           updated_at?: string
@@ -1106,10 +1416,18 @@ export type Database = {
           xp?: number
         }
         Update: {
+          boxes_available?: number
+          coins?: number
           created_at?: string
+          equipped_bubble?: string | null
+          equipped_frame?: string | null
+          equipped_name_color?: string | null
+          equipped_theme?: string | null
           last_login_date?: string | null
+          last_spin_date?: string | null
           level?: number
           longest_streak?: number
+          reputation?: number
           streak_days?: number
           theme?: string | null
           updated_at?: string
@@ -1137,6 +1455,32 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      user_purchases: {
+        Row: {
+          created_at: string
+          item_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          item_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          item_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_purchases_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "shop_items"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
@@ -1203,13 +1547,22 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      add_war_points: {
+        Args: { _points: number; _school_slug: string }
+        Returns: undefined
+      }
       are_friends: { Args: { _a: string; _b: string }; Returns: boolean }
+      award_coins: { Args: { _amount: number }; Returns: number }
       award_xp: { Args: { _amount: number; _reason?: string }; Returns: Json }
+      buy_shop_item: { Args: { _item_id: string }; Returns: Json }
       claim_invite: { Args: { _code: string }; Returns: Json }
+      claim_mission: { Args: { _mission_id: string }; Returns: Json }
       confirm_invite: {
         Args: { _code: string; _confirm: boolean }
         Returns: Json
       }
+      daily_spin: { Args: never; Returns: Json }
+      equip_item: { Args: { _item_id: string }; Returns: Json }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1222,6 +1575,11 @@ export type Database = {
         Returns: number
       }
       normalize_school: { Args: { _name: string }; Returns: string }
+      open_box: { Args: { _box_id: string }; Returns: Json }
+      progress_mission: {
+        Args: { _amount?: number; _kind: string }
+        Returns: undefined
+      }
       recompute_post_trending: {
         Args: { _post_id: string }
         Returns: undefined
