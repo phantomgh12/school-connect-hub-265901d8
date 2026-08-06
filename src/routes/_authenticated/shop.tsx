@@ -25,7 +25,12 @@ const CATS = [
   { key: "frame", label: "Frames" },
   { key: "name_color", label: "Name colours" },
   { key: "bubble", label: "Chat bubbles" },
+  { key: "sticker", label: "Stickers" },
+  { key: "effect", label: "Effects" },
+  { key: "title", label: "Titles" },
+  { key: "chat_theme", label: "Chat themes" },
 ] as const;
+
 
 function ShopPage() {
   const [uid, setUid] = useState("");
