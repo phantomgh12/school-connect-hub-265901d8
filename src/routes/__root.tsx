@@ -72,7 +72,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "SchoolConnect — The social network for students & alumni" },
+      { title: "GH SCHOOL HUB — The social network for students & alumni" },
       { name: "description", content: "SchoolConnect helps students from Primary, JHS, SHS, Technical schools, universities and alumni meet friends, chat, share stories and grow together." },
       { name: "author", content: "SchoolConnect" },
       { name: "theme-color", content: "#6d5cf0" },
