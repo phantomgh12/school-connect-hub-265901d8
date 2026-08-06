@@ -141,3 +141,79 @@ export const SPIN_SEGMENTS = [
   "Mystery box",
   "250 coins",
 ];
+
+/* ------------------------------------------------------------------ *
+ * Badge engine, houses and coin gifts
+ * ------------------------------------------------------------------ */
+
+export type Badge = {
+  key: string; title: string; description: string; xp: number; icon: string;
+  category: string; tier: string; criteria_kind: string | null; criteria_value: number; coin_reward: number;
+};
+
+export type BadgeStats = Record<string, number>;
+
+export const TIER_ORDER = ["bronze", "silver", "gold", "platinum", "diamond"] as const;
+
+export const TIER_STYLES: Record<string, string> = {
+  bronze: "border-amber-700/40 text-amber-700",
+  silver: "border-slate-400/50 text-slate-500",
+  gold: "border-amber-500/50 text-amber-600",
+  platinum: "border-sky-500/50 text-sky-600",
+  diamond: "border-fuchsia-500/50 text-fuchsia-600",
+};
+
+/** Measures real activity and grants every badge the user now qualifies for. */
+export async function evaluateAchievements() {
+  const { data, error } = await supabase.rpc("evaluate_achievements");
+  if (error) throw error;
+  return data as unknown as {
+    earned: { key: string; title: string; icon: string; xp: number; coins: number; tier: string }[];
+    xp: number; coins: number; stats: BadgeStats;
+  };
+}
+
+export async function fetchBadgeStats(userId: string): Promise<BadgeStats> {
+  const { data } = await supabase.rpc("user_badge_stats", { _user_id: userId });
+  return (data as unknown as BadgeStats) ?? {};
+}
+
+export async function fetchBadges(): Promise<Badge[]> {
+  const { data } = await supabase
+    .from("achievements")
+    .select("key,title,description,xp,icon,category,tier,criteria_kind,criteria_value,coin_reward")
+    .order("category")
+    .order("criteria_value");
+  return (data ?? []) as Badge[];
+}
+
+export type House = { slug: string; name: string; emoji: string; color: string; motto: string; points: number };
+
+export async function fetchHouses(): Promise<House[]> {
+  const { data } = await supabase.from("houses").select("*").order("points", { ascending: false });
+  return (data ?? []) as House[];
+}
+
+export async function joinHouse(slug: string) {
+  const { data, error } = await supabase.rpc("join_house", { _slug: slug });
+  if (error) throw error;
+  return data as any;
+}
+
+export type GiftItem = { id: string; name: string; emoji: string; price: number; rarity: string };
+
+export async function fetchGiftCatalog(): Promise<GiftItem[]> {
+  const { data } = await supabase.from("gift_catalog").select("id,name,emoji,price,rarity").eq("active", true).order("price");
+  return (data ?? []) as GiftItem[];
+}
+
+export async function sendGift(giftId: string, recipientId: string, postId?: string, message?: string) {
+  const { data, error } = await supabase.rpc("send_gift", {
+    _gift_id: giftId,
+    _recipient: recipientId,
+    _post_id: postId ?? null,
+    _message: message ?? null,
+  } as any);
+  if (error) throw error;
+  return data as any;
+}
