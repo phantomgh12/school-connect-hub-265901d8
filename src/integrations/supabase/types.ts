@@ -16,26 +16,41 @@ export type Database = {
     Tables: {
       achievements: {
         Row: {
+          category: string
+          coin_reward: number
           created_at: string
+          criteria_kind: string | null
+          criteria_value: number
           description: string
           icon: string
           key: string
+          tier: string
           title: string
           xp: number
         }
         Insert: {
+          category?: string
+          coin_reward?: number
           created_at?: string
+          criteria_kind?: string | null
+          criteria_value?: number
           description: string
           icon?: string
           key: string
+          tier?: string
           title: string
           xp?: number
         }
         Update: {
+          category?: string
+          coin_reward?: number
           created_at?: string
+          criteria_kind?: string | null
+          criteria_value?: number
           description?: string
           icon?: string
           key?: string
+          tier?: string
           title?: string
           xp?: number
         }
@@ -311,6 +326,114 @@ export type Database = {
           requester_id?: string
           status?: Database["public"]["Enums"]["friendship_status"]
           updated_at?: string
+        }
+        Relationships: []
+      }
+      gift_catalog: {
+        Row: {
+          active: boolean
+          created_at: string
+          emoji: string
+          id: string
+          name: string
+          price: number
+          rarity: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          emoji: string
+          id: string
+          name: string
+          price: number
+          rarity?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          emoji?: string
+          id?: string
+          name?: string
+          price?: number
+          rarity?: string
+        }
+        Relationships: []
+      }
+      gifts: {
+        Row: {
+          coins: number
+          created_at: string
+          gift_id: string
+          id: string
+          message: string | null
+          post_id: string | null
+          recipient_id: string
+          sender_id: string
+        }
+        Insert: {
+          coins?: number
+          created_at?: string
+          gift_id: string
+          id?: string
+          message?: string | null
+          post_id?: string | null
+          recipient_id: string
+          sender_id: string
+        }
+        Update: {
+          coins?: number
+          created_at?: string
+          gift_id?: string
+          id?: string
+          message?: string | null
+          post_id?: string | null
+          recipient_id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gifts_gift_id_fkey"
+            columns: ["gift_id"]
+            isOneToOne: false
+            referencedRelation: "gift_catalog"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gifts_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      houses: {
+        Row: {
+          color: string
+          created_at: string
+          emoji: string
+          motto: string
+          name: string
+          points: number
+          slug: string
+        }
+        Insert: {
+          color: string
+          created_at?: string
+          emoji: string
+          motto?: string
+          name: string
+          points?: number
+          slug: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          emoji?: string
+          motto?: string
+          name?: string
+          points?: number
+          slug?: string
         }
         Relationships: []
       }
@@ -1102,6 +1225,7 @@ export type Database = {
           name: string
           price: number
           rarity: string
+          unlock_badge: string | null
           value: string
         }
         Insert: {
@@ -1114,6 +1238,7 @@ export type Database = {
           name: string
           price?: number
           rarity?: string
+          unlock_badge?: string | null
           value: string
         }
         Update: {
@@ -1126,6 +1251,7 @@ export type Database = {
           name?: string
           price?: number
           rarity?: string
+          unlock_badge?: string | null
           value?: string
         }
         Relationships: []
@@ -1378,9 +1504,14 @@ export type Database = {
           coins: number
           created_at: string
           equipped_bubble: string | null
+          equipped_chat_theme: string | null
+          equipped_effect: string | null
           equipped_frame: string | null
           equipped_name_color: string | null
+          equipped_sticker: string | null
           equipped_theme: string | null
+          equipped_title: string | null
+          house_slug: string | null
           last_login_date: string | null
           last_spin_date: string | null
           level: number
@@ -1399,9 +1530,14 @@ export type Database = {
           coins?: number
           created_at?: string
           equipped_bubble?: string | null
+          equipped_chat_theme?: string | null
+          equipped_effect?: string | null
           equipped_frame?: string | null
           equipped_name_color?: string | null
+          equipped_sticker?: string | null
           equipped_theme?: string | null
+          equipped_title?: string | null
+          house_slug?: string | null
           last_login_date?: string | null
           last_spin_date?: string | null
           level?: number
@@ -1420,9 +1556,14 @@ export type Database = {
           coins?: number
           created_at?: string
           equipped_bubble?: string | null
+          equipped_chat_theme?: string | null
+          equipped_effect?: string | null
           equipped_frame?: string | null
           equipped_name_color?: string | null
+          equipped_sticker?: string | null
           equipped_theme?: string | null
+          equipped_title?: string | null
+          house_slug?: string | null
           last_login_date?: string | null
           last_spin_date?: string | null
           level?: number
@@ -1547,6 +1688,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      add_house_points: { Args: { _points: number }; Returns: undefined }
       add_war_points: {
         Args: { _points: number; _school_slug: string }
         Returns: undefined
@@ -1563,6 +1705,7 @@ export type Database = {
       }
       daily_spin: { Args: never; Returns: Json }
       equip_item: { Args: { _item_id: string }; Returns: Json }
+      evaluate_achievements: { Args: never; Returns: Json }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1570,6 +1713,8 @@ export type Database = {
         }
         Returns: boolean
       }
+      join_house: { Args: { _slug: string }; Returns: Json }
+      mission_period: { Args: { _cadence: string }; Returns: string }
       mutual_friends_count: {
         Args: { _me: string; _other: string }
         Returns: number
@@ -1584,8 +1729,18 @@ export type Database = {
         Args: { _post_id: string }
         Returns: undefined
       }
+      send_gift: {
+        Args: {
+          _gift_id: string
+          _message?: string
+          _post_id?: string
+          _recipient: string
+        }
+        Returns: Json
+      }
       signup_rank: { Args: { _user_id: string }; Returns: number }
       touch_streak: { Args: never; Returns: Json }
+      user_badge_stats: { Args: { _user_id: string }; Returns: Json }
       verification_eligibility: { Args: { _user_id: string }; Returns: Json }
     }
     Enums: {
