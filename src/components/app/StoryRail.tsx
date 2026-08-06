@@ -9,7 +9,7 @@ type Group = { user_id: string; author: { full_name: string | null; avatar_url: 
 
 export function StoryRail({ userId, avatarUrl: _avatarUrl }: { userId: string; avatarUrl: string | null }) {
   const [groups, setGroups] = useState<Group[]>([]);
-  const [viewerIdx, setViewerIdx] = useState<number | null>(null);
+  const [viewerUser, setViewerUser] = useState<string | null>(null);
 
 
   async function load() {
@@ -51,7 +51,8 @@ export function StoryRail({ userId, avatarUrl: _avatarUrl }: { userId: string; a
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
-  const activeItems: StoryItem[] = viewerIdx != null ? groups[viewerIdx]?.items ?? [] : [];
+  const activeItems: StoryItem[] = viewerUser ? groups.find((g) => g.user_id === viewerUser)?.items ?? [] : [];
+  const mine = groups.find((g) => g.user_id === userId);
 
   return (
     <div className="glass mb-4 rounded-3xl p-3 sm:p-4">
@@ -61,27 +62,45 @@ export function StoryRail({ userId, avatarUrl: _avatarUrl }: { userId: string; a
       </div>
       <div className="flex gap-3 overflow-x-auto pb-1">
         {/* Your story tile */}
-        <Link to="/new-story" className="relative flex h-40 w-24 shrink-0 flex-col items-stretch overflow-hidden rounded-2xl border-2 border-dashed border-[color:var(--brand)]/50 bg-muted/40 text-left">
-          <div className="flex-1 gradient-brand opacity-80" />
-          <div className="absolute inset-0 grid place-items-center">
-            <div className="grid h-9 w-9 place-items-center rounded-full bg-white text-[color:var(--brand)] shadow-lg"><Plus className="h-5 w-5" /></div>
+        {mine ? (
+          <div className="relative h-40 w-24 shrink-0">
+            <button onClick={() => setViewerUser(userId)} className="h-full w-full overflow-hidden rounded-2xl border border-border/60 bg-black text-left">
+              {mine.items[mine.items.length - 1]?.media_url ? (
+                <img src={mine.items[mine.items.length - 1].media_url!} alt="" className="h-full w-full object-cover" loading="lazy" decoding="async" />
+              ) : (
+                <div className="grid h-full w-full place-items-center p-2 text-center" style={{ background: mine.items[mine.items.length - 1]?.background ?? "linear-gradient(135deg,#6d5cf0,#22d3ee)" }}>
+                  <span className="text-xs font-black text-white drop-shadow">{mine.items[mine.items.length - 1]?.caption}</span>
+                </div>
+              )}
+              <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-1.5 text-[10px] font-bold text-white">Your story</span>
+            </button>
+            <Link to="/new-story" aria-label="Add to your story" className="absolute -right-1 -top-1 grid h-7 w-7 place-items-center rounded-full gradient-brand text-primary-foreground shadow-brand">
+              <Plus className="h-4 w-4" />
+            </Link>
           </div>
-          <div className="absolute bottom-1.5 left-0 right-0 truncate px-2 text-center text-[11px] font-bold text-white drop-shadow">Your story</div>
-        </Link>
+        ) : (
+          <Link to="/new-story" className="relative flex h-40 w-24 shrink-0 flex-col items-stretch overflow-hidden rounded-2xl border-2 border-dashed border-[color:var(--brand)]/50 bg-muted/40 text-left">
+            <div className="flex-1 gradient-brand opacity-80" />
+            <div className="absolute inset-0 grid place-items-center">
+              <div className="grid h-9 w-9 place-items-center rounded-full bg-white text-[color:var(--brand)] shadow-lg"><Plus className="h-5 w-5" /></div>
+            </div>
+            <div className="absolute bottom-1.5 left-0 right-0 truncate px-2 text-center text-[11px] font-bold text-white drop-shadow">Your story</div>
+          </Link>
+        )}
 
-        {groups.filter(g => g.user_id !== userId).map((g, idx) => {
+        {groups.filter(g => g.user_id !== userId).map((g) => {
           const cover = g.items[g.items.length - 1];
           const name = g.author?.full_name || "Story";
           const hasUnseen = g.unseen > 0;
           return (
-            <button key={g.user_id} onClick={() => setViewerIdx(idx)} className={`relative flex h-40 w-24 shrink-0 overflow-hidden rounded-2xl border ${hasUnseen ? "border-transparent p-[2px]" : "border-border/60"}`}
+            <button key={g.user_id} onClick={() => setViewerUser(g.user_id)} className={`relative flex h-40 w-24 shrink-0 overflow-hidden rounded-2xl border ${hasUnseen ? "border-transparent p-[2px]" : "border-border/60"}`}
               style={hasUnseen ? { background: "conic-gradient(from 180deg,#f472b6,#6d5cf0,#22d3ee,#22c55e,#f472b6)" } : {}}
             >
               <div className="relative h-full w-full overflow-hidden rounded-[14px] bg-black">
                 {cover?.media_type === "video" && cover.media_url ? (
                   <video src={cover.media_url} muted className="h-full w-full object-cover" />
                 ) : cover?.media_url ? (
-                  <img src={cover.media_url} alt="" className="h-full w-full object-cover" />
+                  <img src={cover.media_url} alt="" className="h-full w-full object-cover" loading="lazy" decoding="async" />
                 ) : (
                   <div className="grid h-full w-full place-items-center p-2 text-center" style={{ background: cover?.background ?? "linear-gradient(135deg,#6d5cf0,#22d3ee)" }}>
                     <span className="text-xs font-black text-white drop-shadow">{cover?.caption ?? name}</span>
@@ -90,7 +109,7 @@ export function StoryRail({ userId, avatarUrl: _avatarUrl }: { userId: string; a
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-1.5">
                   <div className="flex items-center gap-1.5">
                     <div className="grid h-6 w-6 shrink-0 place-items-center overflow-hidden rounded-full border-2 border-white bg-muted text-[10px] font-bold">
-                      {g.author?.avatar_url ? <img src={g.author.avatar_url} className="h-full w-full object-cover" alt="" /> : name[0]}
+                      {g.author?.avatar_url ? <img src={g.author.avatar_url} className="h-full w-full object-cover" alt="" loading="lazy" decoding="async" /> : name[0]}
                     </div>
                     <span className="truncate text-[10px] font-bold text-white">{name}</span>
                   </div>
@@ -100,16 +119,17 @@ export function StoryRail({ userId, avatarUrl: _avatarUrl }: { userId: string; a
             </button>
           );
         })}
-        {groups.length <= 1 && (
+        {groups.filter(g => g.user_id !== userId).length === 0 && (
           <div className="grid h-40 flex-1 place-items-center rounded-2xl border border-dashed border-border/60 px-4 text-center text-xs text-muted-foreground">
             <div><Eye className="mx-auto mb-1 h-4 w-4" />Add friends to see their stories</div>
           </div>
         )}
       </div>
 
-      {viewerIdx != null && activeItems.length > 0 && (
-        <StoryViewer stories={activeItems} startIndex={0} currentUserId={userId} onClose={() => { setViewerIdx(null); load(); }} />
+      {viewerUser && activeItems.length > 0 && (
+        <StoryViewer stories={activeItems} startIndex={0} currentUserId={userId} onClose={() => { setViewerUser(null); load(); }} />
       )}
+
 
     </div>
   );

@@ -76,7 +76,7 @@ function NewPostPage() {
 
         <div className="flex gap-3">
           <div className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full gradient-brand text-sm font-bold text-primary-foreground">
-            {avatar ? <img src={avatar} alt="" className="h-full w-full object-cover" /> : "🎓"}
+            {avatar ? <img src={avatar} alt="" className="h-full w-full object-cover" loading="lazy" decoding="async" /> : "🎓"}
           </div>
           <textarea
             autoFocus
@@ -94,7 +94,7 @@ function NewPostPage() {
               <div key={i} className="relative overflow-hidden rounded-2xl border bg-muted">
                 {f.type.startsWith("video")
                   ? <video src={URL.createObjectURL(f)} className="h-40 w-full object-cover" controls />
-                  : <img src={URL.createObjectURL(f)} className="h-40 w-full object-cover" alt="" />}
+                  : <img src={URL.createObjectURL(f)} className="h-40 w-full object-cover" alt="" loading="lazy" decoding="async" />}
                 <button onClick={() => setFiles((p) => p.filter((_, j) => j !== i))} className="absolute right-1.5 top-1.5 rounded-full bg-background/90 p-1"><X className="h-3.5 w-3.5" /></button>
               </div>
             ))}

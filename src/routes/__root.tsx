@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { supabase } from "@/integrations/supabase/client";
 import { ThemeProvider } from "@/lib/theme";
+import { setupPWA } from "@/lib/pwa";
 
 function NotFoundComponent() {
   return (
@@ -76,10 +77,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "SchoolConnect helps students from Primary, JHS, SHS, Technical schools, universities and alumni meet friends, chat, share stories and grow together." },
       { name: "author", content: "SchoolConnect" },
       { name: "theme-color", content: "#6d5cf0" },
+      { name: "mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
+      { name: "apple-mobile-web-app-title", content: "SchoolConnect" },
       { property: "og:title", content: "SchoolConnect — The social network for students & alumni" },
       { property: "og:description", content: "Meet classmates and alumni, share memories, chat, and grow together." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:site_name", content: "SchoolConnect" },
+      { name: "robots", content: "index, follow, max-image-preview:large" },
+      { name: "google", content: "notranslate" },
+      { name: "application-name", content: "SchoolConnect" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -87,6 +96,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
+      { rel: "manifest", href: "/manifest.webmanifest" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png", sizes: "180x180" },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "SchoolConnect",
+          alternateName: "GH School Hub",
+          description:
+            "SchoolConnect is the social network for students from Primary, JHS, SHS, Technical schools, universities and alumni.",
+          inLanguage: "en",
+        }),
+      },
     ],
   }),
   shellComponent: RootShell,
@@ -110,6 +135,8 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
+
+  useEffect(() => { void setupPWA(); }, []);
 
   useEffect(() => {
     const { data: sub } = supabase.auth.onAuthStateChange((event) => {

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Heart, MessageCircle, Bookmark, Share2, MoreHorizontal, Trash2, Pencil, Send, Download, Flag, Loader2, Eye, UserPlus, UserCheck } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
+import { VerifiedBadge } from "@/components/app/VerifiedBadge";
 import { toast } from "sonner";
 
 export type FeedPost = {
@@ -177,10 +178,13 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
     <article id={`post-${post.id}`} className="glass w-full max-w-full overflow-hidden rounded-3xl p-4 sm:p-5 animate-fade-up">
       <header className="flex min-w-0 items-center gap-2 sm:gap-3">
         <Link to="/profile/$userId" params={{ userId: post.user_id }} className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full gradient-brand text-sm font-bold text-primary-foreground ring-2 ring-background">
-          {post.author?.avatar_url ? <img src={post.author.avatar_url} className="h-full w-full object-cover" alt="" /> : initials}
+          {post.author?.avatar_url ? <img src={post.author.avatar_url} className="h-full w-full object-cover" alt="" loading="lazy" decoding="async" /> : initials}
         </Link>
         <div className="min-w-0 flex-1">
-          <Link to="/profile/$userId" params={{ userId: post.user_id }} className="block truncate text-sm font-bold hover:underline">{name}</Link>
+          <span className="flex min-w-0 items-center gap-1">
+            <Link to="/profile/$userId" params={{ userId: post.user_id }} className="truncate text-sm font-bold hover:underline">{name}</Link>
+            <VerifiedBadge userId={post.user_id} className="h-3.5 w-3.5" />
+          </span>
           <div className="truncate text-xs text-muted-foreground">
             {post.author?.school_name ? `${post.author.school_name} • ` : ""}
             {timeAgo(post.created_at)}
@@ -278,7 +282,7 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
             {comments.map((c) => (
               <div key={c.id} className="flex gap-2">
                 <div className="grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-full gradient-brand text-xs font-bold text-primary-foreground">
-                  {c.author?.avatar_url ? <img src={c.author.avatar_url} className="h-full w-full object-cover" alt="" /> : (c.author?.full_name || "S")[0]}
+                  {c.author?.avatar_url ? <img src={c.author.avatar_url} className="h-full w-full object-cover" alt="" loading="lazy" decoding="async" /> : (c.author?.full_name || "S")[0]}
                 </div>
                 <div className="min-w-0 flex-1 rounded-2xl bg-muted/60 px-3 py-2">
                   <div className="text-xs font-bold">{c.author?.full_name || "Student"}</div>

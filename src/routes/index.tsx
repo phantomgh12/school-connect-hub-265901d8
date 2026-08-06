@@ -13,6 +13,26 @@ export const Route = createFileRoute("/")({
       { title: "SchoolConnect — Meet, chat & grow with students everywhere" },
       { property: "og:title", content: "SchoolConnect" },
       { property: "og:description", content: "The social network built for students from Primary school to university and alumni." },
+      { name: "description", content: "Join SchoolConnect — meet classmates and alumni, share stories, chat, earn badges and stay informed about your school. Free for every student." },
+      { name: "keywords", content: "student social network, school community, alumni network, Ghana schools, JHS, SHS, campus app" },
+      { property: "og:url", content: "/" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:title", content: "SchoolConnect — Meet, chat & grow with students everywhere" },
+      { name: "twitter:description", content: "The student social network: friends, stories, school communities, badges and events." },
+    ],
+    links: [{ rel: "canonical", href: "/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "SchoolConnect",
+          url: "/",
+          logo: "/app-icon-512.png",
+          sameAs: [],
+        }),
+      },
     ],
   }),
   component: Landing,
@@ -117,7 +137,7 @@ function Hero() {
         <div className="absolute -inset-6 -z-10 rounded-[3rem] gradient-brand opacity-20 blur-3xl" />
         <div className="glass overflow-hidden rounded-[2rem] p-2 animate-float">
           <img src={heroImg} alt="Students connecting" width={1600} height={1200}
-            className="w-full rounded-[1.6rem] object-cover" />
+            className="w-full rounded-[1.6rem] object-cover" loading="lazy" decoding="async" />
         </div>
         <div className="glass absolute -left-4 bottom-6 hidden items-center gap-3 rounded-2xl p-3 sm:flex">
           <div className="grid h-10 w-10 place-items-center rounded-xl bg-[color:var(--brand-3)]/20 text-[color:var(--brand-3)]"><Heart className="h-5 w-5" /></div>

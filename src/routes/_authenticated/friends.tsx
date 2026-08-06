@@ -239,7 +239,7 @@ function List({ items, emptyMsg, renderAction }: { items: Person[]; emptyMsg: st
 function Avatar({ p }: { p: Person }) {
   return (
     <Link to="/profile/$userId" params={{ userId: p.id }} className="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-full gradient-brand text-sm font-bold text-primary-foreground">
-      {p.avatar_url ? <img src={p.avatar_url} className="h-full w-full object-cover" alt="" /> : (p.full_name || "S")[0]}
+      {p.avatar_url ? <img src={p.avatar_url} className="h-full w-full object-cover" alt="" loading="lazy" decoding="async" /> : (p.full_name || "S")[0]}
     </Link>
   );
 }

@@ -73,7 +73,7 @@ function SearchPage() {
             <li key={p.id}>
               <Link to="/profile/$userId" params={{ userId: p.id }} className="glass flex items-center gap-3 rounded-2xl p-3 hover:bg-muted">
                 <div className="grid h-10 w-10 place-items-center overflow-hidden rounded-full gradient-brand text-xs font-bold text-primary-foreground">
-                  {p.avatar_url ? <img src={p.avatar_url} className="h-full w-full object-cover" alt="" /> : (p.full_name || "S")[0]}
+                  {p.avatar_url ? <img src={p.avatar_url} className="h-full w-full object-cover" alt="" loading="lazy" decoding="async" /> : (p.full_name || "S")[0]}
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-sm font-semibold">{p.full_name || p.username || "Student"}</div>

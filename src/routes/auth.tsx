@@ -7,6 +7,7 @@ import { GraduationCap, Eye, EyeOff, Loader2, Sparkles } from "lucide-react";
 
 const searchSchema = z.object({
   mode: z.enum(["login", "signup"]).default("login").catch("login"),
+  invite: z.string().trim().max(64).optional().catch(undefined),
 });
 
 export const Route = createFileRoute("/auth")({
@@ -26,7 +27,7 @@ const loginSchema = z.object({
 });
 
 function AuthPage() {
-  const { mode } = Route.useSearch();
+  const { mode, invite } = Route.useSearch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [showPw, setShowPw] = useState(false);
@@ -55,6 +56,10 @@ function AuthPage() {
           },
         });
         if (error) throw error;
+        if (invite) {
+          try { await supabase.rpc("claim_invite", { _code: invite }); } catch { /* ignore */ }
+          toast.info("Confirm who invited you on the Verification page.");
+        }
         toast.success("Welcome! Let's set up your profile.");
         navigate({ to: "/onboarding" });
       } else {
@@ -70,6 +75,7 @@ function AuthPage() {
           password: parsed.data.password,
         });
         if (error) throw error;
+        if (invite) { try { await supabase.rpc("claim_invite", { _code: invite }); } catch { /* ignore */ } }
         toast.success("Signed in!");
         navigate({ to: "/home" });
       }
