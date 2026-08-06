@@ -62,9 +62,19 @@ function ShopPage() {
     })();
   }, [load]);
 
-  const equippedValue = (c: string) =>
-    c === "theme" ? gam?.equipped_theme : c === "frame" ? gam?.equipped_frame
-      : c === "name_color" ? gam?.equipped_name_color : gam?.equipped_bubble;
+  const equippedValue = (c: string) => {
+    const g = gam as any;
+    if (!g) return null;
+    return c === "theme" ? g.equipped_theme
+      : c === "frame" ? g.equipped_frame
+      : c === "name_color" ? g.equipped_name_color
+      : c === "bubble" ? g.equipped_bubble
+      : c === "sticker" ? g.equipped_sticker
+      : c === "effect" ? g.equipped_effect
+      : c === "title" ? g.equipped_title
+      : c === "chat_theme" ? g.equipped_chat_theme
+      : null;
+  };
 
   async function onBuy(it: ShopItem) {
     setBusy(it.id);
@@ -73,11 +83,13 @@ function ShopPage() {
       if (!res?.ok) {
         toast.error(
           res?.error === "not_enough_coins" ? "Not enough coins"
+            : res?.error === "badge_locked" ? "Earn the required badge to unlock this"
             : res?.error === "level_locked" ? `Unlocks at level ${it.min_level}` : "Could not buy",
         );
       } else toast.success(`${it.name} unlocked!`);
       await load(uid);
     } catch (e: any) {
+
       toast.error(e.message ?? "Could not buy");
     } finally { setBusy(null); }
   }
