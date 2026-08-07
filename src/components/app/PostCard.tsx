@@ -266,13 +266,13 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
           <Heart className={`h-4 w-4 ${liked ? "fill-current" : ""}`} /> {likeCount} Likes
         </button>
         <button onClick={() => setShowComments((v) => !v)} className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold text-muted-foreground hover:text-foreground">
-          <MessageCircle className="h-4 w-4" /> {commentCount}
+          <MessageCircle className="h-4 w-4" /> {commentCount} comments
         </button>
         <button onClick={share} className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold text-muted-foreground hover:text-foreground">
           <Share2 className="h-4 w-4" /> Share
         </button>
         <button onClick={toggleSave} className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold transition ${saved ? "text-[color:var(--brand)]" : "text-muted-foreground hover:text-foreground"}`}>
-          <Bookmark className={`h-4 w-4 ${saved ? "fill-current" : ""}`} />
+          <Bookmark className={`h-4 w-4 ${saved ? "fill-current" : ""}`} /> saves
         </button>
       </footer>
 
