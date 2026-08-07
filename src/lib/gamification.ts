@@ -129,17 +129,17 @@ export async function equipItem(itemId: string) {
 export const RARITY_STYLES: Record<string, string> = {
   common: "border-border text-muted-foreground",
   rare: "border-primary/40 text-primary",
-  epic: "border-amber-500/50 text-amber-600",
-  legendary: "border-rose-500/50 text-rose-600",
+  epic: "border-amber-800/50 text-amber-600",
+  legendary: "border-rose-800/50 text-rose-600",
 };
 
 export const SPIN_SEGMENTS = [
-  "25 coins",
   "60 coins",
-  "50 XP",
-  "150 XP",
+  "120 coins",
+  "180 XP",
+  "240 XP",
   "Mystery box",
-  "250 coins",
+  "300 coins",
 ];
 
 /* ------------------------------------------------------------------ *
@@ -156,11 +156,11 @@ export type BadgeStats = Record<string, number>;
 export const TIER_ORDER = ["bronze", "silver", "gold", "platinum", "diamond"] as const;
 
 export const TIER_STYLES: Record<string, string> = {
-  bronze: "border-amber-700/40 text-amber-700",
-  silver: "border-slate-400/50 text-slate-500",
-  gold: "border-amber-500/50 text-amber-600",
-  platinum: "border-sky-500/50 text-sky-600",
-  diamond: "border-fuchsia-500/50 text-fuchsia-600",
+  bronze: "border-amber-900/40 text-amber-700",
+  silver: "border-slate-900/50 text-slate-500",
+  gold: "border-amber-900/50 text-amber-600",
+  platinum: "border-sky-700/50 text-sky-600",
+  diamond: "border-fuchsia-700/50 text-fuchsia-600",
 };
 
 /** Measures real activity and grants every badge the user now qualifies for. */
