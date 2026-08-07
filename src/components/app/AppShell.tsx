@@ -161,10 +161,10 @@ export function AppShell({ children, right }: { children: ReactNode; right?: Rea
               {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
             <Link to="/home" className="flex min-w-0 items-center gap-2">
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-2xl bg-primary shadow-soft">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-1xl bg-primary shadow-soft">
                 <GraduationCap className="h-5 w-5 text-primary-foreground" />
               </span>
-              <span className="hidden truncate text-base font-extrabold tracking-tight sm:inline">SchoolConnect</span>
+              <span className="hidden truncate text-base font-extrabold tracking-tight sm:inline">GH School Hub</span>
             </Link>
           </div>
 

@@ -31,7 +31,7 @@ export function BadgeGrid({ userId }: { userId: string }) {
   const list = showAll ? mineFirst : mineFirst.slice(0, 18);
 
   return (
-    <section className="glass rounded-3xl p-5">
+    <section className="glass rounded-1xl p-5">
       <div className="flex items-center justify-between gap-3">
         <h3 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-muted-foreground">
           <Award className="h-4 w-4 text-primary" /> Badges
@@ -46,7 +46,7 @@ export function BadgeGrid({ userId }: { userId: string }) {
             <li
               key={b.key}
               title={`${b.title} — ${b.description} (+${b.xp} XP)`}
-              className={`min-w-0 rounded-2xl border p-2 text-center ${has ? "bg-card" : "opacity-45"}`}
+              className={`min-w-0 rounded-1xl border p-2 text-center ${has ? "bg-card" : "opacity-45"}`}
             >
               <div className="text-xl leading-none">{has ? b.icon : <Lock className="mx-auto h-4 w-4" />}</div>
               <p className="mt-1 truncate text-[10px] font-semibold">{b.title}</p>
