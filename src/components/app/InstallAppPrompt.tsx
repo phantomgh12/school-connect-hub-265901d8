@@ -59,11 +59,11 @@ export function InstallAppPrompt() {
 
   if (mode === "card") {
     return (
-      <div className="glass fixed bottom-4 right-4 z-50 hidden w-[320px] rounded-2xl p-4 lg:block">
+      <div className="glass fixed bottom-4 right-4 z-50 hidden w-[320px] rounded-1xl p-4 lg:block">
         <div className="flex items-start gap-3">
           <img src="/app-icon-192.png" alt="" width={40} height={40} loading="lazy" className="h-10 w-10 shrink-0 rounded-xl" />
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-bold">Install SchoolConnect</p>
+            <p className="text-sm font-bold">Install GH School Hub</p>
             <p className="mt-0.5 text-xs text-muted-foreground">Faster, uses less data, and opens like a real app.</p>
           </div>
           <button onClick={snooze} aria-label="Dismiss" className="shrink-0 rounded-full p-1 hover:bg-muted"><X className="h-4 w-4" /></button>
@@ -81,7 +81,7 @@ export function InstallAppPrompt() {
     <div className="fixed inset-0 z-[100] grid place-items-center bg-background/95 px-4 backdrop-blur-md lg:hidden">
       <div className="glass w-full max-w-sm rounded-3xl p-6 text-center animate-fade-up">
         <img src="/app-icon-192.png" alt="" width={72} height={72} className="mx-auto h-18 w-18 rounded-3xl shadow-soft" loading="lazy" decoding="async" />
-        <h2 className="mt-4 text-xl font-black tracking-tight">Install the SchoolConnect app</h2>
+        <h2 className="mt-4 text-xl font-black tracking-tight">Install the GH School Hub app</h2>
         <p className="mt-2 text-sm text-muted-foreground">
           The app uses far less data, loads instantly, and keeps you signed in. Install it to continue with the best experience.
         </p>
@@ -92,7 +92,7 @@ export function InstallAppPrompt() {
         </ul>
 
         {ios ? (
-          <div className="mt-5 rounded-2xl border bg-card p-3 text-left text-sm font-semibold">
+          <div className="mt-5 rounded-1xl border bg-card p-3 text-left text-sm font-semibold">
             <Share2 className="mr-1.5 inline h-4 w-4 text-primary" />
             Tap <span className="text-primary">Share</span> → <span className="text-primary">Add to Home Screen</span>
           </div>
@@ -101,7 +101,7 @@ export function InstallAppPrompt() {
             <Download className="mr-1.5 inline h-4 w-4" /> Install app
           </button>
         ) : (
-          <div className="mt-5 rounded-2xl border bg-card p-3 text-left text-sm font-semibold">
+          <div className="mt-5 rounded-1xl border bg-card p-3 text-left text-sm font-semibold">
             Open your browser menu and tap <span className="text-primary">Add to Home screen</span>
           </div>
         )}

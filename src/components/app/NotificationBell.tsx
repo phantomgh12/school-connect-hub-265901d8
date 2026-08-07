@@ -102,7 +102,7 @@ export function NotificationBell({ uid, unread, onRead }: { uid: string; unread:
         <Bell className="h-5 w-5" />
         {unread > 0 && (
           <span className="absolute right-0 top-0 grid h-4 min-w-4 place-items-center rounded-full bg-destructive px-1 text-[9px] font-bold text-destructive-foreground">
-            {unread > 9 ? "9+" : unread}
+            {unread > 9 ? "99+" : unread}
           </span>
         )}
       </button>
@@ -110,7 +110,7 @@ export function NotificationBell({ uid, unread, onRead }: { uid: string; unread:
       {open && (
         <>
           <button aria-label="Close" onClick={() => setOpen(false)} className="fixed inset-0 z-40 cursor-default" />
-          <div className="glass animate-fade-up absolute right-0 z-50 mt-2 max-h-[70dvh] w-[min(22rem,calc(100vw-1.5rem))] overflow-y-auto rounded-2xl p-2 no-scrollbar">
+          <div className="glass animate-fade-up absolute right-0 z-50 mt-2 max-h-[70dvh] w-[min(22rem,calc(100vw-1.5rem))] overflow-y-auto rounded-1xl p-2 no-scrollbar">
             <div className="flex items-center justify-between gap-2 px-2 py-1.5">
               <p className="text-sm font-bold">Notifications</p>
               {unread > 0 && (

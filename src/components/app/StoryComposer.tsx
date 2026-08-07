@@ -49,7 +49,7 @@ export function StoryComposer({ userId, onClose, onCreated }: { userId: string; 
 
   return (
     <div className="fixed inset-0 z-50 grid place-items-center bg-black/70 p-4 backdrop-blur">
-      <div className="glass w-full max-w-md rounded-3xl p-5">
+      <div className="glass w-full max-w-md rounded-1xl p-5">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-black">New story</h3>
           <button onClick={onClose} className="rounded-full p-1.5 hover:bg-muted"><X className="h-4 w-4" /></button>
@@ -68,7 +68,7 @@ export function StoryComposer({ userId, onClose, onCreated }: { userId: string; 
           <div className="mt-4">
             <input ref={fileRef} type="file" hidden accept="image/*,video/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
             {file ? (
-              <div className="relative overflow-hidden rounded-2xl bg-black">
+              <div className="relative overflow-hidden rounded-1xl bg-black">
                 {file.type.startsWith("video") ? (
                   <video src={URL.createObjectURL(file)} className="max-h-72 w-full object-contain" controls />
                 ) : (

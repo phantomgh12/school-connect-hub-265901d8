@@ -6,7 +6,7 @@ import { Flame, Trophy, CalendarDays, Gift, UserPlus, Users, School } from "luci
 
 function Panel({ title, icon: Icon, children }: { title: string; icon: any; children: React.ReactNode }) {
   return (
-    <section className="glass rounded-2xl p-5">
+    <section className="glass rounded-1xl p-5">
       <h3 className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
         <Icon className="h-4 w-4" /> {title}
       </h3>
@@ -180,7 +180,7 @@ export function DailyRewardsCard() {
   return (
     <Panel title="Daily rewards" icon={Gift}>
       <div className="flex items-center gap-3">
-        <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-[color:var(--trending)] text-lg font-black text-[color:var(--trending-foreground)]">
+        <div className="grid h-12 w-12 shrink-0 place-items-center rounded-1xl bg-[color:var(--trending)] text-lg font-black text-[color:var(--trending-foreground)]">
           {g.streak_days}
         </div>
         <div className="min-w-0">

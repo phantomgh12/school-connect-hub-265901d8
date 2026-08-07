@@ -45,11 +45,11 @@ export function NetworkStatsCard({ userId }: { userId: string }) {
   ];
 
   return (
-    <div className="glass rounded-3xl p-5">
+    <div className="glass rounded-1xl p-5">
       <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-muted-foreground">Your network</h3>
       <div className="grid grid-cols-2 gap-2">
         {items.map((it) => (
-          <div key={it.label} className="rounded-2xl bg-muted/50 p-3">
+          <div key={it.label} className="rounded-1xl bg-muted/50 p-3">
             <it.icon className="h-4 w-4 text-[color:var(--brand)]" />
             <div className="mt-1 text-lg font-black leading-none">{it.value}</div>
             <div className="text-[11px] text-muted-foreground">{it.label}</div>
@@ -93,7 +93,7 @@ export function SchoolCommunityCard({ userId }: { userId: string }) {
   if (!school) return null;
 
   return (
-    <div className="glass rounded-3xl p-5">
+    <div className="glass rounded-1xl p-5">
       <h3 className="mb-1 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-muted-foreground">
         <GraduationCap className="h-4 w-4" /> Your school
       </h3>
