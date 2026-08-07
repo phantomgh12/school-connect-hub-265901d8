@@ -262,8 +262,8 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
       </div>
 
       <footer className="mt-3 flex items-center justify-between border-t border-border/60 pt-3">
-        <button onClick={toggleLike} className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold transition ${liked ? "text-rose-500" : "text-muted-foreground hover:text-foreground"}`}>
-          <Heart className={`h-4 w-4 ${liked ? "fill-current" : ""}`} /> {likeCount}
+        <button onClick={toggleLike} className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold transition ${liked ? "text-rose-400" : "text-muted-foreground hover:text-foreground"}`}>
+          <Heart className={`h-4 w-4 ${liked ? "fill-current" : ""}`} /> {likeCount} Likes
         </button>
         <button onClick={() => setShowComments((v) => !v)} className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold text-muted-foreground hover:text-foreground">
           <MessageCircle className="h-4 w-4" /> {commentCount}
