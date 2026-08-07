@@ -41,25 +41,25 @@ export function CreatePost({ userId, avatarUrl, onPosted }: { userId: string; av
   }
 
   return (
-    <div className="glass rounded-3xl p-4">
+    <div className="glass rounded-1xl p-5">
       <div className="flex gap-3">
         <Avatar url={avatarUrl} />
         <div className="min-w-0 flex-1">
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            placeholder="Share something with your school…"
+            placeholder="Share something with your friends…"
             rows={2}
-            className="w-full resize-none rounded-2xl border border-border/70 bg-background/60 p-3 text-sm outline-none focus:border-[color:var(--brand)]"
+            className="w-full resize-none rounded-1xl border border-border/70 bg-background/60 p-3 text-sm outline-none focus:border-[color:var(--brand)]"
           />
           {files.length > 0 && (
             <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
               {files.map((f, i) => (
                 <div key={i} className="relative overflow-hidden rounded-xl border bg-muted">
                   {f.type.startsWith("video") ? (
-                    <video src={URL.createObjectURL(f)} className="h-24 w-full object-cover" />
+                    <video src={URL.createObjectURL(f)} className="h-22 w-full object-cover" />
                   ) : (
-                    <img src={URL.createObjectURL(f)} className="h-24 w-full object-cover" alt="" loading="lazy" decoding="async" />
+                    <img src={URL.createObjectURL(f)} className="h-22 w-full object-cover" alt="" loading="lazy" decoding="async" />
                   )}
                   <button onClick={() => setFiles((p) => p.filter((_, j) => j !== i))} className="absolute right-1 top-1 rounded-full bg-background/90 p-1">
                     <X className="h-3 w-3" />
@@ -72,10 +72,10 @@ export function CreatePost({ userId, avatarUrl, onPosted }: { userId: string; av
             <div className="flex items-center gap-1">
               <input ref={fileRef} type="file" hidden accept="image/*,video/*" multiple onChange={(e) => addFiles(e.target.files)} />
               <button onClick={() => fileRef.current?.click()} className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:bg-muted">
-                <ImageIcon className="h-4 w-4" /> Photo
+                <ImageIcon className="h-5 w-5" /> Photo
               </button>
               <button onClick={() => fileRef.current?.click()} className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:bg-muted">
-                <Video className="h-4 w-4" /> Video
+                <Video className="h-5 w-5" /> Video
               </button>
             </div>
             <button
