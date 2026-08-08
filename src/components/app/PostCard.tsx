@@ -263,16 +263,16 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
 
       <footer className="mt-3 flex items-center justify-between border-t border-border/60 pt-3">
         <button onClick={toggleLike} className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold transition ${liked ? "text-rose-400" : "text-muted-foreground hover:text-foreground"}`}>
-          <Heart className={`h-4 w-4 ${liked ? "fill-current" : ""}`} /> {likeCount} Likes
+          <Heart className={`h-4 w-4 ${liked ? "fill-current" : ""}`} /> {likeCount}
         </button>
         <button onClick={() => setShowComments((v) => !v)} className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold text-muted-foreground hover:text-foreground">
-          <MessageCircle className="h-4 w-4" /> {commentCount} comments
+          <MessageCircle className="h-4 w-4" /> {commentCount}
         </button>
         <button onClick={share} className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold text-muted-foreground hover:text-foreground">
-          <Share2 className="h-4 w-4" /> Share
+          <Share2 className="h-4 w-4" />
         </button>
         <button onClick={toggleSave} className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold transition ${saved ? "text-[color:var(--brand)]" : "text-muted-foreground hover:text-foreground"}`}>
-          <Bookmark className={`h-4 w-4 ${saved ? "fill-current" : ""}`} /> saves
+          <Bookmark className={`h-4 w-4 ${saved ? "fill-current" : ""}`} />
         </button>
       </footer>
 
