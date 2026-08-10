@@ -5,10 +5,21 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ===================================================================
- * SchoolConnect / GH School Hub — Premium mobile-first design system
- * White canvas, blue primary, 16px cards, soft shadows, glass chrome.
- * All colors are oklch tokens. Never hardcode colors in components.
- * =================================================================== */
+   GH School Hub — Production Design System
+
+   Color rule:
+   60% Neutral surfaces
+   30% Deep navy/slate structure
+   10% Royal blue brand/action
+
+   Semantic colors:
+   Green = success
+   Amber = warning/trending
+   Red = destructive
+
+   No decorative gradients.
+   No excessive accent colors.
+   =================================================================== */
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 8px);
@@ -20,32 +31,45 @@
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
+
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
+
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
+
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
+
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+
   --color-brand: var(--brand);
   --color-brand-2: var(--brand-2);
   --color-brand-3: var(--brand-3);
+
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
+
   --color-trending: var(--trending);
   --color-trending-foreground: var(--trending-foreground);
+
   --color-glass: var(--glass);
   --color-glass-border: var(--glass-border);
+
   --color-surface: var(--surface);
   --color-verified: var(--verified);
 
@@ -54,103 +78,197 @@
 }
 
 :root {
-  --radius: 1rem; /* 16px cards */
+  --radius: 1rem;
 
-  --background: oklch(1 0 0);                 /* #FFFFFF */
-  --foreground: oklch(0.21 0.034 264.7);      /* #111827 */
+  /* ================================================================
+     CORE PALETTE
+     ================================================================ */
 
+  /* 60% — neutral foundation */
+  --background: oklch(0.985 0.002 247);
   --surface: oklch(1 0 0);
-  --card: oklch(0.967 0.003 264.5);           /* #F3F4F6 */
-  --card-foreground: oklch(0.21 0.034 264.7);
+
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.22 0.025 255);
+
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.21 0.034 264.7);
+  --popover-foreground: oklch(0.22 0.025 255);
 
-  --primary: oklch(0.546 0.215 262.9);        /* #2563EB */
+  /* 30% — deep structural navy/slate */
+  --foreground: oklch(0.22 0.025 255);
+
+  --secondary: oklch(0.955 0.008 250);
+  --secondary-foreground: oklch(0.30 0.025 255);
+
+  --muted: oklch(0.955 0.008 250);
+  --muted-foreground: oklch(0.52 0.025 255);
+
+  --border: oklch(0.90 0.008 250);
+  --input: oklch(0.92 0.008 250);
+
+  /* ================================================================
+     10% — BRAND COLOR
+     ================================================================ */
+
+  /* Strong but controlled royal blue */
+  --primary: oklch(0.52 0.21 262);
   --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.967 0.003 264.5);
-  --secondary-foreground: oklch(0.28 0.03 264);
-  --muted: oklch(0.967 0.003 264.5);
-  --muted-foreground: oklch(0.55 0.02 264);
-  --accent: oklch(0.94 0.03 262);
-  --accent-foreground: oklch(0.35 0.13 263);
-  --destructive: oklch(0.637 0.237 25.3);     /* #EF4444 */
-  --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.92 0.005 264);
-  --input: oklch(0.93 0.005 264);
-  --ring: oklch(0.546 0.215 262.9);
 
-  --success: oklch(0.696 0.17 162.5);         /* #10B981 */
+  --accent: oklch(0.94 0.025 262);
+  --accent-foreground: oklch(0.40 0.15 262);
+
+  --ring: oklch(0.52 0.21 262);
+
+  /* ================================================================
+     SEMANTIC COLORS
+     These should not become decorative brand colors.
+     ================================================================ */
+
+  --success: oklch(0.63 0.16 160);
   --success-foreground: oklch(1 0 0);
-  --trending: oklch(0.769 0.163 70.1);        /* #F59E0B */
-  --trending-foreground: oklch(0.24 0.05 70);
 
-  --brand: oklch(0.546 0.215 262.9);
-  --brand-2: oklch(0.769 0.163 70.1);
-  --brand-3: oklch(0.696 0.17 162.5);
-  --verified: oklch(0.546 0.215 262.9);
+  --trending: oklch(0.72 0.14 72);
+  --trending-foreground: oklch(0.30 0.06 72);
 
-  --glass: oklch(1 0 0 / 0.72);
-  --glass-border: oklch(0.92 0.005 264 / 0.9);
+  --destructive: oklch(0.58 0.21 25);
+  --destructive-foreground: oklch(1 0 0);
 
-  --shadow-soft: 0 1px 2px oklch(0.21 0.034 264.7 / 0.05), 0 8px 24px -12px oklch(0.21 0.034 264.7 / 0.12);
-  --shadow-flat: 0 1px 2px oklch(0.21 0.034 264.7 / 0.06);
+  /* ================================================================
+     BRAND TOKENS
+     Keep the brand hierarchy blue-first.
+     ================================================================ */
+
+  --brand: oklch(0.52 0.21 262);
+
+  /* Secondary brand values are intentionally restrained. */
+  --brand-2: oklch(0.72 0.14 72);
+  --brand-3: oklch(0.63 0.16 160);
+
+  --verified: oklch(0.52 0.21 262);
+
+  /* ================================================================
+     GLASS / CHROME
+     ================================================================ */
+
+  --glass: oklch(1 0 0 / 0.88);
+  --glass-border: oklch(0.90 0.008 250 / 0.85);
+
+  /* ================================================================
+     SHADOWS
+     Neutral shadows instead of colored/glowing shadows.
+     ================================================================ */
+
+  --shadow-soft:
+    0 1px 2px oklch(0.20 0.02 255 / 0.04),
+    0 8px 24px -12px oklch(0.20 0.02 255 / 0.14);
+
+  --shadow-flat:
+    0 1px 2px oklch(0.20 0.02 255 / 0.06);
 }
+
+/* ===================================================================
+   DARK MODE
+   =================================================================== */
 
 .dark {
-  --background: oklch(0.17 0.02 264);
-  --foreground: oklch(0.97 0.005 264);
+  /* Neutral navy foundation */
+  --background: oklch(0.16 0.018 255);
+  --foreground: oklch(0.96 0.006 255);
 
-  --surface: oklch(0.21 0.022 264);
-  --card: oklch(0.24 0.022 264);
-  --card-foreground: oklch(0.97 0.005 264);
-  --popover: oklch(0.21 0.022 264);
-  --popover-foreground: oklch(0.97 0.005 264);
+  --surface: oklch(0.19 0.018 255);
 
-  --primary: oklch(0.65 0.19 262.9);
-  --primary-foreground: oklch(0.16 0.02 264);
-  --secondary: oklch(0.27 0.022 264);
-  --secondary-foreground: oklch(0.97 0.005 264);
-  --muted: oklch(0.27 0.022 264);
-  --muted-foreground: oklch(0.72 0.015 264);
-  --accent: oklch(0.31 0.05 263);
-  --accent-foreground: oklch(0.92 0.04 263);
-  --destructive: oklch(0.65 0.21 25.3);
+  --card: oklch(0.205 0.018 255);
+  --card-foreground: oklch(0.96 0.006 255);
+
+  --popover: oklch(0.19 0.018 255);
+  --popover-foreground: oklch(0.96 0.006 255);
+
+  /* Brand remains blue, but brighter for contrast */
+  --primary: oklch(0.66 0.18 262);
+  --primary-foreground: oklch(0.15 0.018 255);
+
+  --secondary: oklch(0.245 0.018 255);
+  --secondary-foreground: oklch(0.95 0.006 255);
+
+  --muted: oklch(0.245 0.018 255);
+  --muted-foreground: oklch(0.70 0.015 255);
+
+  --accent: oklch(0.28 0.045 262);
+  --accent-foreground: oklch(0.88 0.035 262);
+
+  --destructive: oklch(0.63 0.20 25);
   --destructive-foreground: oklch(1 0 0);
-  --border: oklch(1 0 0 / 0.12);
-  --input: oklch(1 0 0 / 0.16);
-  --ring: oklch(0.65 0.19 262.9);
 
-  --success: oklch(0.74 0.16 162.5);
-  --success-foreground: oklch(0.16 0.02 264);
-  --trending: oklch(0.8 0.15 70.1);
-  --trending-foreground: oklch(0.2 0.04 70);
+  --border: oklch(1 0 0 / 0.10);
+  --input: oklch(1 0 0 / 0.13);
 
-  --brand: oklch(0.65 0.19 262.9);
-  --brand-2: oklch(0.8 0.15 70.1);
-  --brand-3: oklch(0.74 0.16 162.5);
-  --verified: oklch(0.65 0.19 262.9);
+  --ring: oklch(0.66 0.18 262);
 
-  --glass: oklch(0.21 0.022 264 / 0.72);
-  --glass-border: oklch(1 0 0 / 0.12);
+  --success: oklch(0.70 0.15 160);
+  --success-foreground: oklch(0.15 0.018 255);
 
-  --shadow-soft: 0 1px 2px oklch(0 0 0 / 0.4), 0 8px 24px -12px oklch(0 0 0 / 0.5);
-  --shadow-flat: 0 1px 2px oklch(0 0 0 / 0.3);
+  --trending: oklch(0.76 0.13 72);
+  --trending-foreground: oklch(0.18 0.03 72);
+
+  --brand: oklch(0.66 0.18 262);
+  --brand-2: oklch(0.76 0.13 72);
+  --brand-3: oklch(0.70 0.15 160);
+
+  --verified: oklch(0.66 0.18 262);
+
+  --glass: oklch(0.19 0.018 255 / 0.90);
+  --glass-border: oklch(1 0 0 / 0.10);
+
+  --shadow-soft:
+    0 1px 2px oklch(0 0 0 / 0.30),
+    0 8px 24px -12px oklch(0 0 0 / 0.45);
+
+  --shadow-flat:
+    0 1px 2px oklch(0 0 0 / 0.28);
 }
 
+/* ===================================================================
+   BASE
+   =================================================================== */
+
 @layer base {
-  * { border-color: var(--color-border); }
-  html { font-family: var(--font-sans); scroll-behavior: smooth; }
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    font-family: var(--font-sans);
+    scroll-behavior: smooth;
+  }
+
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     -webkit-font-smoothing: antialiased;
   }
-  h1,h2,h3,h4 { font-family: var(--font-display); letter-spacing: -0.02em; }
-  :focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
-  img, video { max-width: 100%; }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  img,
+  video {
+    max-width: 100%;
+  }
 }
 
-/* ---------------- Surfaces ---------------- */
+/* ===================================================================
+   SURFACES
+   =================================================================== */
 
 @utility glass {
   background: var(--surface);
@@ -160,7 +278,7 @@
 
 @utility glass-blur {
   background: var(--glass);
-  backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(120%);
   border-bottom: 1px solid var(--glass-border);
 }
 
@@ -170,8 +288,11 @@
   border-radius: var(--radius);
 }
 
-@utility shadow-soft { box-shadow: var(--shadow-soft); }
+@utility shadow-soft {
+  box-shadow: var(--shadow-soft);
+}
 
+/* Brand surfaces stay solid and intentional. */
 @utility gradient-brand {
   background-color: var(--primary);
   background-image: none;
@@ -192,71 +313,164 @@
   background-image: none;
 }
 
-@utility shadow-brand { box-shadow: var(--shadow-soft); }
+@utility shadow-brand {
+  box-shadow: var(--shadow-soft);
+}
 
 @utility hover-lift {
-  transition: transform 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease;
-  &:hover { transform: translateY(-1px); background-color: var(--muted); }
+  transition:
+    transform 0.18s ease,
+    background-color 0.18s ease,
+    box-shadow 0.18s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    background-color: var(--muted);
+  }
 }
 
 @utility press {
   transition: transform 0.12s ease;
-  &:active { transform: scale(0.96); }
+
+  &:active {
+    transform: scale(0.96);
+  }
 }
 
-/* ---------------- Motion ---------------- */
+/* ===================================================================
+   MOTION
+   =================================================================== */
 
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes float-slow {
-  0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-}
-@keyframes shimmer {
-  100% { transform: translateX(100%); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-@utility animate-float { animation: float-slow 7s ease-in-out infinite; }
-@utility animate-fade-up { animation: fade-up 0.35s ease-out both; }
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@utility animate-float {
+  animation: float-slow 7s ease-in-out infinite;
+}
+
+@utility animate-fade-up {
+  animation: fade-up 0.35s ease-out both;
+}
 
 @utility skeleton {
   position: relative;
   overflow: hidden;
   background: var(--muted);
   border-radius: var(--radius-md);
+
   &::after {
     content: "";
     position: absolute;
     inset: 0;
     transform: translateX(-100%);
-    background-image: linear-gradient(90deg, transparent, var(--glass), transparent);
+    background-image: linear-gradient(
+      90deg,
+      transparent,
+      var(--glass),
+      transparent
+    );
     animation: shimmer 1.4s infinite;
   }
 }
 
 @utility no-scrollbar {
   scrollbar-width: none;
-  &::-webkit-scrollbar { display: none; }
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
+
+/* ===================================================================
+   ACCESSIBILITY
+   =================================================================== */
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
 }
 
-/* Prevent horizontal scroll globally */
-html, body { overflow-x: hidden; max-width: 100vw; }
+/* ===================================================================
+   GLOBAL OVERFLOW
+   =================================================================== */
 
-/* ---------------- Mobile overflow guards ----------------
- * Long words, URLs and fixed-width children are the usual cause of content
- * bleeding off the right edge on phones. These keep everything on screen. */
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
 @layer base {
-  html, body { overflow-x: clip; }
-  p, h1, h2, h3, h4, span, li, a, td, div { overflow-wrap: anywhere; }
-  pre, code { white-space: pre-wrap; word-break: break-word; }
+  html,
+  body {
+    overflow-x: clip;
+  }
+
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  span,
+  li,
+  a,
+  td,
+  div {
+    overflow-wrap: anywhere;
+  }
+
+  pre,
+  code {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
   [class*="grid-cols"] > *,
-  [class*="flex"] > * { min-width: 0; }
-  img, video, canvas, iframe { height: auto; max-width: 100%; }
-  table { display: block; max-width: 100%; overflow-x: auto; }
+  [class*="flex"] > * {
+    min-width: 0;
+  }
+
+  img,
+  video,
+  canvas,
+  iframe {
+    height: auto;
+    max-width: 100%;
+  }
+
+  table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
 }
