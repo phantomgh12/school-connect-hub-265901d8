@@ -1,12 +1,8 @@
-// Card.jsx
-// A reusable container for displaying different types of content.
-// The content placed between <Card> and </Card>
-// becomes available through the "children" prop.
-
-function Card({ children }) {
+// Reusable card container with modern glass/border styling and responsive padding
+function Card({ children, className = "" }) {
   return (
-    <div className="rounded-2xl border border-sky-200 mt-[2rem] ml-[2rem] p-[5rem] shadow-sm h-[35rem] w-[60rem] flex flex-col justify-center items-center">
-      {children} 
+    <div className={`rounded-3xl border border-sky-100 bg-white p-6 sm:p-10 shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col justify-between ${className}`}>
+      {children}
     </div>
   );
 }

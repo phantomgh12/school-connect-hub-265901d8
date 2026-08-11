@@ -1,11 +1,12 @@
-// Button.jsx
-// This is a reusable button component.
-// Instead of creating the same button repeatedly,
-// we can use <Button /> anywhere in our application.
+function Button({ text, variant = "primary" }) {
+  const baseStyles = "font-semibold py-2 px-5 rounded-xl transition-all duration-200 text-sm sm:text-base shadow-sm active:scale-95";
+  const variants = {
+    primary: "bg-white text-sky-600 hover:bg-sky-50 hover:shadow-md",
+    secondary: "bg-sky-500/20 text-white border border-white/30 hover:bg-sky-500/40"
+  };
 
-function Button({text, variant}) {
   return (
-    <button className={`${variant === "primary" ? "bg-sky-500 text-white mr-2" : "bg-gray-500 text-white"} hover:bg-blue-700 font-bold py-2 px-4 rounded`}>
+    <button className={`${baseStyles} ${variants[variant] || variants.primary}`}>
       {text}
     </button>
   );
