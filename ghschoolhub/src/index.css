@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 :root {
   --text: #6b6375;
   --text-h: #08060d;
@@ -66,12 +68,12 @@ body {
   box-sizing: border-box;
 }
 
-h1,
+/* h1,
 h2 {
   font-family: var(--heading);
   font-weight: 500;
   color: var(--text-h);
-}
+} */
 
 h1 {
   font-size: 56px;
@@ -82,7 +84,7 @@ h1 {
     margin: 20px 0;
   }
 }
-h2 {
+/* h2 {
   font-size: 24px;
   line-height: 118%;
   letter-spacing: -0.24px;
@@ -90,7 +92,7 @@ h2 {
   @media (max-width: 1024px) {
     font-size: 20px;
   }
-}
+} */
 p {
   margin: 0;
 }
