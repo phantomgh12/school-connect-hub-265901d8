@@ -72,7 +72,7 @@ export function StoryRail({ userId, avatarUrl: _avatarUrl }: { userId: string; a
                   <span className="text-xs font-black text-white drop-shadow">{mine.items[mine.items.length - 1]?.caption}</span>
                 </div>
               )}
-              <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-1.5 text-[10px] font-bold text-white">Your story</span>
+              <span className="absolute inset-x-0 bottom-0 bg-black/55 p-1.5 text-[10px] font-bold text-white">Your story</span>
             </button>
             <Link to="/new-story" aria-label="Add to your story" className="absolute -right-1 -top-1 grid h-7 w-7 place-items-center rounded-full gradient-brand text-primary-foreground shadow-brand">
               <Plus className="h-4 w-4" />
@@ -106,7 +106,7 @@ export function StoryRail({ userId, avatarUrl: _avatarUrl }: { userId: string; a
                     <span className="text-xs font-black text-white drop-shadow">{cover?.caption ?? name}</span>
                   </div>
                 )}
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-1.5">
+                <div className="absolute inset-x-0 bottom-0 bg-black/55 p-1.5">
                   <div className="flex items-center gap-1.5">
                     <div className="grid h-6 w-6 shrink-0 place-items-center overflow-hidden rounded-full border-2 border-white bg-muted text-[10px] font-bold">
                       {g.author?.avatar_url ? <img src={g.author.avatar_url} className="h-full w-full object-cover" alt="" loading="lazy" decoding="async" /> : name[0]}

@@ -126,7 +126,7 @@ function ReelCard({ reel, uid, onChange }: { reel: Reel; uid: string; onChange: 
         {muted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
       </button>
 
-      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4 text-white">
+      <div className="absolute inset-x-0 bottom-0 bg-black/60 p-4 text-white">
         <Link to="/profile/$userId" params={{ userId: reel.user_id }} className="mb-2 inline-flex items-center gap-2">
           <div className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-full ring-2 ring-white bg-muted text-xs font-bold">
             {reel.author?.avatar_url ? <img src={reel.author.avatar_url} className="h-full w-full object-cover" alt="" loading="lazy" decoding="async" /> : name[0]}

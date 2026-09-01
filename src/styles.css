@@ -358,12 +358,8 @@
     position: absolute;
     inset: 0;
     transform: translateX(-100%);
-    background-image: linear-gradient(
-      90deg,
-      transparent,
-      var(--glass),
-      transparent
-    );
+    background-color: var(--glass);
+    opacity: 0.55;
     animation: shimmer 1.4s infinite;
   }
 }

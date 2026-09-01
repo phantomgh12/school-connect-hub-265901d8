@@ -101,7 +101,7 @@ export function StoryViewer({ stories, startIndex, currentUserId, onClose }: { s
 
       <div className="flex h-[100dvh] w-full flex-col overflow-hidden bg-black sm:h-[min(90dvh,760px)] sm:w-[min(100%,420px)] sm:rounded-3xl sm:shadow-2xl">
         {/* Header — its own row, never over the media */}
-        <div className="shrink-0 bg-gradient-to-b from-black/80 to-black/40 px-3 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))]">
+        <div className="shrink-0 bg-black/55 px-3 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))]">
           <div className="flex gap-1">
             {stories.map((_, idx) => (
               <div key={idx} className="h-0.5 flex-1 overflow-hidden rounded-full bg-white/25">
@@ -155,7 +155,7 @@ export function StoryViewer({ stories, startIndex, currentUserId, onClose }: { s
 
         {/* Footer — its own row */}
         {!isMine ? (
-          <div className="shrink-0 grid gap-2 bg-gradient-to-t from-black/85 to-black/40 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3">
+          <div className="shrink-0 grid gap-2 bg-black/55 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3">
             <div className="flex justify-center gap-1 overflow-x-auto">
               {REACTIONS.map((e) => (
                 <button key={e} onClick={() => react(e)} className="shrink-0 rounded-full bg-white/10 px-2.5 py-1 text-lg transition hover:scale-110">{e}</button>

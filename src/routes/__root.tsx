@@ -18,9 +18,9 @@ import { setupPWA } from "@/lib/pwa";
 
 function NotFoundComponent() {
   return (
-    <div className="flex min-h-screen items-center justify-center hero-surface px-4">
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="glass max-w-md rounded-3xl p-10 text-center">
-        <h1 className="text-7xl font-black text-gradient">404</h1>
+        <h1 className="text-7xl font-black text-primary">404</h1>
         <h2 className="mt-4 text-xl font-semibold">Page not found</h2>
         <p className="mt-2 text-sm text-muted-foreground">
           This page doesn't exist — but a whole campus of new friends does.
@@ -28,7 +28,7 @@ function NotFoundComponent() {
         <div className="mt-6">
           <Link
             to="/"
-            className="inline-flex items-center justify-center rounded-full gradient-brand px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-brand"
+            className="inline-flex items-center justify-center rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-brand"
           >
             Back home
           </Link>
@@ -46,7 +46,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   }, [error]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center hero-surface px-4">
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="glass max-w-md rounded-3xl p-10 text-center">
         <h1 className="text-xl font-semibold">Something broke</h1>
         <p className="mt-2 text-sm text-muted-foreground">
@@ -55,7 +55,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
             onClick={() => { router.invalidate(); reset(); }}
-            className="inline-flex items-center justify-center rounded-full gradient-brand px-5 py-2 text-sm font-semibold text-primary-foreground"
+            className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground"
           >
             Try again
           </button>
@@ -76,7 +76,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "GH SCHOOL HUB — The social network for students & alumni" },
       { name: "description", content: "SchoolConnect helps students from Primary, JHS, SHS, Technical schools, universities and alumni meet friends, chat, share stories and grow together." },
       { name: "author", content: "SchoolConnect" },
-      { name: "theme-color", content: "#6d5cf0" },
+      { name: "theme-color", content: "#15181f" },
       { name: "mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
@@ -94,7 +94,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: appCss },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
       { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "apple-touch-icon", href: "/apple-touch-icon.png", sizes: "180x180" },
