@@ -78,92 +78,64 @@
 }
 
 :root {
-  --radius: 1rem;
+  --radius: 0.875rem;
 
-  /* ================================================================
-     CORE PALETTE
-     ================================================================ */
-
-  /* 60% — neutral foundation */
-  --background: oklch(0.985 0.002 247);
+  /* ---------- Neutral foundation (warm editorial greys) ---------- */
+  --background: oklch(0.978 0.003 100);
   --surface: oklch(1 0 0);
 
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.22 0.025 255);
+  --card-foreground: oklch(0.205 0.012 265);
 
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.22 0.025 255);
+  --popover-foreground: oklch(0.205 0.012 265);
 
-  /* 30% — deep structural navy/slate */
-  --foreground: oklch(0.22 0.025 255);
+  --foreground: oklch(0.205 0.012 265);
 
-  --secondary: oklch(0.955 0.008 250);
-  --secondary-foreground: oklch(0.30 0.025 255);
+  --secondary: oklch(0.962 0.004 100);
+  --secondary-foreground: oklch(0.30 0.012 265);
 
-  --muted: oklch(0.955 0.008 250);
-  --muted-foreground: oklch(0.52 0.025 255);
+  --muted: oklch(0.962 0.004 100);
+  --muted-foreground: oklch(0.505 0.012 265);
 
-  --border: oklch(0.90 0.008 250);
-  --input: oklch(0.92 0.008 250);
+  --border: oklch(0.905 0.005 100);
+  --input: oklch(0.925 0.005 100);
 
-  /* ================================================================
-     10% — BRAND COLOR
-     ================================================================ */
+  /* ---------- Action: deep ink (flat, no gradients) ---------- */
+  --primary: oklch(0.245 0.022 265);
+  --primary-foreground: oklch(0.99 0 0);
 
-  /* Strong but controlled royal blue */
-  --primary: oklch(0.52 0.21 262);
-  --primary-foreground: oklch(1 0 0);
+  --accent: oklch(0.955 0.022 165);
+  --accent-foreground: oklch(0.36 0.09 165);
 
-  --accent: oklch(0.94 0.025 262);
-  --accent-foreground: oklch(0.40 0.15 262);
+  --ring: oklch(0.245 0.022 265);
 
-  --ring: oklch(0.52 0.21 262);
+  /* ---------- Semantic ---------- */
+  --success: oklch(0.58 0.13 163);
+  --success-foreground: oklch(0.99 0 0);
 
-  /* ================================================================
-     SEMANTIC COLORS
-     These should not become decorative brand colors.
-     ================================================================ */
+  --trending: oklch(0.75 0.14 70);
+  --trending-foreground: oklch(0.28 0.06 70);
 
-  --success: oklch(0.63 0.16 160);
-  --success-foreground: oklch(1 0 0);
+  --destructive: oklch(0.55 0.20 22);
+  --destructive-foreground: oklch(0.99 0 0);
 
-  --trending: oklch(0.72 0.14 72);
-  --trending-foreground: oklch(0.30 0.06 72);
+  /* ---------- Brand scale ---------- */
+  --brand: oklch(0.245 0.022 265);
+  --brand-2: oklch(0.58 0.13 163);
+  --brand-3: oklch(0.75 0.14 70);
 
-  --destructive: oklch(0.58 0.21 25);
-  --destructive-foreground: oklch(1 0 0);
+  --verified: oklch(0.55 0.14 250);
 
-  /* ================================================================
-     BRAND TOKENS
-     Keep the brand hierarchy blue-first.
-     ================================================================ */
-
-  --brand: oklch(0.52 0.21 262);
-
-  /* Secondary brand values are intentionally restrained. */
-  --brand-2: oklch(0.72 0.14 72);
-  --brand-3: oklch(0.63 0.16 160);
-
-  --verified: oklch(0.52 0.21 262);
-
-  /* ================================================================
-     GLASS / CHROME
-     ================================================================ */
-
-  --glass: oklch(1 0 0 / 0.88);
-  --glass-border: oklch(0.90 0.008 250 / 0.85);
-
-  /* ================================================================
-     SHADOWS
-     Neutral shadows instead of colored/glowing shadows.
-     ================================================================ */
+  /* ---------- Chrome ---------- */
+  --glass: oklch(1 0 0 / 0.92);
+  --glass-border: oklch(0.905 0.005 100 / 0.9);
 
   --shadow-soft:
-    0 1px 2px oklch(0.20 0.02 255 / 0.04),
-    0 8px 24px -12px oklch(0.20 0.02 255 / 0.14);
+    0 1px 2px oklch(0.20 0.01 265 / 0.05),
+    0 10px 28px -18px oklch(0.20 0.01 265 / 0.18);
 
-  --shadow-flat:
-    0 1px 2px oklch(0.20 0.02 255 / 0.06);
+  --shadow-flat: 0 1px 2px oklch(0.20 0.01 265 / 0.06);
 }
 
 /* ===================================================================
@@ -171,60 +143,57 @@
    =================================================================== */
 
 .dark {
-  /* Neutral navy foundation */
-  --background: oklch(0.16 0.018 255);
-  --foreground: oklch(0.96 0.006 255);
+  --background: oklch(0.165 0.012 265);
+  --foreground: oklch(0.965 0.004 100);
 
-  --surface: oklch(0.19 0.018 255);
+  --surface: oklch(0.198 0.012 265);
 
-  --card: oklch(0.205 0.018 255);
-  --card-foreground: oklch(0.96 0.006 255);
+  --card: oklch(0.212 0.012 265);
+  --card-foreground: oklch(0.965 0.004 100);
 
-  --popover: oklch(0.19 0.018 255);
-  --popover-foreground: oklch(0.96 0.006 255);
+  --popover: oklch(0.198 0.012 265);
+  --popover-foreground: oklch(0.965 0.004 100);
 
-  /* Brand remains blue, but brighter for contrast */
-  --primary: oklch(0.66 0.18 262);
-  --primary-foreground: oklch(0.15 0.018 255);
+  --primary: oklch(0.955 0.004 100);
+  --primary-foreground: oklch(0.185 0.012 265);
 
-  --secondary: oklch(0.245 0.018 255);
-  --secondary-foreground: oklch(0.95 0.006 255);
+  --secondary: oklch(0.255 0.012 265);
+  --secondary-foreground: oklch(0.955 0.004 100);
 
-  --muted: oklch(0.245 0.018 255);
-  --muted-foreground: oklch(0.70 0.015 255);
+  --muted: oklch(0.255 0.012 265);
+  --muted-foreground: oklch(0.715 0.010 265);
 
-  --accent: oklch(0.28 0.045 262);
-  --accent-foreground: oklch(0.88 0.035 262);
+  --accent: oklch(0.29 0.045 165);
+  --accent-foreground: oklch(0.88 0.06 165);
 
-  --destructive: oklch(0.63 0.20 25);
-  --destructive-foreground: oklch(1 0 0);
+  --destructive: oklch(0.62 0.19 22);
+  --destructive-foreground: oklch(0.99 0 0);
 
-  --border: oklch(1 0 0 / 0.10);
-  --input: oklch(1 0 0 / 0.13);
+  --border: oklch(1 0 0 / 0.11);
+  --input: oklch(1 0 0 / 0.14);
 
-  --ring: oklch(0.66 0.18 262);
+  --ring: oklch(0.955 0.004 100);
 
-  --success: oklch(0.70 0.15 160);
-  --success-foreground: oklch(0.15 0.018 255);
+  --success: oklch(0.70 0.13 163);
+  --success-foreground: oklch(0.17 0.012 265);
 
-  --trending: oklch(0.76 0.13 72);
-  --trending-foreground: oklch(0.18 0.03 72);
+  --trending: oklch(0.79 0.13 70);
+  --trending-foreground: oklch(0.19 0.03 70);
 
-  --brand: oklch(0.66 0.18 262);
-  --brand-2: oklch(0.76 0.13 72);
-  --brand-3: oklch(0.70 0.15 160);
+  --brand: oklch(0.955 0.004 100);
+  --brand-2: oklch(0.70 0.13 163);
+  --brand-3: oklch(0.79 0.13 70);
 
-  --verified: oklch(0.66 0.18 262);
+  --verified: oklch(0.70 0.12 250);
 
-  --glass: oklch(0.19 0.018 255 / 0.90);
-  --glass-border: oklch(1 0 0 / 0.10);
+  --glass: oklch(0.198 0.012 265 / 0.92);
+  --glass-border: oklch(1 0 0 / 0.11);
 
   --shadow-soft:
-    0 1px 2px oklch(0 0 0 / 0.30),
-    0 8px 24px -12px oklch(0 0 0 / 0.45);
+    0 1px 2px oklch(0 0 0 / 0.32),
+    0 10px 28px -18px oklch(0 0 0 / 0.5);
 
-  --shadow-flat:
-    0 1px 2px oklch(0 0 0 / 0.28);
+  --shadow-flat: 0 1px 2px oklch(0 0 0 / 0.3);
 }
 
 /* ===================================================================
