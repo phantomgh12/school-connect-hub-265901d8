@@ -86,6 +86,63 @@ export type Database = {
         }
         Relationships: []
       }
+      auth_events: {
+        Row: {
+          created_at: string
+          detail: string | null
+          id: number
+          ip_hash: string | null
+          kind: string
+          success: boolean
+          user_id: string | null
+          username_key: string | null
+        }
+        Insert: {
+          created_at?: string
+          detail?: string | null
+          id?: number
+          ip_hash?: string | null
+          kind: string
+          success?: boolean
+          user_id?: string | null
+          username_key?: string | null
+        }
+        Update: {
+          created_at?: string
+          detail?: string | null
+          id?: number
+          ip_hash?: string | null
+          kind?: string
+          success?: boolean
+          user_id?: string | null
+          username_key?: string | null
+        }
+        Relationships: []
+      }
+      blocked_username_patterns: {
+        Row: {
+          created_at: string
+          id: string
+          kind: string
+          pattern: string
+          reason: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kind?: string
+          pattern: string
+          reason?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kind?: string
+          pattern?: string
+          reason?: string | null
+        }
+        Relationships: []
+      }
       box_openings: {
         Row: {
           box_id: string
@@ -887,6 +944,8 @@ export type Database = {
       }
       profiles: {
         Row: {
+          age: number | null
+          age_verified: boolean
           avatar_url: string | null
           ban_reason: string | null
           banned: boolean
@@ -909,6 +968,7 @@ export type Database = {
           school_name: string | null
           school_slug: string | null
           school_type: Database["public"]["Enums"]["school_type"] | null
+          security_setup: boolean
           suspended_until: string | null
           updated_at: string
           username: string | null
@@ -917,6 +977,8 @@ export type Database = {
           verified_at: string | null
         }
         Insert: {
+          age?: number | null
+          age_verified?: boolean
           avatar_url?: string | null
           ban_reason?: string | null
           banned?: boolean
@@ -939,6 +1001,7 @@ export type Database = {
           school_name?: string | null
           school_slug?: string | null
           school_type?: Database["public"]["Enums"]["school_type"] | null
+          security_setup?: boolean
           suspended_until?: string | null
           updated_at?: string
           username?: string | null
@@ -947,6 +1010,8 @@ export type Database = {
           verified_at?: string | null
         }
         Update: {
+          age?: number | null
+          age_verified?: boolean
           avatar_url?: string | null
           ban_reason?: string | null
           banned?: boolean
@@ -969,6 +1034,7 @@ export type Database = {
           school_name?: string | null
           school_slug?: string | null
           school_type?: Database["public"]["Enums"]["school_type"] | null
+          security_setup?: boolean
           suspended_until?: string | null
           updated_at?: string
           username?: string | null
@@ -1211,6 +1277,27 @@ export type Database = {
           name?: string
           starts_at?: string
           theme?: string
+        }
+        Relationships: []
+      }
+      security_answers: {
+        Row: {
+          answer_hash: string
+          created_at: string
+          q_index: number
+          user_id: string
+        }
+        Insert: {
+          answer_hash: string
+          created_at?: string
+          q_index: number
+          user_id: string
+        }
+        Update: {
+          answer_hash?: string
+          created_at?: string
+          q_index?: number
+          user_id?: string
         }
         Relationships: []
       }
@@ -1694,6 +1781,10 @@ export type Database = {
         Returns: undefined
       }
       are_friends: { Args: { _a: string; _b: string }; Returns: boolean }
+      auth_throttle_state: {
+        Args: { _ip_hash: string; _username_key: string }
+        Returns: Json
+      }
       award_coins: { Args: { _amount: number }; Returns: number }
       award_xp: { Args: { _amount: number; _reason?: string }; Returns: Json }
       buy_shop_item: { Args: { _item_id: string }; Returns: Json }
@@ -1713,6 +1804,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_username_blocked: { Args: { _u: string }; Returns: boolean }
       join_house: { Args: { _slug: string }; Returns: Json }
       mission_period: { Args: { _cadence: string }; Returns: string }
       mutual_friends_count: {
@@ -1720,6 +1812,7 @@ export type Database = {
         Returns: number
       }
       normalize_school: { Args: { _name: string }; Returns: string }
+      normalize_username: { Args: { _u: string }; Returns: string }
       open_box: { Args: { _box_id: string }; Returns: Json }
       progress_mission: {
         Args: { _amount?: number; _kind: string }
@@ -1738,10 +1831,19 @@ export type Database = {
         }
         Returns: Json
       }
+      set_security_answers: {
+        Args: { _answers: Json; _user_id: string }
+        Returns: number
+      }
       signup_rank: { Args: { _user_id: string }; Returns: number }
       touch_streak: { Args: never; Returns: Json }
       user_badge_stats: { Args: { _user_id: string }; Returns: Json }
+      username_available: { Args: { _u: string }; Returns: boolean }
       verification_eligibility: { Args: { _user_id: string }; Returns: Json }
+      verify_security_answers: {
+        Args: { _answers: Json; _user_id: string }
+        Returns: number
+      }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
