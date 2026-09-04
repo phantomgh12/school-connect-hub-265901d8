@@ -890,14 +890,20 @@ export type Database = {
       }
       posts: {
         Row: {
+          audience: string
           comments_count: number
           content: string | null
           created_at: string
+          feeling: string | null
           hashtags: string[]
           id: string
+          is_draft: boolean
           likes_count: number
           media_urls: string[]
+          pinned: boolean
+          poll: Json | null
           post_type: string
+          publish_at: string
           saves_count: number
           shares_count: number
           trending_score: number
@@ -907,14 +913,20 @@ export type Database = {
           watch_ms: number
         }
         Insert: {
+          audience?: string
           comments_count?: number
           content?: string | null
           created_at?: string
+          feeling?: string | null
           hashtags?: string[]
           id?: string
+          is_draft?: boolean
           likes_count?: number
           media_urls?: string[]
+          pinned?: boolean
+          poll?: Json | null
           post_type?: string
+          publish_at?: string
           saves_count?: number
           shares_count?: number
           trending_score?: number
@@ -924,14 +936,20 @@ export type Database = {
           watch_ms?: number
         }
         Update: {
+          audience?: string
           comments_count?: number
           content?: string | null
           created_at?: string
+          feeling?: string | null
           hashtags?: string[]
           id?: string
+          is_draft?: boolean
           likes_count?: number
           media_urls?: string[]
+          pinned?: boolean
+          poll?: Json | null
           post_type?: string
+          publish_at?: string
           saves_count?: number
           shares_count?: number
           trending_score?: number
