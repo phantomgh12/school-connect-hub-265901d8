@@ -18,7 +18,12 @@ export type RawPost = {
   views_count: number;
   watch_ms: number;
   trending_score: number;
+  audience?: string | null;
+  feeling?: string | null;
+  pinned?: boolean | null;
+  poll?: { question: string; options: string[] } | null;
 };
+
 
 const SELECT =
   "id,user_id,content,media_urls,post_type,hashtags,created_at,likes_count,comments_count,saves_count,shares_count,views_count,watch_ms,trending_score";
