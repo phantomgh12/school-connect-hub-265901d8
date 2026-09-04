@@ -12,7 +12,7 @@ export function PostPoll({ postId, poll, currentUserId }: { postId: string; poll
   const [busy, setBusy] = useState(false);
 
   async function load() {
-    const { data } = await supabase.from("poll_votes").select("option_index,user_id").eq("post_id", postId);
+    const { data } = await supabase.from("post_poll_votes").select("option_index,user_id").eq("post_id", postId);
     const next = poll.options.map(() => 0);
     let own: number | null = null;
     (data ?? []).forEach((v: any) => {
@@ -27,7 +27,7 @@ export function PostPoll({ postId, poll, currentUserId }: { postId: string; poll
     load();
     const ch = supabase
       .channel(`poll-${postId}`)
-      .on("postgres_changes", { event: "*", schema: "public", table: "poll_votes", filter: `post_id=eq.${postId}` }, () => load())
+      .on("postgres_changes", { event: "*", schema: "public", table: "post_poll_votes", filter: `post_id=eq.${postId}` }, () => load())
       .subscribe();
     return () => {
       supabase.removeChannel(ch);
@@ -49,7 +49,7 @@ export function PostPoll({ postId, poll, currentUserId }: { postId: string; poll
       return n;
     });
     const { error } = await supabase
-      .from("poll_votes")
+      .from("post_poll_votes")
       .upsert({ post_id: postId, user_id: currentUserId, option_index: i }, { onConflict: "post_id,user_id" });
     setBusy(false);
     if (error) {
