@@ -275,6 +275,12 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
         </div>
       )}
 
+      {post.poll && (
+        <div className="mt-3">
+          <PostPoll postId={post.id} poll={post.poll} currentUserId={currentUserId} />
+        </div>
+      )}
+
       {post.hashtags.length > 0 && (
         <div className="mt-3 flex flex-wrap gap-1.5">
           {post.hashtags.map((h) => (
