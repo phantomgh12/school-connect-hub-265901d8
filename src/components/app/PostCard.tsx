@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Heart, MessageCircle, Bookmark, Share2, MoreHorizontal, Trash2, Pencil, Send, Download, Flag, Loader2, Eye, UserPlus, UserCheck } from "lucide-react";
+import { Heart, MessageCircle, Bookmark, Share2, MoreHorizontal, Trash2, Pencil, Send, Download, Flag, Loader2, Eye, UserPlus, UserCheck, Pin, Globe, Users, School } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { VerifiedBadge } from "@/components/app/VerifiedBadge";
+import { PostPoll, type Poll } from "@/components/app/PostPoll";
 import { toast } from "sonner";
 
 export type FeedPost = {
@@ -20,6 +21,16 @@ export type FeedPost = {
   saved_by_me: boolean;
   view_count?: number;
   share_count?: number;
+  audience?: string | null;
+  feeling?: string | null;
+  pinned?: boolean | null;
+  poll?: Poll | null;
+};
+
+const AUDIENCE_META: Record<string, { icon: typeof Globe; label: string }> = {
+  public: { icon: Globe, label: "Everyone" },
+  friends: { icon: Users, label: "Friends only" },
+  school: { icon: School, label: "My school" },
 };
 
 type Comment = {
