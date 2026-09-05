@@ -26,7 +26,7 @@ export type RawPost = {
 
 
 const SELECT =
-  "id,user_id,content,media_urls,post_type,hashtags,created_at,likes_count,comments_count,saves_count,shares_count,views_count,watch_ms,trending_score";
+  "id,user_id,content,media_urls,post_type,hashtags,created_at,likes_count,comments_count,saves_count,shares_count,views_count,watch_ms,trending_score,audience,feeling,pinned,poll";
 
 export type ViewerContext = {
   uid: string;
@@ -141,7 +141,12 @@ export async function fetchFeedPage(tab: FeedTab, ctx: ViewerContext, page: numb
   const from = ranked ? 0 : page * pageSize;
   const to = ranked ? Math.max((page + 1) * pageSize * 4, 40) - 1 : from + pageSize - 1;
 
-  let q = supabase.from("posts").select(SELECT).range(from, to);
+  let q = supabase
+    .from("posts")
+    .select(SELECT)
+    .eq("is_draft", false)
+    .or(`publish_at.is.null,publish_at.lte.${new Date().toISOString()}`)
+    .range(from, to);
   if (tab === "trending") q = q.order("trending_score", { ascending: false });
   else q = q.order("created_at", { ascending: false });
 
