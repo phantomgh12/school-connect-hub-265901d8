@@ -53,8 +53,19 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
   const [editContent, setEditContent] = useState(post.content ?? "");
   const [menuOpen, setMenuOpen] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [pinned, setPinned] = useState(!!post.pinned);
 
   const isMine = post.user_id === currentUserId;
+  const audience = AUDIENCE_META[post.audience ?? "public"] ?? AUDIENCE_META["public"]!;
+  const AudienceIcon = audience.icon;
+
+  async function togglePin() {
+    const next = !pinned;
+    const { error } = await supabase.from("posts").update({ pinned: next }).eq("id", post.id);
+    if (error) return toast.error(error.message);
+    setPinned(next);
+    toast.success(next ? "Pinned to your profile" : "Unpinned");
+  }
 
   // Register a view once mounted (owner-only viewer list; public counters live on posts)
   useEffect(() => {
