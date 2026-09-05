@@ -112,10 +112,12 @@ export function scorePost(p: RawPost, ctx: ViewerContext, authorSchool: string |
   const media = (p.media_urls ?? []).length ? 6 : 0;
   const seenPenalty = ctx.seen.has(p.id) ? -55 : 0; // don't re-serve what you already watched
   const stale = hours > 168 ? -20 : 0;
+  const pin = p.pinned ? 24 : 0;
+  const pollBoost = p.poll ? 8 : 0;
 
   return (
     engagement + rate + watch + recency + freshBoost + interestMatch + affinity +
-    schoolBoost + followBoost + friendBoost + history + trending + mine + media + seenPenalty + stale
+    schoolBoost + followBoost + friendBoost + history + trending + mine + media + seenPenalty + stale + pin + pollBoost
   );
 }
 
