@@ -171,6 +171,19 @@ export async function fetchFeedPage(tab: FeedTab, ctx: ViewerContext, page: numb
   const liked = new Set((myLikes ?? []).map((l: any) => l.post_id));
   const saved = new Set((mySaves ?? []).map((s: any) => s.post_id));
 
+  // Respect each post's chosen audience: public / friends only / same school.
+  rows = rows.filter((p) => {
+    if (p.user_id === ctx.uid) return true;
+    const aud = p.audience ?? "public";
+    if (aud === "friends") return ctx.friendIds.has(p.user_id);
+    if (aud === "school") {
+      const s = amap.get(p.user_id)?.school_slug ?? null;
+      return !!s && s === ctx.schoolSlug;
+    }
+    return true;
+  });
+  if (!rows.length) return { posts: [], hasMore: false };
+
   if (tab === "foryou") {
     const scored = rows
       .map((p) => ({ p, score: scorePost(p, ctx, amap.get(p.user_id)?.school_slug ?? null) }))
