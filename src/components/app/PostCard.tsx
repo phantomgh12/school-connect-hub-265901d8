@@ -199,21 +199,25 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
   return (
     <article id={`post-${post.id}`} className="glass w-full max-w-full overflow-hidden rounded-3xl p-4 sm:p-5 animate-fade-up">
       <header className="flex min-w-0 items-center gap-2 sm:gap-3">
-        <Link to="/profile/$userId" params={{ userId: post.user_id }} className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full gradient-brand text-sm font-bold text-primary-foreground ring-2 ring-background">
+        <Link to="/profile/$userId" params={{ userId: post.user_id }} className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full bg-primary text-sm font-bold text-primary-foreground ring-2 ring-background">
           {post.author?.avatar_url ? <img src={post.author.avatar_url} className="h-full w-full object-cover" alt="" loading="lazy" decoding="async" /> : initials}
         </Link>
         <div className="min-w-0 flex-1">
           <span className="flex min-w-0 items-center gap-1">
             <Link to="/profile/$userId" params={{ userId: post.user_id }} className="truncate text-sm font-bold hover:underline">{name}</Link>
             <VerifiedBadge userId={post.user_id} className="h-3.5 w-3.5" />
+            {post.feeling && <span className="truncate text-xs text-muted-foreground">is feeling {post.feeling}</span>}
+            {pinned && <Pin className="h-3 w-3 shrink-0 text-primary" aria-label="Pinned" />}
           </span>
-          <div className="truncate text-xs text-muted-foreground">
-            {post.author?.school_name ? `${post.author.school_name} • ` : ""}
-            {timeAgo(post.created_at)}
+          <div className="flex min-w-0 items-center gap-1.5 truncate text-xs text-muted-foreground">
+            {post.author?.school_name ? <span className="truncate">{post.author.school_name} •</span> : null}
+            <span>{timeAgo(post.created_at)}</span>
+            <span aria-hidden>•</span>
+            <AudienceIcon className="h-3 w-3 shrink-0" aria-label={audience.label} />
           </div>
         </div>
         {!isMine && (
-          <button onClick={toggleFollow} className={`shrink-0 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold ${isFollowing ? "border bg-background/60 text-muted-foreground" : "gradient-brand text-primary-foreground shadow-brand"}`}>
+          <button onClick={toggleFollow} className={`shrink-0 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold ${isFollowing ? "border bg-background/60 text-muted-foreground" : "bg-primary text-primary-foreground"}`}>
             {isFollowing ? <><UserCheck className="h-3 w-3" /> <span className="hidden xs:inline">Following</span></> : <><UserPlus className="h-3 w-3" /> <span className="hidden xs:inline">Follow</span></>}
           </button>
         )}
@@ -224,6 +228,7 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
               {isMine && (
                 <>
                   <button onClick={() => { setEditing(true); setMenuOpen(false); }} className="flex w-full items-center gap-2 px-3 py-2 text-sm hover:bg-muted"><Pencil className="h-3.5 w-3.5" /> Edit</button>
+                  <button onClick={() => { togglePin(); setMenuOpen(false); }} className="flex w-full items-center gap-2 px-3 py-2 text-sm hover:bg-muted"><Pin className="h-3.5 w-3.5" /> {pinned ? "Unpin" : "Pin"}</button>
                   <button onClick={() => { del(); setMenuOpen(false); }} className="flex w-full items-center gap-2 px-3 py-2 text-sm text-destructive hover:bg-muted"><Trash2 className="h-3.5 w-3.5" /> Delete</button>
                 </>
               )}
@@ -240,7 +245,7 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
         <div className="mt-3">
           <textarea value={editContent} onChange={(e) => setEditContent(e.target.value)} rows={3} className="w-full rounded-2xl border bg-background/60 p-3 text-sm outline-none" />
           <div className="mt-2 flex gap-2">
-            <button onClick={saveEdit} className="rounded-full gradient-brand px-4 py-1.5 text-xs font-bold text-primary-foreground">Save</button>
+            <button onClick={saveEdit} className="rounded-full bg-primary px-4 py-1.5 text-xs font-bold text-primary-foreground">Save</button>
             <button onClick={() => setEditing(false)} className="rounded-full border px-4 py-1.5 text-xs font-semibold">Cancel</button>
           </div>
         </div>
