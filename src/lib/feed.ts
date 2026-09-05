@@ -26,7 +26,7 @@ export type RawPost = {
 
 
 const SELECT =
-  "id,user_id,content,media_urls,post_type,hashtags,created_at,likes_count,comments_count,saves_count,shares_count,views_count,watch_ms,trending_score";
+  "id,user_id,content,media_urls,post_type,hashtags,created_at,likes_count,comments_count,saves_count,shares_count,views_count,watch_ms,trending_score,audience,feeling,pinned,poll";
 
 export type ViewerContext = {
   uid: string;
@@ -112,10 +112,12 @@ export function scorePost(p: RawPost, ctx: ViewerContext, authorSchool: string |
   const media = (p.media_urls ?? []).length ? 6 : 0;
   const seenPenalty = ctx.seen.has(p.id) ? -55 : 0; // don't re-serve what you already watched
   const stale = hours > 168 ? -20 : 0;
+  const pin = p.pinned ? 24 : 0;
+  const pollBoost = p.poll ? 8 : 0;
 
   return (
     engagement + rate + watch + recency + freshBoost + interestMatch + affinity +
-    schoolBoost + followBoost + friendBoost + history + trending + mine + media + seenPenalty + stale
+    schoolBoost + followBoost + friendBoost + history + trending + mine + media + seenPenalty + stale + pin + pollBoost
   );
 }
 
@@ -141,7 +143,12 @@ export async function fetchFeedPage(tab: FeedTab, ctx: ViewerContext, page: numb
   const from = ranked ? 0 : page * pageSize;
   const to = ranked ? Math.max((page + 1) * pageSize * 4, 40) - 1 : from + pageSize - 1;
 
-  let q = supabase.from("posts").select(SELECT).range(from, to);
+  let q = supabase
+    .from("posts")
+    .select(SELECT)
+    .eq("is_draft", false)
+    .or(`publish_at.is.null,publish_at.lte.${new Date().toISOString()}`)
+    .range(from, to);
   if (tab === "trending") q = q.order("trending_score", { ascending: false });
   else q = q.order("created_at", { ascending: false });
 
@@ -165,6 +172,19 @@ export async function fetchFeedPage(tab: FeedTab, ctx: ViewerContext, page: numb
   const amap = new Map((authors ?? []).map((a: any) => [a.id, a]));
   const liked = new Set((myLikes ?? []).map((l: any) => l.post_id));
   const saved = new Set((mySaves ?? []).map((s: any) => s.post_id));
+
+  // Respect each post's chosen audience: public / friends only / same school.
+  rows = rows.filter((p) => {
+    if (p.user_id === ctx.uid) return true;
+    const aud = p.audience ?? "public";
+    if (aud === "friends") return ctx.friendIds.has(p.user_id);
+    if (aud === "school") {
+      const s = amap.get(p.user_id)?.school_slug ?? null;
+      return !!s && s === ctx.schoolSlug;
+    }
+    return true;
+  });
+  if (!rows.length) return { posts: [], hasMore: false };
 
   if (tab === "foryou") {
     const scored = rows

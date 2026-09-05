@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Heart, MessageCircle, Bookmark, Share2, MoreHorizontal, Trash2, Pencil, Send, Download, Flag, Loader2, Eye, UserPlus, UserCheck } from "lucide-react";
+import { Heart, MessageCircle, Bookmark, Share2, MoreHorizontal, Trash2, Pencil, Send, Download, Flag, Loader2, Eye, UserPlus, UserCheck, Pin, Globe, Users, School } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { VerifiedBadge } from "@/components/app/VerifiedBadge";
+import { PostPoll, type Poll } from "@/components/app/PostPoll";
 import { toast } from "sonner";
 
 export type FeedPost = {
@@ -20,6 +21,16 @@ export type FeedPost = {
   saved_by_me: boolean;
   view_count?: number;
   share_count?: number;
+  audience?: string | null;
+  feeling?: string | null;
+  pinned?: boolean | null;
+  poll?: Poll | null;
+};
+
+const AUDIENCE_META: Record<string, { icon: typeof Globe; label: string }> = {
+  public: { icon: Globe, label: "Everyone" },
+  friends: { icon: Users, label: "Friends only" },
+  school: { icon: School, label: "My school" },
 };
 
 type Comment = {
@@ -42,8 +53,19 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
   const [editContent, setEditContent] = useState(post.content ?? "");
   const [menuOpen, setMenuOpen] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [pinned, setPinned] = useState(!!post.pinned);
 
   const isMine = post.user_id === currentUserId;
+  const audience = AUDIENCE_META[post.audience ?? "public"] ?? AUDIENCE_META["public"]!;
+  const AudienceIcon = audience.icon;
+
+  async function togglePin() {
+    const next = !pinned;
+    const { error } = await supabase.from("posts").update({ pinned: next }).eq("id", post.id);
+    if (error) return toast.error(error.message);
+    setPinned(next);
+    toast.success(next ? "Pinned to your profile" : "Unpinned");
+  }
 
   // Register a view once mounted (owner-only viewer list; public counters live on posts)
   useEffect(() => {
@@ -177,21 +199,25 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
   return (
     <article id={`post-${post.id}`} className="glass w-full max-w-full overflow-hidden rounded-3xl p-4 sm:p-5 animate-fade-up">
       <header className="flex min-w-0 items-center gap-2 sm:gap-3">
-        <Link to="/profile/$userId" params={{ userId: post.user_id }} className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full gradient-brand text-sm font-bold text-primary-foreground ring-2 ring-background">
+        <Link to="/profile/$userId" params={{ userId: post.user_id }} className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full bg-primary text-sm font-bold text-primary-foreground ring-2 ring-background">
           {post.author?.avatar_url ? <img src={post.author.avatar_url} className="h-full w-full object-cover" alt="" loading="lazy" decoding="async" /> : initials}
         </Link>
         <div className="min-w-0 flex-1">
           <span className="flex min-w-0 items-center gap-1">
             <Link to="/profile/$userId" params={{ userId: post.user_id }} className="truncate text-sm font-bold hover:underline">{name}</Link>
             <VerifiedBadge userId={post.user_id} className="h-3.5 w-3.5" />
+            {post.feeling && <span className="truncate text-xs text-muted-foreground">is feeling {post.feeling}</span>}
+            {pinned && <Pin className="h-3 w-3 shrink-0 text-primary" aria-label="Pinned" />}
           </span>
-          <div className="truncate text-xs text-muted-foreground">
-            {post.author?.school_name ? `${post.author.school_name} • ` : ""}
-            {timeAgo(post.created_at)}
+          <div className="flex min-w-0 items-center gap-1.5 truncate text-xs text-muted-foreground">
+            {post.author?.school_name ? <span className="truncate">{post.author.school_name} •</span> : null}
+            <span>{timeAgo(post.created_at)}</span>
+            <span aria-hidden>•</span>
+            <AudienceIcon className="h-3 w-3 shrink-0" aria-label={audience.label} />
           </div>
         </div>
         {!isMine && (
-          <button onClick={toggleFollow} className={`shrink-0 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold ${isFollowing ? "border bg-background/60 text-muted-foreground" : "gradient-brand text-primary-foreground shadow-brand"}`}>
+          <button onClick={toggleFollow} className={`shrink-0 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold ${isFollowing ? "border bg-background/60 text-muted-foreground" : "bg-primary text-primary-foreground"}`}>
             {isFollowing ? <><UserCheck className="h-3 w-3" /> <span className="hidden xs:inline">Following</span></> : <><UserPlus className="h-3 w-3" /> <span className="hidden xs:inline">Follow</span></>}
           </button>
         )}
@@ -202,6 +228,7 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
               {isMine && (
                 <>
                   <button onClick={() => { setEditing(true); setMenuOpen(false); }} className="flex w-full items-center gap-2 px-3 py-2 text-sm hover:bg-muted"><Pencil className="h-3.5 w-3.5" /> Edit</button>
+                  <button onClick={() => { togglePin(); setMenuOpen(false); }} className="flex w-full items-center gap-2 px-3 py-2 text-sm hover:bg-muted"><Pin className="h-3.5 w-3.5" /> {pinned ? "Unpin" : "Pin"}</button>
                   <button onClick={() => { del(); setMenuOpen(false); }} className="flex w-full items-center gap-2 px-3 py-2 text-sm text-destructive hover:bg-muted"><Trash2 className="h-3.5 w-3.5" /> Delete</button>
                 </>
               )}
@@ -218,7 +245,7 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
         <div className="mt-3">
           <textarea value={editContent} onChange={(e) => setEditContent(e.target.value)} rows={3} className="w-full rounded-2xl border bg-background/60 p-3 text-sm outline-none" />
           <div className="mt-2 flex gap-2">
-            <button onClick={saveEdit} className="rounded-full gradient-brand px-4 py-1.5 text-xs font-bold text-primary-foreground">Save</button>
+            <button onClick={saveEdit} className="rounded-full bg-primary px-4 py-1.5 text-xs font-bold text-primary-foreground">Save</button>
             <button onClick={() => setEditing(false)} className="rounded-full border px-4 py-1.5 text-xs font-semibold">Cancel</button>
           </div>
         </div>
@@ -245,6 +272,12 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
               </button>
             </div>
           ))}
+        </div>
+      )}
+
+      {post.poll && (
+        <div className="mt-3">
+          <PostPoll postId={post.id} poll={post.poll} currentUserId={currentUserId} />
         </div>
       )}
 
