@@ -186,6 +186,7 @@ function SignInForm() {
         .select("onboarded")
         .eq("id", u.user!.id)
         .maybeSingle();
+      localStorage.setItem("sc:last-username", username);
       toast.success("Signed in");
       navigate({ to: profile?.onboarded ? "/home" : "/onboarding" });
     } catch (err) {
