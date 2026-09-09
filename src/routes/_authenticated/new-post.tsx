@@ -112,7 +112,7 @@ function NewPostPage() {
         feeling,
         poll,
         is_draft: asDraft,
-        publish_at,
+        publish_at: publish_at ?? undefined,
       });
       if (error) throw error;
       localStorage.removeItem("sc:draft");
