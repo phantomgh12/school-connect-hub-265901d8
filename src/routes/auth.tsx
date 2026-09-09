@@ -148,6 +148,27 @@ function SignInForm() {
   const [hp, setHp] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Remember the last username on this device, and skip the form entirely
+  // when a valid session is already stored (auto sign-in).
+  useEffect(() => {
+    const saved = localStorage.getItem("sc:last-username");
+    if (saved) setUsername(saved);
+    let cancelled = false;
+    supabase.auth.getSession().then(async ({ data }) => {
+      if (cancelled || !data.session) return;
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("onboarded")
+        .eq("id", data.session.user.id)
+        .maybeSingle();
+      navigate({ to: profile?.onboarded ? "/home" : "/onboarding" });
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [navigate]);
+
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (loading) return;
@@ -165,6 +186,7 @@ function SignInForm() {
         .select("onboarded")
         .eq("id", u.user!.id)
         .maybeSingle();
+      localStorage.setItem("sc:last-username", username);
       toast.success("Signed in");
       navigate({ to: profile?.onboarded ? "/home" : "/onboarding" });
     } catch (err) {
