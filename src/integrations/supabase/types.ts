@@ -119,6 +119,24 @@ export type Database = {
         }
         Relationships: []
       }
+      auth_secrets: {
+        Row: {
+          created_at: string
+          hmac_secret: string
+          id: number
+        }
+        Insert: {
+          created_at?: string
+          hmac_secret?: string
+          id?: number
+        }
+        Update: {
+          created_at?: string
+          hmac_secret?: string
+          id?: number
+        }
+        Relationships: []
+      }
       blocked_username_patterns: {
         Row: {
           created_at: string
@@ -1831,10 +1849,82 @@ export type Database = {
         Returns: undefined
       }
       are_friends: { Args: { _a: string; _b: string }; Returns: boolean }
+      auth_assert_human: {
+        Args: {
+          _elapsed_ms: number
+          _honeypot?: string
+          _nonce: string
+          _sig: string
+          _solution: string
+          _ts: number
+        }
+        Returns: undefined
+      }
+      auth_assert_not_throttled: { Args: { _key: string }; Returns: undefined }
+      auth_complete_signup: {
+        Args: {
+          _age: number
+          _answers: Json
+          _dob: string
+          _full_name: string
+          _username: string
+        }
+        Returns: Json
+      }
+      auth_log_event: {
+        Args: {
+          _detail?: string
+          _kind: string
+          _success: boolean
+          _username?: string
+        }
+        Returns: undefined
+      }
+      auth_new_challenge: { Args: never; Returns: Json }
+      auth_precheck_signup: {
+        Args: {
+          _age: number
+          _dob: string
+          _elapsed_ms: number
+          _full_name: string
+          _honeypot?: string
+          _nonce: string
+          _sig: string
+          _solution: string
+          _ts: number
+          _username: string
+        }
+        Returns: Json
+      }
+      auth_recovery_questions: {
+        Args: {
+          _elapsed_ms: number
+          _honeypot?: string
+          _nonce: string
+          _sig: string
+          _solution: string
+          _ts: number
+          _username: string
+        }
+        Returns: Json
+      }
+      auth_signin_lookup: {
+        Args: {
+          _elapsed_ms: number
+          _honeypot?: string
+          _nonce: string
+          _sig: string
+          _solution: string
+          _ts: number
+          _username: string
+        }
+        Returns: Json
+      }
       auth_throttle_state: {
         Args: { _ip_hash: string; _username_key: string }
         Returns: Json
       }
+      auth_username_status: { Args: { _u: string }; Returns: Json }
       award_coins: { Args: { _amount: number }; Returns: number }
       award_xp: { Args: { _amount: number; _reason?: string }; Returns: Json }
       buy_shop_item: { Args: { _item_id: string }; Returns: Json }
