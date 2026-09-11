@@ -1908,6 +1908,20 @@ export type Database = {
         }
         Returns: Json
       }
+      auth_reset_password: {
+        Args: {
+          _answers: Json
+          _elapsed_ms: number
+          _honeypot: string
+          _new_password: string
+          _nonce: string
+          _sig: string
+          _solution: string
+          _ts: number
+          _username: string
+        }
+        Returns: Json
+      }
       auth_signin_lookup: {
         Args: {
           _elapsed_ms: number
