@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useServerFn } from "@tanstack/react-start";
+import { Button } from "@/components/ui/button";
 import { KeyRound, Loader2, ShieldCheck } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -9,9 +9,8 @@ import {
   RECOVERY_ANSWERS_REQUIRED,
   SECURITY_QUESTIONS,
   passwordIssues,
-  solveChallenge,
 } from "@/lib/security-questions";
-import { beginRecovery, completeRecovery, getAuthChallenge } from "@/lib/auth.functions";
+import { recoveryQuestions, resetPassword, buildProof } from "@/lib/auth-db";
 
 export const Route = createFileRoute("/recover")({
   head: () => ({
@@ -36,9 +35,6 @@ export const Route = createFileRoute("/recover")({
 
 function RecoverPage() {
   const navigate = useNavigate();
-  const start = useServerFn(beginRecovery);
-  const finish = useServerFn(completeRecovery);
-  const challengeFn = useServerFn(getAuthChallenge);
 
   const [username, setUsername] = useState("");
   const [indexes, setIndexes] = useState<number[] | null>(null);
@@ -50,15 +46,14 @@ function RecoverPage() {
   const [openedAt] = useState(() => Date.now());
 
   async function proof() {
-    const c = await challengeFn();
-    return { challenge: c, solution: await solveChallenge(c.nonce), elapsedMs: Date.now() - openedAt };
+    return buildProof(openedAt);
   }
 
   async function onStart(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await start({ data: { username, honeypot: hp, ...(await proof()) } });
+      const res = await recoveryQuestions({ username, honeypot: hp, proof: await proof() });
       setIndexes(res.indexes);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Could not start recovery");
@@ -74,9 +69,7 @@ function RecoverPage() {
     if (password !== confirm) return toast.error("Passwords do not match.");
     setLoading(true);
     try {
-      const { email } = await finish({
-        data: { username, answers, newPassword: password, honeypot: hp, ...(await proof()) },
-      });
+      const { email } = await resetPassword({ username, answers, newPassword: password, honeypot: hp, proof: await proof() });
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw new Error("Password updated — please sign in.");
       toast.success("Password updated. You're back in!");
@@ -114,13 +107,13 @@ function RecoverPage() {
             <div aria-hidden="true" className="absolute left-[-9999px] h-0 w-0 overflow-hidden">
               <input tabIndex={-1} value={hp} onChange={(e) => setHp(e.target.value)} name="website_url" />
             </div>
-            <button
+            <Button
               type="submit"
               disabled={loading || username.length < 2}
               className="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground disabled:opacity-60"
             >
               {loading && <Loader2 className="h-4 w-4 animate-spin" />} Continue
-            </button>
+            </Button>
           </form>
         ) : (
           <form onSubmit={onFinish} className="mt-6 grid gap-3">
@@ -161,14 +154,14 @@ function RecoverPage() {
                 onChange={(e) => setConfirm(e.target.value)}
               />
             </label>
-            <button
+            <Button
               type="submit"
               disabled={loading}
               className="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground disabled:opacity-60"
             >
               {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldCheck className="h-4 w-4" />}
               Reset password & sign in
-            </button>
+            </Button>
             <p className="text-xs text-muted-foreground">
               Resetting your password signs out every other device on this account.
             </p>
