@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
-import { useServerFn } from "@tanstack/react-start";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import {
   GraduationCap,
@@ -23,15 +23,8 @@ import {
   SECURITY_QUESTIONS,
   USERNAME_RE,
   passwordIssues,
-  solveChallenge,
 } from "@/lib/security-questions";
-import {
-  beginSignIn,
-  checkUsername,
-  getAuthChallenge,
-  recordSignIn,
-  registerAccount,
-} from "@/lib/auth.functions";
+import { signIn, checkUsernameAvailable, newChallenge, buildProof, registerAccount } from "@/lib/auth-db";
 
 const searchSchema = z.object({
   mode: z.enum(["login", "signup"]).default("login").catch("login"),
@@ -61,20 +54,16 @@ export const Route = createFileRoute("/auth")({
 });
 
 function useChallenge() {
-  const fetchChallenge = useServerFn(getAuthChallenge);
   const startedAt = useRef(Date.now());
   const [challenge, setChallenge] = useState<{ nonce: string; ts: number; sig: string } | null>(null);
 
   useEffect(() => {
     startedAt.current = Date.now();
-    fetchChallenge().then(setChallenge).catch(() => setChallenge(null));
-  }, [fetchChallenge]);
+    newChallenge().then(setChallenge).catch(() => setChallenge(null));
+  }, []);
 
   async function proof() {
-    const c = challenge ?? (await fetchChallenge());
-    if (!challenge) setChallenge(c);
-    const solution = await solveChallenge(c.nonce);
-    return { challenge: c, solution, elapsedMs: Date.now() - startedAt.current };
+    return buildProof(startedAt.current);
   }
 
   return { proof, ready: !!challenge };
@@ -140,8 +129,6 @@ function AuthPage() {
 function SignInForm() {
   const navigate = useNavigate();
   const { proof } = useChallenge();
-  const begin = useServerFn(beginSignIn);
-  const record = useServerFn(recordSignIn);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPw, setShowPw] = useState(false);
@@ -175,16 +162,14 @@ function SignInForm() {
     setLoading(true);
     try {
       const p = await proof();
-      const { email } = await begin({ data: { username, honeypot: hp, ...p } });
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      await record({ data: { username, success: !error } });
-      if (error) throw new Error("Incorrect username or password.");
+      await signIn({ username, password, honeypot: hp, proof: p });
 
       const { data: u } = await supabase.auth.getUser();
+      if (!u.user) throw new Error("Please sign in again.");
       const { data: profile } = await supabase
         .from("profiles")
         .select("onboarded")
-        .eq("id", u.user!.id)
+        .eq("id", u.user.id)
         .maybeSingle();
       localStorage.setItem("sc:last-username", username);
       toast.success("Signed in");
@@ -221,26 +206,26 @@ function SignInForm() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••••"
             />
-            <button
+            <Button
               type="button"
               onClick={() => setShowPw((v) => !v)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
               aria-label="Toggle password"
             >
               {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-            </button>
+            </Button>
           </div>
         </Field>
         <Honeypot value={hp} onChange={setHp} />
 
-        <button
+        <Button
           type="submit"
           disabled={loading}
           className="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground disabled:opacity-60"
         >
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Lock className="h-4 w-4" />}
           {loading ? "Verifying…" : "Sign in securely"}
-        </button>
+        </Button>
       </div>
 
       <p className="mt-5 text-center text-sm text-muted-foreground">
@@ -265,8 +250,6 @@ type Answers = Record<string, string>;
 function SignUpForm() {
   const navigate = useNavigate();
   const { proof } = useChallenge();
-  const register = useServerFn(registerAccount);
-  const check = useServerFn(checkUsername);
 
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -286,12 +269,12 @@ function SignUpForm() {
     setUState(null);
     if (!USERNAME_RE.test(username)) return;
     const t = setTimeout(() => {
-      check({ data: { username } })
+      checkUsernameAvailable(username)
         .then(setUState)
         .catch(() => setUState(null));
     }, 450);
     return () => clearTimeout(t);
-  }, [username, check]);
+  }, [username]);
 
   const pwIssues = passwordIssues(password);
   const answered = Object.values(answers).filter((v) => (v ?? "").trim().length >= 2).length;
@@ -319,20 +302,10 @@ function SignUpForm() {
     setLoading(true);
     try {
       const p = await proof();
-      const { email } = await register({
-        data: {
-          username,
-          fullName: fullName.trim(),
-          age: Number(age),
-          dateOfBirth: dob,
-          password,
-          answers,
-          honeypot: hp,
-          ...p,
-        },
+      await registerAccount({
+        username, fullName: fullName.trim(), age: Number(age), dateOfBirth: dob,
+        password, answers, honeypot: hp, proof: p,
       });
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) throw new Error("Account created — please sign in.");
       toast.success("Account secured. Welcome to SchoolConnect!");
       navigate({ to: "/onboarding" });
     } catch (err) {
@@ -363,14 +336,14 @@ function SignUpForm() {
               {uState && (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2">
                   {uState.ok ? (
-                    <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                    <CheckCircle2 className="h-4 w-4 text-success" />
                   ) : (
-                    <XCircle className="h-4 w-4 text-rose-500" />
+                    <XCircle className="h-4 w-4 text-destructive" />
                   )}
                 </span>
               )}
             </div>
-            {uState && !uState.ok && <p className="text-xs font-semibold text-rose-500">{uState.reason}</p>}
+            {uState && !uState.ok && <p className="text-xs font-semibold text-destructive">{uState.reason}</p>}
           </Field>
 
           <Field label="Full name" hint="Real names only — placeholder names are blocked.">
@@ -411,17 +384,17 @@ function SignUpForm() {
                 autoComplete="new-password"
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <button
+              <Button
                 type="button"
                 onClick={() => setShowPw((v) => !v)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                 aria-label="Toggle password"
               >
                 {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
+              </Button>
             </div>
             {password && pwIssues.length > 0 && (
-              <p className="text-xs font-semibold text-amber-600">Needs {pwIssues.join(", ")}.</p>
+              <p className="text-xs font-semibold text-trending-foreground">Needs {pwIssues.join(", ")}.</p>
             )}
           </Field>
           <Field label="Confirm password">
@@ -435,13 +408,13 @@ function SignUpForm() {
           </Field>
           <Honeypot value={hp} onChange={setHp} />
 
-          <button
+          <Button
             type="button"
             onClick={nextStep}
             className="mt-2 rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground"
           >
             Continue to security questions
-          </button>
+          </Button>
         </div>
       ) : (
         <div className="mt-6 grid gap-3">
@@ -463,21 +436,21 @@ function SignUpForm() {
             {answered}/{REQUIRED_ANSWERS} answered
           </p>
           <div className="mt-2 flex gap-3">
-            <button
+            <Button
               type="button"
               onClick={() => setStep(0)}
               className="rounded-full border border-border px-5 py-2.5 text-sm font-semibold"
             >
               Back
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
               disabled={loading}
               className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground disabled:opacity-60"
             >
               {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldCheck className="h-4 w-4" />}
               {loading ? "Securing account…" : "Create secure account"}
-            </button>
+            </Button>
           </div>
         </div>
       )}
