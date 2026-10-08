@@ -7,7 +7,7 @@
  * server key is required at the hosting layer.
  */
 import { supabase } from "@/integrations/supabase/client";
-import { solveChallenge } from "./security-questions";
+import { passwordIssues, REQUIRED_ANSWERS, solveChallenge } from "./security-questions";
 
 const AUTH_EMAIL_DOMAIN = "users.schoolconnect.app";
 
@@ -22,7 +22,7 @@ const rpc = ((name: string, args?: Record<string, unknown>) =>
 
 function clean(message: string) {
   // Postgres prefixes raised messages; show only the human sentence.
-  return message.replace(/^.*?(?:ERROR:\s*)?(?:P0001:\s*)?/, "").trim() || "Something went wrong.";
+  return message.replace(/^(?:ERROR:\s*)?(?:P0001:\s*)?/, "").trim() || "Something went wrong.";
 }
 
 async function call<T>(name: string, args?: Record<string, unknown>): Promise<T> {
@@ -82,6 +82,12 @@ export async function registerAccount(input: {
   proof: Proof;
 }) {
   const key = usernameKey(input.username);
+
+  const issues = passwordIssues(input.password);
+  if (issues.length) throw new Error(`Password needs ${issues.join(", ")}.`);
+  const answers = Object.values(input.answers).map(answer => answer.trim().toLowerCase());
+  if (answers.length !== REQUIRED_ANSWERS || answers.some(answer => answer.length < 2) || new Set(answers).size !== REQUIRED_ANSWERS)
+    throw new Error("Use seven different security answers, each at least two characters long.");
 
   // 1. Screen everything BEFORE an account exists (no orphan accounts).
   await call<{ ok: boolean; age: number }>("auth_precheck_signup", {
@@ -162,5 +168,14 @@ export async function recoveryQuestions(input: { username: string; honeypot: str
   return call<{ indexes: number[] }>("auth_recovery_questions", {
     _username: usernameKey(input.username),
     ...proofArgs(input.proof, input.honeypot),
+  });
+}
+
+export async function resetPassword(input: { username: string; answers: Record<string, string>; newPassword: string; honeypot: string; proof: Proof }) {
+  const issues = passwordIssues(input.newPassword);
+  if (issues.length) throw new Error(`Password needs ${issues.join(", ")}.`);
+  return call<{ email: string }>("auth_reset_password", {
+    _username: usernameKey(input.username), _answers: input.answers,
+    _new_password: input.newPassword, ...proofArgs(input.proof, input.honeypot),
   });
 }
