@@ -1,4 +1,5 @@
 # Current work
+- [ ] Refresh student UI, typography, and mobile navigation; verify desktop and phone layouts.
 - [x] Rebuild the photo-free landing page with real community totals and honest unavailable states.
 - [x] Connect the existing account screens to portable database routines.
 - [x] Add Vercel deployment configuration and instructions.
