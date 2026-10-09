@@ -1960,6 +1960,7 @@ export type Database = {
       }
       is_username_blocked: { Args: { _u: string }; Returns: boolean }
       join_house: { Args: { _slug: string }; Returns: Json }
+      landing_community_stats: { Args: never; Returns: Json }
       mission_period: { Args: { _cadence: string }; Returns: string }
       mutual_friends_count: {
         Args: { _me: string; _other: string }
