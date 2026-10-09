@@ -12,3 +12,4 @@
 - Public landing statistics use a narrowly scoped aggregate RPC via a publishable-key server function; unavailable data is never replaced with fabricated totals.
 - Active account screens use the host-independent auth-db adapter for existing database RPCs so changing hosts does not require a privileged hosting key.
 - Production builds target Nitro's Vercel preset; the managed sandbox preserves its preview runtime.
+- Student screens share AppShell navigation and semantic theme tokens; primary destinations stay visible while secondary destinations are grouped to reduce mobile clutter.
