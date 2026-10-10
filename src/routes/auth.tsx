@@ -4,6 +4,7 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable/index";
 import {
   GraduationCap,
   Eye,
@@ -116,6 +117,7 @@ function AuthPage() {
             </div>
             <span className="text-lg font-black tracking-tight">SchoolConnect</span>
           </div>
+          <GoogleButton />
           {isSignup ? <SignUpForm /> : <SignInForm />}
         </div>
       </div>
@@ -125,6 +127,34 @@ function AuthPage() {
 }
 
 /* --------------------------------- sign in -------------------------------- */
+
+function GoogleButton() {
+  const [busy, setBusy] = useState(false);
+  async function go() {
+    setBusy(true);
+    const result = await lovable.auth.signInWithOAuth("google", {
+      redirect_uri: `${window.location.origin}/auth/callback`,
+    });
+    if (result.error) {
+      toast.error("Google sign-in didn't finish. Please try again.");
+      setBusy(false);
+      return;
+    }
+    if (result.redirected) return;
+    window.location.assign("/auth/callback");
+  }
+  return (
+    <div className="mb-4">
+      <Button type="button" variant="outline" className="h-11 w-full gap-2" onClick={go} disabled={busy}>
+        {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <span className="font-bold">G</span>}
+        Continue with Google
+      </Button>
+      <div className="my-4 flex items-center gap-3 text-xs text-muted-foreground">
+        <span className="h-px flex-1 bg-border" />or use your username<span className="h-px flex-1 bg-border" />
+      </div>
+    </div>
+  );
+}
 
 function SignInForm() {
   const navigate = useNavigate();
