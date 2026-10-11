@@ -54,3 +54,17 @@ export function isStandalone() {
     (window.navigator as any).standalone === true
   );
 }
+
+/** Capture the browser's install prompt as early as possible so the Install button always works. */
+let deferredPrompt: any = null;
+const listeners = new Set<(e: any) => void>();
+if (typeof window !== "undefined") {
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    listeners.forEach((l) => l(e));
+  });
+}
+export function getInstallPrompt() { return deferredPrompt; }
+export function onInstallPrompt(cb: (e: any) => void) { listeners.add(cb); return () => { listeners.delete(cb); }; }
+export function clearInstallPrompt() { deferredPrompt = null; }

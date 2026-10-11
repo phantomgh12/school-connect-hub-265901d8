@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Download, Share2, Smartphone, X } from "lucide-react";
-import { isStandalone, shouldRegisterSW } from "@/lib/pwa";
+import { isStandalone, shouldRegisterSW, getInstallPrompt, onInstallPrompt, clearInstallPrompt } from "@/lib/pwa";
 
 const SNOOZE_KEY = "sc-install-snoozed-at";
 const SNOOZE_MS = 1000 * 60 * 60 * 12; // gate comes back twice a day
@@ -30,15 +30,12 @@ export function InstallAppPrompt() {
     if (isMobile) setMode(shouldRegisterSW() ? "gate" : snoozeActive ? "none" : "gate");
     else if (!snoozeActive) setMode("card");
 
-    const onPrompt = (e: Event) => {
-      e.preventDefault();
-      setDeferred(e);
-    };
-    window.addEventListener("beforeinstallprompt", onPrompt);
+    setDeferred(getInstallPrompt());
+    const offPrompt = onInstallPrompt((e) => setDeferred(e));
     const onInstalled = () => setMode("none");
     window.addEventListener("appinstalled", onInstalled);
     return () => {
-      window.removeEventListener("beforeinstallprompt", onPrompt);
+      offPrompt();
       window.removeEventListener("appinstalled", onInstalled);
     };
   }, []);
@@ -51,9 +48,10 @@ export function InstallAppPrompt() {
   async function install() {
     if (!deferred) return;
     deferred.prompt();
-    await deferred.userChoice;
+    const choice = await deferred.userChoice;
+    clearInstallPrompt();
     setDeferred(null);
-    snooze();
+    if (choice?.outcome === "accepted") setMode("none");
   }
 
   if (mode === "none") return null;

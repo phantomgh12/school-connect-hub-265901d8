@@ -267,7 +267,7 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
               ) : (
                 <img src={url} alt="" className="max-h-[520px] w-full rounded-xl object-cover" loading="lazy" />
               )}
-              <button onClick={() => downloadMedia(url)} className="absolute right-2 top-2 rounded-full bg-background/80 p-2 opacity-0 backdrop-blur transition group-hover:opacity-100" title="Download">
+              <button onClick={() => downloadMedia(url)} className="absolute right-2 top-2 rounded-full bg-background/80 p-2 backdrop-blur transition lg:opacity-0 lg:group-hover:opacity-100" title="Download">
                 <Download className="h-4 w-4" />
               </button>
             </div>
