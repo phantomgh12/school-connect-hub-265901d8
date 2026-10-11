@@ -30,7 +30,10 @@ export function StoryViewer({ stories, startIndex, currentUserId, onClose }: { s
   const [reply, setReply] = useState("");
   const [progress, setProgress] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [muted, setMuted] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const story = stories[i];
+  const isVideo = story?.media_type === "video" && !!story?.media_url;
 
   useEffect(() => {
     if (!story) return;
@@ -38,8 +41,24 @@ export function StoryViewer({ stories, startIndex, currentUserId, onClose }: { s
     supabase.from("story_views").upsert({ story_id: story.id, user_id: currentUserId }).then(() => {});
   }, [i, story?.id, currentUserId]);
 
+  // Keep the video element's mute state in sync with the toggle
   useEffect(() => {
-    if (!story || paused) return;
+    const v = videoRef.current;
+    if (v) v.muted = muted;
+  }, [muted, i, isVideo]);
+
+  // Pause/play the video element together with the story timer
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    if (paused) v.pause();
+    else v.play().catch(() => {});
+  }, [paused, i, isVideo]);
+
+  // Photos/text use a fixed 5s timer; videos advance when they end and
+  // their progress bar follows real playback time.
+  useEffect(() => {
+    if (!story || paused || isVideo) return;
     let elapsed = 0;
     const step = 50;
     const dur = 5000;
@@ -54,7 +73,12 @@ export function StoryViewer({ stories, startIndex, currentUserId, onClose }: { s
       }
     }, step);
     return () => clearInterval(iv);
-  }, [i, paused, story, stories.length, onClose]);
+  }, [i, paused, story, stories.length, onClose, isVideo]);
+
+  function next() {
+    if (i < stories.length - 1) setI(i + 1);
+    else onClose();
+  }
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
