@@ -26,8 +26,16 @@ function NewStoryPage() {
   const [caption, setCaption] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [bg, setBg] = useState(BG_PRESETS[0]);
+  const [ratio, setRatio] = useState<"9:16" | "1:1" | "4:5">("9:16");
   const [busy, setBusy] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  const RATIOS = [
+    { id: "9:16" as const, label: "Tall", cls: "aspect-[9/16]" },
+    { id: "1:1" as const, label: "Square", cls: "aspect-square" },
+    { id: "4:5" as const, label: "Portrait", cls: "aspect-[4/5]" },
+  ];
+  const ratioCls = RATIOS.find((r) => r.id === ratio)!.cls;
 
   useEffect(() => { supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? "")); }, []);
 
