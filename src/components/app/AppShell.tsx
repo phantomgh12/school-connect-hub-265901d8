@@ -9,7 +9,6 @@ import { useEffect, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useTheme } from "@/lib/theme";
 import { toast } from "sonner";
-import { InstallAppPrompt } from "@/components/app/InstallAppPrompt";
 import { FirstPostGate } from "@/components/app/FirstPostGate";
 import { NotificationBell } from "@/components/app/NotificationBell";
 import { Button } from "@/components/ui/button";
@@ -213,7 +212,6 @@ export function AppShell({ children, right }: { children: ReactNode; right?: Rea
       </nav>
 
       <FirstPostGate />
-      <InstallAppPrompt />
     </div>
   );
 }
