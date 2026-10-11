@@ -74,7 +74,7 @@ export function StoryRail({ userId, avatarUrl: _avatarUrl }: { userId: string; a
               )}
               <span className="absolute inset-x-0 bottom-0 bg-black/55 p-1.5 text-[10px] font-bold text-white">Your story</span>
             </button>
-            <Link to="/new-story" aria-label="Add to your story" className="absolute -right-1 -top-1 grid h-7 w-7 place-items-center rounded-full gradient-brand text-primary-foreground shadow-brand">
+            <Link to="/new-story" aria-label="Add to your story" className="absolute -right-1 -top-1 grid h-9 w-9 ring-2 ring-background place-items-center rounded-full gradient-brand text-primary-foreground shadow-brand">
               <Plus className="h-4 w-4" />
             </Link>
           </div>
