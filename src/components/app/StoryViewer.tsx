@@ -174,7 +174,20 @@ export function StoryViewer({ stories, startIndex, currentUserId, onClose }: { s
         {/* Media — flexes to fill remaining space */}
         <div className="relative min-h-0 flex-1 overflow-hidden">
           {story.media_type === "video" && story.media_url ? (
-            <video key={story.id} src={story.media_url} autoPlay muted playsInline className="h-full w-full object-contain" />
+            <video
+              key={story.id}
+              ref={videoRef}
+              src={story.media_url}
+              autoPlay
+              muted={muted}
+              playsInline
+              className="h-full w-full object-contain"
+              onTimeUpdate={(e) => {
+                const v = e.currentTarget;
+                if (v.duration) setProgress(Math.min(1, v.currentTime / v.duration));
+              }}
+              onEnded={next}
+            />
           ) : story.media_type === "photo" && story.media_url ? (
             <img src={story.media_url} className="h-full w-full object-contain" alt={story.caption ?? "Story"} loading="lazy" decoding="async" />
           ) : (
