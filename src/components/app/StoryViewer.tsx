@@ -144,6 +144,23 @@ export function StoryViewer({ stories, startIndex, currentUserId, onClose }: { s
               </div>
             </Link>
             <div className="ml-auto flex shrink-0 items-center gap-1.5">
+              {isVideo && (
+                <button
+                  onClick={() => {
+                    const nextMuted = !muted;
+                    setMuted(nextMuted);
+                    const v = videoRef.current;
+                    if (v) {
+                      v.muted = nextMuted;
+                      if (!nextMuted) v.play().catch(() => {});
+                    }
+                  }}
+                  aria-label={muted ? "Unmute" : "Mute"}
+                  className="rounded-full bg-white/15 p-2 text-white hover:bg-white/25"
+                >
+                  {muted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+                </button>
+              )}
               <button onClick={() => setPaused((p) => !p)} aria-label={paused ? "Play" : "Pause"} className="rounded-full bg-white/15 p-2 text-white hover:bg-white/25">
                 {paused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
               </button>
