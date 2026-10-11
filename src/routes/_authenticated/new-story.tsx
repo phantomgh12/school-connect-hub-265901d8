@@ -26,8 +26,16 @@ function NewStoryPage() {
   const [caption, setCaption] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [bg, setBg] = useState(BG_PRESETS[0]);
+  const [ratio, setRatio] = useState<"9:16" | "1:1" | "4:5">("9:16");
   const [busy, setBusy] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  const RATIOS = [
+    { id: "9:16" as const, label: "Tall", cls: "aspect-[9/16]" },
+    { id: "1:1" as const, label: "Square", cls: "aspect-square" },
+    { id: "4:5" as const, label: "Portrait", cls: "aspect-[4/5]" },
+  ];
+  const ratioCls = RATIOS.find((r) => r.id === ratio)!.cls;
 
   useEffect(() => { supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? "")); }, []);
 
@@ -78,12 +86,24 @@ function NewStoryPage() {
         {mode === "photo" ? (
           <div className="mt-4">
             <input ref={fileRef} type="file" hidden accept="image/*,video/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
+            <div className="mt-3 flex items-center gap-2">
+              <span className="text-xs font-semibold text-muted-foreground">Shape:</span>
+              {RATIOS.map((r) => (
+                <button
+                  key={r.id}
+                  onClick={() => setRatio(r.id)}
+                  className={`rounded-full px-3 py-1.5 text-xs font-bold ${ratio === r.id ? "gradient-brand text-primary-foreground shadow-brand" : "bg-muted text-muted-foreground"}`}
+                >
+                  {r.label} {r.id}
+                </button>
+              ))}
+            </div>
             {file ? (
-              <div className="relative overflow-hidden rounded-2xl bg-black">
+              <div className={`relative mt-3 overflow-hidden rounded-2xl bg-black ${ratioCls} max-h-[420px] w-full`}>
                 {file.type.startsWith("video") ? (
-                  <video src={URL.createObjectURL(file)} className="max-h-[420px] w-full object-contain" controls />
+                  <video src={URL.createObjectURL(file)} className="h-full w-full object-cover" controls />
                 ) : (
-                  <img src={URL.createObjectURL(file)} className="max-h-[420px] w-full object-contain" alt="" loading="lazy" decoding="async" />
+                  <img src={URL.createObjectURL(file)} className="h-full w-full object-cover" alt="" loading="lazy" decoding="async" />
                 )}
                 <button onClick={() => setFile(null)} className="absolute right-2 top-2 rounded-full bg-background/90 px-3 py-1 text-xs font-bold">Change</button>
               </div>
