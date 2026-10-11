@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { X, Send, Heart, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
+import { X, Send, Heart, ChevronLeft, ChevronRight, Pause, Play, Volume2, VolumeX } from "lucide-react";
 import { toast } from "sonner";
 import { notify } from "@/lib/notify";
 
