@@ -1,7 +1,8 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowRight, ArrowUpRight, GraduationCap, Users, MessageCircle, Trophy, ShieldCheck, BookOpen, Activity, RefreshCw, Check, Menu, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { getCommunityStats } from "@/lib/community-stats.functions";
 
@@ -26,6 +27,16 @@ function JoinButton({ children = "Find your people", className = "" }: { childre
 
 function Landing() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  useEffect(() => {
+    // Auto sign-in: returning members with a saved session skip the landing page.
+    supabase.auth.getSession().then(async ({ data }) => {
+      const uid = data.session?.user.id;
+      if (!uid) return;
+      const { data: p } = await supabase.from("profiles").select("onboarded").eq("id", uid).maybeSingle();
+      navigate({ to: p?.onboarded ? "/home" : "/onboarding", replace: true });
+    });
+  }, [navigate]);
   const { data: stats, refetch, isFetching } = useSuspenseQuery(statsOptions);
   const metricItems = [
     { key: "members", label: "Community members", icon: Users },

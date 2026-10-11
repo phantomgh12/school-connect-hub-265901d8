@@ -15,6 +15,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { supabase } from "@/integrations/supabase/client";
 import { ThemeProvider } from "@/lib/theme";
 import { setupPWA } from "@/lib/pwa";
+import { InstallAppPrompt } from "@/components/app/InstallAppPrompt";
 
 function NotFoundComponent() {
   return (
@@ -153,6 +154,7 @@ function RootComponent() {
       <ThemeProvider>
         <Outlet />
         <Toaster position="top-center" richColors />
+        <InstallAppPrompt />
       </ThemeProvider>
     </QueryClientProvider>
   );

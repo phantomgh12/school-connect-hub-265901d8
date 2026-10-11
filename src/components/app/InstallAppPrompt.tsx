@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Download, Share2, Smartphone, X } from "lucide-react";
-import { isStandalone } from "@/lib/pwa";
+import { isStandalone, shouldRegisterSW } from "@/lib/pwa";
 
 const SNOOZE_KEY = "sc-install-snoozed-at";
 const SNOOZE_MS = 1000 * 60 * 60 * 12; // gate comes back twice a day
@@ -26,7 +26,8 @@ export function InstallAppPrompt() {
     const snoozed = Number(localStorage.getItem(SNOOZE_KEY) ?? 0);
     const snoozeActive = Date.now() - snoozed < SNOOZE_MS;
 
-    if (isMobile) setMode(snoozeActive ? "none" : "gate");
+    // Phones/tablets on the live site must install; preview/editor stays usable.
+    if (isMobile) setMode(shouldRegisterSW() ? "gate" : snoozeActive ? "none" : "gate");
     else if (!snoozeActive) setMode("card");
 
     const onPrompt = (e: Event) => {
@@ -83,7 +84,7 @@ export function InstallAppPrompt() {
         <img src="/app-icon-192.png" alt="" width={72} height={72} className="mx-auto h-18 w-18 rounded-3xl shadow-soft" loading="lazy" decoding="async" />
         <h2 className="mt-4 text-xl font-black tracking-tight">Install the GH School Hub app</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          The app uses far less data, loads instantly, and keeps you signed in. Install it to continue with the best experience.
+          The app uses far less data, loads instantly, and keeps you signed in. You need to install it to continue.
         </p>
 
         <ul className="mt-4 grid gap-2 text-left text-xs text-muted-foreground">
@@ -106,9 +107,11 @@ export function InstallAppPrompt() {
           </div>
         )}
 
-        <button onClick={snooze} className="mt-3 w-full rounded-full px-5 py-2.5 text-xs font-semibold text-muted-foreground hover:bg-muted">
-          Continue in browser for now
-        </button>
+        {!shouldRegisterSW() && (
+          <button onClick={snooze} className="mt-3 w-full rounded-full px-5 py-2.5 text-xs font-semibold text-muted-foreground hover:bg-muted">
+            Continue in browser (preview only)
+          </button>
+        )}
       </div>
     </div>
   );
