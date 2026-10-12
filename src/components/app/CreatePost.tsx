@@ -3,6 +3,7 @@ import { Image as ImageIcon, Video, Loader2, X, Send } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { uploadToBucket, extractHashtags } from "@/lib/upload";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 export function CreatePost({ userId, avatarUrl, onPosted }: { userId: string; avatarUrl?: string | null; onPosted: () => void }) {
   const [content, setContent] = useState("");
@@ -41,16 +42,16 @@ export function CreatePost({ userId, avatarUrl, onPosted }: { userId: string; av
   }
 
   return (
-    <div className="glass rounded-1xl p-5">
+    <div className="glass mt-5 rounded-lg p-4 sm:p-5">
       <div className="flex gap-3">
         <Avatar url={avatarUrl} />
         <div className="min-w-0 flex-1">
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            placeholder="Share something with your friends…"
+            placeholder="What’s happening in your world?"
             rows={2}
-            className="w-full resize-none rounded-1xl border border-border/70 bg-background/60 p-3 text-sm outline-none focus:border-[color:var(--brand)]"
+            className="w-full resize-none rounded-md border-0 bg-transparent p-1 text-base outline-none placeholder:text-muted-foreground"
           />
           {files.length > 0 && (
             <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
@@ -61,30 +62,30 @@ export function CreatePost({ userId, avatarUrl, onPosted }: { userId: string; av
                   ) : (
                     <img src={URL.createObjectURL(f)} className="h-22 w-full object-cover" alt="" loading="lazy" decoding="async" />
                   )}
-                  <button onClick={() => setFiles((p) => p.filter((_, j) => j !== i))} className="absolute right-1 top-1 rounded-full bg-background/90 p-1">
+                  <Button variant="secondary" size="icon" aria-label="Remove attachment" onClick={() => setFiles((p) => p.filter((_, j) => j !== i))} className="absolute right-1 top-1 size-8 bg-background/90">
                     <X className="h-3 w-3" />
-                  </button>
+                  </Button>
                 </div>
               ))}
             </div>
           )}
-          <div className="mt-3 flex items-center justify-between">
+          <div className="mt-3 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 border-t pt-3">
             <div className="flex items-center gap-1">
               <input ref={fileRef} type="file" hidden accept="image/*,video/*" multiple onChange={(e) => addFiles(e.target.files)} />
-              <button onClick={() => fileRef.current?.click()} className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:bg-muted">
+              <Button variant="ghost" size="sm" onClick={() => fileRef.current?.click()} className="gap-1.5 px-2 text-muted-foreground">
                 <ImageIcon className="h-5 w-5" /> Photo
-              </button>
-              <button onClick={() => fileRef.current?.click()} className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:bg-muted">
+              </Button>
+              <Button variant="ghost" size="sm" onClick={() => fileRef.current?.click()} className="gap-1.5 px-2 text-muted-foreground">
                 <Video className="h-5 w-5" /> Video
-              </button>
+              </Button>
             </div>
-            <button
+            <Button
               onClick={submit}
               disabled={busy || (!content.trim() && !files.length)}
-              className="inline-flex items-center gap-1.5 rounded-full gradient-brand px-5 py-2 text-sm font-bold text-primary-foreground shadow-brand disabled:opacity-50"
+              className="gap-2 px-4"
             >
               {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />} Post
-            </button>
+            </Button>
           </div>
         </div>
       </div>

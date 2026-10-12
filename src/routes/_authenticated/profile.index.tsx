@@ -90,7 +90,7 @@ function ProfilePage() {
   return (
     <AppShell>
       {/* Cover + header */}
-      <div className="glass overflow-hidden rounded-[2rem]">
+      <div className="glass overflow-hidden rounded-lg">
         <div className="relative h-40 sm:h-56">
           {profile?.cover_url ? (
             <img src={profile.cover_url} alt="" className="h-full w-full object-cover" loading="lazy" decoding="async" />
@@ -107,7 +107,7 @@ function ProfilePage() {
             Cover
           </button>
         </div>
-        <div className="grid gap-6 px-6 pb-6 pt-4 sm:grid-cols-[auto_1fr_auto] sm:items-end sm:px-8">
+        <div className="grid gap-6 px-6 pb-6 pt-4 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-end sm:px-8">
           <div className="relative -mt-16 h-28 w-28 sm:h-32 sm:w-32">
             <div className="grid h-full w-full place-items-center overflow-hidden rounded-full border-4 border-background gradient-brand text-3xl font-black text-primary-foreground shadow-brand">
               {profile?.avatar_url ? <img src={profile.avatar_url} alt="" className="h-full w-full object-cover" loading="lazy" decoding="async" /> : initials}
@@ -127,16 +127,16 @@ function ProfilePage() {
               <span className="truncate">{profile?.full_name || "Your name"}</span>
               <VerifiedBadge verified={profile?.verified} className="h-5 w-5" />
             </h1>
-            <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
+            <div className="mt-1 grid min-w-0 gap-1 text-sm text-muted-foreground">
               {profile?.username && <span>@{profile.username}</span>}
-              {profile?.school_name && <span className="inline-flex items-center gap-1"><School className="h-4 w-4" />{profile.school_name}</span>}
+              {profile?.school_name && <span className="inline-flex min-w-0 items-center gap-1 truncate"><School className="h-4 w-4" />{profile.school_name}</span>}
               {profile?.school_type && (
                 <span className="rounded-full bg-[color:var(--brand)]/10 px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-[color:var(--brand)]">{profile.school_type}</span>
               )}
             </div>
             {profile?.bio && <p className="mt-3 max-w-2xl text-sm text-foreground/80">{profile.bio}</p>}
           </div>
-          <div className="min-w-0 sm:w-72">
+          <div className="min-w-0 sm:col-span-2 sm:w-full">
             <ProfileStats userId={uid} />
           </div>
         </div>
@@ -148,8 +148,8 @@ function ProfilePage() {
       </div>
 
       {/* Info */}
-      <div className="mt-6 grid gap-6 lg:grid-cols-3">
-        <section className="glass rounded-3xl p-6 lg:col-span-1">
+      <div className="mt-6 grid gap-6 xl:grid-cols-3">
+        <section className="glass rounded-3xl p-6 xl:col-span-1">
           <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Basics</h3>
           <ul className="mt-4 grid gap-3 text-sm">
             <Row icon={GraduationCap} label="School" value={profile?.school_name} />
@@ -160,7 +160,7 @@ function ProfilePage() {
           </ul>
         </section>
 
-        <section className="glass rounded-3xl p-6 lg:col-span-2">
+        <section className="glass rounded-3xl p-6 xl:col-span-2">
           <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">About me</h3>
           {q ? (
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
