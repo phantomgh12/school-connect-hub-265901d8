@@ -129,6 +129,7 @@ export function AppShell({ children, right }: { children: ReactNode; right?: Rea
     nav({ to: "/", replace: true });
   }
 
+  const pageTitle = [...NAV, ...DISCOVER, ...MORE, { to: "/profile", label: "My profile", icon: User }, { to: "/new-post", label: "Create post", icon: PlusSquare }, { to: "/new-story", label: "Create story", icon: Film }, { to: "/admin", label: "Administration", icon: Shield }].find((item) => pathname === item.to || pathname.startsWith(`${item.to}/`))?.label || "Your community";
   const secondaryItems = isAdmin ? [...MORE, { to: "/admin", label: "Admin", icon: Shield }] : MORE;
   const isActive = (n: NavItem) => pathname === n.to || pathname.startsWith(`${n.to}/`);
   const badgeFor = (to: string) => to === "/notifications" ? unread : to === "/friends" ? pendingReq : to === "/messages" ? unreadMsgs : 0;
@@ -137,11 +138,11 @@ export function AppShell({ children, right }: { children: ReactNode; right?: Rea
     <ul className="grid gap-1">
       {items.map((n) => (
         <li key={n.to}>
-          <Button asChild variant="ghost" className={`h-11 w-full justify-start gap-3 rounded-md px-3 font-medium ${isActive(n) ? "bg-accent text-primary" : "text-muted-foreground"} ${compact ? "md:justify-center xl:justify-start" : ""}`}>
+          <Button asChild variant="ghost" className={`h-11 w-full justify-start gap-3 rounded-md px-3 font-semibold ${isActive(n) ? "bg-accent text-primary ring-1 ring-primary/10" : "text-muted-foreground"} ${compact ? "md:justify-center lg:justify-start" : ""}`}>
             <Link to={n.to} title={n.label} aria-current={isActive(n) ? "page" : undefined}>
-              <n.icon className="size-5 shrink-0" />
-              <span className={compact ? "hidden truncate xl:inline" : "truncate"}>{n.label}</span>
-              {badgeFor(n.to) > 0 && <span className={`ml-auto rounded-full bg-destructive px-1.5 text-[10px] text-destructive-foreground ${compact ? "hidden xl:inline" : ""}`}>{badgeFor(n.to) > 9 ? "9+" : badgeFor(n.to)}</span>}
+              <n.icon className="size-5 shrink-0 stroke-[1.75]" />
+              <span className={compact ? "hidden truncate lg:inline" : "truncate"}>{n.label}</span>
+              {badgeFor(n.to) > 0 && <span className={`ml-auto rounded-full bg-destructive px-1.5 text-[10px] text-destructive-foreground ${compact ? "hidden lg:inline" : ""}`}>{badgeFor(n.to) > 9 ? "9+" : badgeFor(n.to)}</span>}
             </Link>
           </Button>
         </li>
@@ -152,27 +153,27 @@ export function AppShell({ children, right }: { children: ReactNode; right?: Rea
   const Navigation = ({ compact = false }: { compact?: boolean }) => <>
     <NavLinks items={NAV} compact={compact} />
     <div className="my-5 border-t" />
-    <p className={`mb-2 px-3 text-xs font-semibold text-muted-foreground ${compact ? "hidden xl:block" : ""}`}>Discover</p>
+    <p className={`mb-2 px-3 text-xs font-semibold text-muted-foreground ${compact ? "hidden lg:block" : ""}`}>Discover</p>
     <NavLinks items={DISCOVER} compact={compact} />
     <details className="mt-4">
-      <summary className="cursor-pointer rounded-md px-3 py-3 text-sm font-medium text-muted-foreground hover:bg-muted" title="More destinations"><span className={compact ? "hidden xl:inline" : ""}>More</span><MoreHorizontal className={compact ? "size-5 xl:hidden" : "hidden"} /></summary>
+      <summary className="cursor-pointer rounded-md px-3 py-3 text-sm font-medium text-muted-foreground hover:bg-muted" title="More destinations"><span className={compact ? "hidden lg:inline" : ""}>More</span><MoreHorizontal className={compact ? "size-5 lg:hidden" : "hidden"} /></summary>
       <NavLinks items={secondaryItems} compact={compact} />
     </details>
-    <Button onClick={toggle} variant="ghost" className={`mt-2 h-11 w-full justify-start gap-3 px-3 text-muted-foreground ${compact ? "md:justify-center xl:justify-start" : ""}`} title="Switch appearance">
-      {theme === "dark" ? <Sun /> : <Moon />}<span className={compact ? "hidden xl:inline" : ""}>{theme === "dark" ? "Light appearance" : "Dark appearance"}</span>
+    <Button onClick={toggle} variant="ghost" className={`mt-2 h-11 w-full justify-start gap-3 px-3 text-muted-foreground ${compact ? "md:justify-center lg:justify-start" : ""}`} title="Switch appearance">
+      {theme === "dark" ? <Sun /> : <Moon />}<span className={compact ? "hidden lg:inline" : ""}>{theme === "dark" ? "Light appearance" : "Dark appearance"}</span>
     </Button>
-    <Button onClick={signOut} variant="ghost" title="Sign out" className={`h-11 w-full justify-start gap-3 px-3 text-muted-foreground ${compact ? "md:justify-center xl:justify-start" : ""}`}><LogOut /><span className={compact ? "hidden xl:inline" : ""}>Sign out</span></Button>
+    <Button onClick={signOut} variant="ghost" title="Sign out" className={`h-11 w-full justify-start gap-3 px-3 text-muted-foreground ${compact ? "md:justify-center lg:justify-start" : ""}`}><LogOut /><span className={compact ? "hidden lg:inline" : ""}>Sign out</span></Button>
   </>;
 
   return (
     <div className="student-workspace min-h-screen bg-background">
       <header className="sticky top-0 z-50 border-b bg-surface">
-        <div className="mx-auto grid h-16 max-w-[1360px] grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-4 sm:grid-cols-[240px_minmax(0,1fr)_auto] sm:px-6">
+        <div className="mx-auto grid h-16 max-w-[1480px] grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-4 sm:grid-cols-[220px_minmax(0,1fr)_auto] sm:px-6">
           <div className="flex min-w-0 items-center gap-2">
             <Button variant="ghost" size="icon" onClick={() => setOpen(!open)} aria-label={open ? "Close navigation" : "Open navigation"} aria-expanded={open} className="size-10 shrink-0 md:hidden">{open ? <X /> : <Menu />}</Button>
-            <Link to="/home" className="flex min-w-0 items-center gap-2 font-display text-base font-bold sm:text-lg"><GraduationCap className="size-7 shrink-0 text-primary" /><span className="truncate">SchoolConnect</span></Link>
+            <Link to="/home" className="flex min-w-0 items-center gap-2 font-display text-sm font-bold sm:text-base"><span className="grid size-9 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground"><GraduationCap className="size-5" /></span><span className="truncate">SchoolConnect</span></Link>
           </div>
-          <Button asChild variant="outline" className="mx-auto hidden h-10 w-full max-w-md justify-start gap-3 border-border bg-background font-normal text-muted-foreground sm:flex"><Link to="/search"><Search /><span className="truncate">Search your community</span></Link></Button>
+          <div className="hidden min-w-0 items-center justify-between gap-6 sm:flex"><span className="hidden truncate text-sm font-semibold lg:block">{pageTitle}</span><Button asChild variant="ghost" className="h-10 w-full max-w-xs justify-start gap-3 bg-muted/60 font-normal text-muted-foreground"><Link to="/search"><Search /><span className="truncate">Search SchoolConnect</span></Link></Button></div>
           <div className="flex shrink-0 items-center gap-1 justify-self-end">
             <Button asChild variant="ghost" size="icon" className="size-10 sm:hidden"><Link to="/search" aria-label="Search"><Search /></Link></Button>
             <NotificationBell uid={uid} unread={unread} onRead={() => setUnread(0)} />
@@ -189,14 +190,14 @@ export function AppShell({ children, right }: { children: ReactNode; right?: Rea
         </nav>
       </>}
 
-      <div className="mx-auto grid w-full max-w-[1360px] grid-cols-[minmax(0,1fr)] md:grid-cols-[80px_minmax(0,1fr)] lg:grid-cols-[80px_minmax(0,1fr)_280px] xl:grid-cols-[240px_minmax(0,1fr)_280px]">
-        <aside aria-label="Primary navigation" className="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto border-r bg-surface px-3 py-6 no-scrollbar md:block">
+      <div className="mx-auto grid w-full max-w-[1480px] grid-cols-[minmax(0,1fr)] md:grid-cols-[76px_minmax(0,1fr)] lg:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[220px_minmax(0,1fr)_300px]">
+        <aside aria-label="Primary navigation" className="sticky top-16 hidden h-[calc(100dvh-4rem)] overflow-y-auto border-r bg-background px-3 py-6 no-scrollbar md:block">
           <Navigation compact />
-          <Button asChild className="mt-6 hidden h-11 w-full xl:flex"><Link to="/new-post"><PlusSquare />Create post</Link></Button>
-          <Link to="/profile" className="mt-6 hidden items-center gap-3 border-t px-2 pt-5 xl:flex"><span className="grid size-9 shrink-0 place-items-center overflow-hidden rounded-full bg-muted">{avatar ? <img src={avatar} alt="" className="size-full object-cover" /> : <User className="size-4" />}</span><span className="min-w-0"><span className="block truncate text-sm font-semibold">{studentName}</span><span className="block truncate text-xs text-muted-foreground">{schoolName}</span></span></Link>
+          <Button asChild className="mt-6 hidden h-11 w-full lg:flex"><Link to="/new-post"><PlusSquare />Create post</Link></Button>
+          <Link to="/profile" className="mt-6 hidden items-center gap-3 border-t px-2 pt-5 lg:flex"><span className="grid size-9 shrink-0 place-items-center overflow-hidden rounded-full bg-muted">{avatar ? <img src={avatar} alt="" className="size-full object-cover" /> : <User className="size-4" />}</span><span className="min-w-0"><span className="block truncate text-sm font-semibold">{studentName}</span><span className="block truncate text-xs text-muted-foreground">{schoolName}</span></span></Link>
         </aside>
-        <main className="min-w-0 px-4 py-6 pb-28 sm:px-6 md:pb-8"><div className="mx-auto w-full max-w-[640px]">{children}</div></main>
-        <aside className="sticky top-16 hidden max-h-[calc(100dvh-4rem)] overflow-y-auto px-5 py-6 no-scrollbar lg:block"><div className="grid gap-5">{right}</div></aside>
+        <main className="min-w-0 px-4 py-6 pb-28 sm:px-8 sm:py-8 md:pb-8"><div className="mx-auto w-full max-w-[720px]">{children}</div></main>
+        <aside aria-label="Community highlights" className="sticky top-16 hidden max-h-[calc(100dvh-4rem)] overflow-y-auto border-l px-6 py-8 no-scrollbar xl:block"><div className="grid gap-6">{right}</div></aside>
       </div>
 
       <nav aria-label="Bottom navigation" className="fixed inset-x-0 bottom-0 z-40 border-t bg-surface md:hidden">
@@ -207,7 +208,7 @@ export function AppShell({ children, right }: { children: ReactNode; right?: Rea
             { to: "/new-post", icon: PlusSquare, label: "Create" },
             { to: "/messages", icon: MessageCircle, label: "Chats" },
             { to: "/profile", icon: User, label: "You" },
-          ].map((n) => <li key={n.to}><Button asChild variant="ghost" className={`relative h-[68px] w-full flex-col gap-1 rounded-none px-1 text-[11px] ${isActive(n) ? "text-primary" : "text-muted-foreground"}`}><Link to={n.to} aria-current={isActive(n) ? "page" : undefined}><n.icon className="size-5" />{n.label}{badgeFor(n.to) > 0 && <span className="absolute right-4 top-2 size-2 rounded-full bg-destructive" />}</Link></Button></li>)}
+          ].map((n) => <li key={n.to}><Button asChild variant="ghost" className={`relative h-[64px] w-full flex-col gap-1 rounded-none px-1 text-[11px] ${isActive(n) ? "text-primary" : "text-muted-foreground"}`}><Link to={n.to} aria-current={isActive(n) ? "page" : undefined}><n.icon className="size-5" />{n.label}{badgeFor(n.to) > 0 && <span className="absolute right-4 top-2 size-2 rounded-full bg-destructive" />}</Link></Button></li>)}
         </ul>
       </nav>
 

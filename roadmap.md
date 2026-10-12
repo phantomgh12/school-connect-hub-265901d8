@@ -1,5 +1,6 @@
 # Current work
-- [ ] Refresh student UI, typography, and mobile navigation; verify desktop and phone layouts.
+- [ ] Redesign the shared interface, student screens and public pages; verify layouts without overlaps.
+- [ ] Grant @Phantomgh admin access using the existing admin page.
 - [x] Rebuild the photo-free landing page with real community totals and honest unavailable states.
 - [x] Connect the existing account screens to portable database routines.
 - [x] Add Vercel deployment configuration and instructions.
