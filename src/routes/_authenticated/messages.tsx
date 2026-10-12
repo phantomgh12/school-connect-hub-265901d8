@@ -9,6 +9,7 @@ import {
 import { notify } from "@/lib/notify";
 import { trackMission } from "@/lib/gamification";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 const searchSchema = z.object({ with: z.string().optional() });
 
@@ -130,10 +131,11 @@ function MessagesPage() {
       existing = created;
     }
     const { data: other } = await supabase.from("profiles").select("id,full_name,avatar_url,is_online").eq("id", otherId).maybeSingle();
+    if (!existing) return;
     const convo: Convo = {
-      id: existing!.id,
+      id: existing.id,
       other: other ?? { id: otherId, full_name: null, avatar_url: null, is_online: false },
-      last_message_at: existing!.last_message_at,
+      last_message_at: existing.last_message_at,
     };
     setActive(convo);
     await loadConvos(myId);
@@ -217,7 +219,7 @@ function MessagesPage() {
   return (
     <AppShell>
       <div className="overflow-hidden rounded-2xl border bg-card">
-        <div className="grid h-[calc(100dvh-11rem)] min-h-[26rem] md:grid-cols-[300px_minmax(0,1fr)]">
+        <div className="grid h-[calc(100dvh-11rem)] min-h-[22rem] md:grid-cols-[240px_minmax(0,1fr)]">
           {/* Sidebar */}
           <aside className={`${active ? "hidden md:flex" : "flex"} min-w-0 flex-col border-b border-border md:border-b-0 md:border-r`}>
             <div className="shrink-0 border-b p-3">
@@ -225,7 +227,7 @@ function MessagesPage() {
                 <MessageCircle className="h-5 w-5 shrink-0 text-primary" />
                 <h1 className="min-w-0 truncate text-base font-black">Messages</h1>
                 {convos.some((c) => (c.unread ?? 0) > 0) && (
-                  <span className="ml-auto shrink-0 rounded-full bg-rose-500 px-2 py-0.5 text-[10px] font-bold text-white">
+                  <span className="ml-auto shrink-0 rounded-full bg-destructive px-2 py-0.5 text-[10px] font-bold text-destructive-foreground">
                     {convos.reduce((s, c) => s + (c.unread ?? 0), 0)}
                   </span>
                 )}
@@ -253,7 +255,7 @@ function MessagesPage() {
                     const pinned = pins.includes(c.id);
                     return (
                       <li key={c.id} className={`grid grid-cols-[minmax(0,1fr)_auto] items-center gap-1 border-b px-1 ${active?.id === c.id ? "bg-muted" : ""}`}>
-                        <button
+                        <Button variant="ghost"
                           onClick={() => { setActive(c); loadMessages(c.id, uid); }}
                           className="flex min-w-0 items-center gap-3 rounded-xl p-2.5 text-left hover:bg-muted"
                         >
@@ -261,7 +263,7 @@ function MessagesPage() {
                             {c.other.avatar_url
                               ? <img src={c.other.avatar_url} className="h-full w-full object-cover" alt="" loading="lazy" decoding="async" />
                               : (c.other.full_name || "S")[0]}
-                            {c.other.is_online && <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-card bg-emerald-500" />}
+                            {c.other.is_online && <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-card bg-success" />}
                           </span>
                           <span className="min-w-0 flex-1">
                             <span className="flex items-center gap-1.5">
@@ -273,16 +275,16 @@ function MessagesPage() {
                             </span>
                           </span>
                           {(c.unread ?? 0) > 0 && (
-                            <span className="shrink-0 rounded-full bg-rose-500 px-1.5 py-0.5 text-[10px] font-bold text-white">{c.unread}</span>
+                            <span className="shrink-0 rounded-full bg-destructive px-1.5 py-0.5 text-[10px] font-bold text-destructive-foreground">{c.unread}</span>
                           )}
-                        </button>
-                        <button
+                        </Button>
+                        <Button variant="ghost"
                           onClick={() => togglePin(c.id)}
                           aria-label={pinned ? "Unpin chat" : "Pin chat"}
                           className="shrink-0 rounded-full p-2 text-muted-foreground hover:bg-muted hover:text-foreground"
                         >
                           {pinned ? <PinOff className="h-3.5 w-3.5" /> : <Pin className="h-3.5 w-3.5" />}
-                        </button>
+                        </Button>
                       </li>
                     );
                   })}
@@ -300,15 +302,15 @@ function MessagesPage() {
             ) : (
               <>
                 <header className="flex shrink-0 items-center gap-2 border-b p-3">
-                  <button onClick={() => setActive(null)} aria-label="Back to chats" className="rounded-full p-2 hover:bg-muted md:hidden">
+                  <Button variant="ghost" onClick={() => setActive(null)} aria-label="Back to chats" className="rounded-full p-2 hover:bg-muted md:hidden">
                     <ArrowLeft className="h-4 w-4" />
-                  </button>
+                  </Button>
                   <Link to="/profile/$userId" params={{ userId: active.other.id }} className="flex min-w-0 flex-1 items-center gap-3 rounded-xl p-1 hover:bg-muted">
                     <span className="relative grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full bg-primary text-xs font-bold text-primary-foreground">
                       {active.other.avatar_url
                         ? <img src={active.other.avatar_url} className="h-full w-full object-cover" alt="" loading="lazy" decoding="async" />
                         : (active.other.full_name || "S")[0]}
-                      {active.other.is_online && <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-card bg-emerald-500" />}
+                      {active.other.is_online && <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-card bg-success" />}
                     </span>
                     <span className="min-w-0">
                       <span className="block truncate text-sm font-black">{active.other.full_name || "Student"}</span>
@@ -322,7 +324,7 @@ function MessagesPage() {
                 <div className="min-h-0 flex-1 space-y-1.5 overflow-y-auto p-3 sm:p-4">
                   {msgs.map((m, i) => {
                     const mine = m.sender_id === uid;
-                    const showDay = i === 0 || dayLabel(msgs[i - 1]!.created_at) !== dayLabel(m.created_at);
+                    const showDay = i === 0 || dayLabel((msgs[i - 1]?.created_at ?? m.created_at)) !== dayLabel(m.created_at);
                     return (
                       <div key={m.id} className="min-w-0">
                         {showDay && (
@@ -357,14 +359,14 @@ function MessagesPage() {
                     aria-label="Message"
                     className="min-w-0 flex-1 rounded-full border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary"
                   />
-                  <button
+                  <Button variant="ghost"
                     onClick={send}
                     disabled={busy || !input.trim()}
                     aria-label="Send message"
                     className="shrink-0 rounded-full bg-primary p-2.5 text-primary-foreground disabled:opacity-50"
                   >
                     {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-                  </button>
+                  </Button>
                 </div>
               </>
             )}

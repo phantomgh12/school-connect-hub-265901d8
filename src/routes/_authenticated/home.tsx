@@ -9,6 +9,7 @@ import { SkeletonPost, SkeletonCard } from "@/components/app/Skeletons";
 import { NetworkStatsCard, SchoolCommunityCard } from "@/components/app/NetworkPanels";
 import { DailyRewardsCard, ReferralProgressCard, SchoolRankingsCard, TrendingCard, UpcomingEventsCard, SuggestedFriendsCard } from "@/components/app/SidePanels";
 import { fetchFeedPage, loadViewerContext, postPrompts, type FeedTab, type ViewerContext } from "@/lib/feed";
+import { Button } from "@/components/ui/button";
 import { School, Sparkles, UserCheck, Flame, Clock } from "lucide-react";
 
 type Search = { tab?: FeedTab };
@@ -123,6 +124,7 @@ function HomePage() {
         </>
       }
     >
+      <header className="mb-6 flex min-w-0 items-center justify-between gap-4"><div className="min-w-0"><p className="mb-1 text-sm text-muted-foreground">Your daily connection</p><h1 className="truncate font-display font-bold">{profile?.full_name ? `Hey, ${profile.full_name.split(" ")[0]}` : "Your community"}<span className="text-primary">.</span></h1></div><Button asChild variant="outline" size="icon" title="My school"><Link to="/communities" aria-label="My school"><School /></Link></Button></header>
       {uid && <StoryRail userId={uid} avatarUrl={profile?.avatar_url ?? null} />}
 
       {/* What's happening at your school */}
@@ -131,19 +133,19 @@ function HomePage() {
       {uid && <CreatePost userId={uid} avatarUrl={profile?.avatar_url ?? null} onPosted={refresh} />}
 
       {/* Feed tabs */}
-      <div className="glass sticky top-14 z-30 mt-4 flex gap-1 overflow-x-auto rounded-2xl p-1.5 no-scrollbar">
+      <div className="sticky top-16 z-30 mt-6 grid grid-cols-4 gap-1 border-b bg-background pb-2 pt-2">
         {TABS.map((t) => {
           const active = t.key === tab;
           return (
-            <button
+            <Button variant="ghost"
               key={t.key}
               onClick={() => nav({ search: { tab: t.key }, replace: true })}
-              className={`press flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-xl px-3 py-2 text-sm font-bold transition-colors ${
-                active ? "bg-primary text-primary-foreground shadow-soft" : "text-muted-foreground hover:bg-muted"
+              className={`flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-md px-1 py-2 text-xs font-semibold sm:px-3 sm:text-sm ${
+                active ? "bg-accent text-primary" : "text-muted-foreground hover:bg-muted"
               }`}
             >
-              <t.icon className="h-4 w-4" /> {t.label}
-            </button>
+              <t.icon className="hidden size-4 sm:block" /><span className="truncate">{t.label}</span>
+            </Button>
           );
         })}
       </div>
@@ -151,7 +153,7 @@ function HomePage() {
       {loading ? (
         <div className="mt-4 grid gap-4">{[0, 1, 2].map((i) => <SkeletonPost key={i} />)}</div>
       ) : posts.length === 0 ? (
-        <div className="glass mt-4 rounded-2xl p-8 text-center">
+        <div className="mt-8 rounded-lg border border-dashed p-6 text-center">
           <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-primary shadow-soft"><Sparkles className="h-6 w-6 text-primary-foreground" /></div>
           <h3 className="mt-4 text-lg font-bold">{tab === "following" ? "Follow classmates to fill this tab" : "Nothing here yet"}</h3>
           <p className="mt-1 text-sm text-muted-foreground">Try one of these to get started:</p>
@@ -196,7 +198,7 @@ function WhatsHappening({ schoolSlug, schoolName, uid }: { schoolSlug: string | 
   if (!data) return <div className="mt-4"><SkeletonCard lines={1} /></div>;
 
   return (
-    <section className="glass mt-4 rounded-2xl p-5">
+    <section className="mt-5 border-y py-4">
       <div className="flex items-center gap-2">
         <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-primary"><School className="h-4 w-4 text-primary-foreground" /></span>
         <h2 className="min-w-0 truncate text-base font-black">What's happening at {schoolName || "your school"}?</h2>
@@ -207,9 +209,9 @@ function WhatsHappening({ schoolSlug, schoolName, uid }: { schoolSlug: string | 
           { label: "Online now", value: data.online },
           { label: "Posts today", value: data.posts },
         ].map((s) => (
-          <div key={s.label} className="rounded-xl border bg-card p-3 text-center">
+          <div key={s.label} className="min-w-0 px-2 text-center">
             <div className="text-lg font-black text-primary">{s.value}</div>
-            <div className="text-[11px] font-medium text-muted-foreground">{s.label}</div>
+            <div className="truncate whitespace-nowrap text-[11px] font-medium text-muted-foreground">{s.label}</div>
           </div>
         ))}
       </div>
@@ -226,9 +228,9 @@ function WhatsHappening({ schoolSlug, schoolName, uid }: { schoolSlug: string | 
         </ul>
       )}
       <div className="mt-3 flex flex-wrap gap-2">
-        <Link to="/communities" className="press rounded-full bg-primary px-3.5 py-1.5 text-xs font-bold text-primary-foreground">Open community</Link>
-        <Link to="/confessions" className="press rounded-full border px-3.5 py-1.5 text-xs font-bold hover:bg-muted">Confessions</Link>
-        <Link to="/events" className="press rounded-full border px-3.5 py-1.5 text-xs font-bold hover:bg-muted">Events</Link>
+        <Link to="/communities" className="press whitespace-nowrap rounded-md bg-primary px-3.5 py-2 text-xs font-bold text-primary-foreground">Open community</Link>
+        <Link to="/confessions" className="press whitespace-nowrap rounded-md border px-3.5 py-2 text-xs font-bold hover:bg-muted">Confessions</Link>
+        <Link to="/events" className="press whitespace-nowrap rounded-md border px-3.5 py-2 text-xs font-bold hover:bg-muted">Events</Link>
       </div>
     </section>
   );

@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,7 +9,7 @@ function Panel({ title, icon: Icon, children }: { title: string; icon: any; chil
   return (
     <section className="glass rounded-1xl p-5">
       <h3 className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
-        <Icon className="h-4 w-4" /> {title}
+        <Icon className="h-4 w-4 shrink-0" /><span className="truncate">{title}</span>
       </h3>
       {children}
     </section>
@@ -72,7 +73,7 @@ export function SuggestedFriendsCard({ uid }: { uid: string }) {
               <Link to="/profile/$userId" params={{ userId: s.id }} className="block truncate text-sm font-semibold hover:underline">{s.full_name || s.username || "Student"}</Link>
               <div className="truncate text-xs text-muted-foreground">{s.school_name ?? "SchoolConnect"}</div>
             </div>
-            <Link to="/friends" className="press rounded-full border p-1.5 hover:bg-muted" title="Find friends"><UserPlus className="h-3.5 w-3.5" /></Link>
+            <Button asChild variant="outline" size="icon" className="size-10" title="Find friends"><Link to="/friends" aria-label="Find friends"><UserPlus /></Link></Button>
           </li>
         ))}
       </ul>
