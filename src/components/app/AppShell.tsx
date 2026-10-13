@@ -3,7 +3,7 @@ import {
   Home, User, Bell, Search, Users, Bookmark, LogOut, Sun, Moon, GraduationCap,
   Menu, X, MessageCircle, PlusSquare, Film, BadgeCheck, Shield, Sparkles,
   School, CalendarDays, Trophy, Settings, Flame, UserCheck, MessageSquareDashed,
-  Gift, ShoppingBag, Award, MoreHorizontal,
+  MoreHorizontal,
 } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -30,9 +30,6 @@ const DISCOVER: NavItem[] = [
 ];
 const MORE: NavItem[] = [
   { to: "/leaderboards", label: "School rankings", icon: Trophy },
-  { to: "/rewards", label: "Rewards", icon: Gift },
-  { to: "/shop", label: "Shop", icon: ShoppingBag },
-  { to: "/badges", label: "Badges", icon: Award },
   { to: "/verification", label: "Verification", icon: BadgeCheck },
   { to: "/settings", label: "Settings", icon: Settings },
 ];
@@ -196,7 +193,7 @@ export function AppShell({ children, right }: { children: ReactNode; right?: Rea
           <Button asChild className="mt-6 hidden h-11 w-full lg:flex"><Link to="/new-post"><PlusSquare />Create post</Link></Button>
           <Link to="/profile" className="mt-6 hidden items-center gap-3 border-t px-2 pt-5 lg:flex"><span className="grid size-9 shrink-0 place-items-center overflow-hidden rounded-full bg-muted">{avatar ? <img src={avatar} alt="" className="size-full object-cover" /> : <User className="size-4" />}</span><span className="min-w-0"><span className="block truncate text-sm font-semibold">{studentName}</span><span className="block truncate text-xs text-muted-foreground">{schoolName}</span></span></Link>
         </aside>
-        <main className="min-w-0 px-4 py-6 pb-28 sm:px-8 sm:py-8 md:pb-8"><div className="mx-auto w-full max-w-[720px]">{children}</div></main>
+        <main className="min-w-0 px-3 py-5 pb-28 sm:px-6 sm:py-8 md:pb-8"><div className="mx-auto w-full min-w-0 max-w-[720px]">{children}</div></main>
         <aside aria-label="Community highlights" className="sticky top-16 hidden max-h-[calc(100dvh-4rem)] overflow-y-auto border-l px-6 py-8 no-scrollbar xl:block"><div className="grid gap-6">{right}</div></aside>
       </div>
 

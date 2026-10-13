@@ -26,7 +26,7 @@ export type RawPost = {
 
 
 const SELECT =
-  "id,user_id,content,media_urls,post_type,hashtags,created_at,likes_count,comments_count,saves_count,shares_count,views_count,watch_ms,trending_score,audience,feeling,pinned,poll";
+  "id,user_id,content,media_urls,post_type,hashtags,created_at,likes_count,comments_count,saves_count,shares_count,views_count,watch_ms,trending_score,audience,feeling,pinned,poll,options";
 
 export type ViewerContext = {
   uid: string;

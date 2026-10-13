@@ -950,6 +950,7 @@ export type Database = {
           is_draft: boolean
           likes_count: number
           media_urls: string[]
+          options: Json
           pinned: boolean
           poll: Json | null
           post_type: string
@@ -973,6 +974,7 @@ export type Database = {
           is_draft?: boolean
           likes_count?: number
           media_urls?: string[]
+          options?: Json
           pinned?: boolean
           poll?: Json | null
           post_type?: string
@@ -996,6 +998,7 @@ export type Database = {
           is_draft?: boolean
           likes_count?: number
           media_urls?: string[]
+          options?: Json
           pinned?: boolean
           poll?: Json | null
           post_type?: string
