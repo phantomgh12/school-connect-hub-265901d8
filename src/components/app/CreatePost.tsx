@@ -1,9 +1,10 @@
 import { useState, useRef } from "react";
-import { Image as ImageIcon, Video, Loader2, X, Send } from "lucide-react";
+import { Image as ImageIcon, Video, Loader2, X, Send, MoreHorizontal } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { uploadToBucket, extractHashtags } from "@/lib/upload";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Link } from "@tanstack/react-router";
 
 export function CreatePost({ userId, avatarUrl, onPosted }: { userId: string; avatarUrl?: string | null; onPosted: () => void }) {
   const [content, setContent] = useState("");
@@ -71,6 +72,7 @@ export function CreatePost({ userId, avatarUrl, onPosted }: { userId: string; av
           )}
           <div className="mt-3 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 border-t pt-3">
             <div className="flex items-center gap-1">
+              <Button asChild variant="ghost" size="icon" title="More post options"><Link to="/new-post" aria-label="More post options"><MoreHorizontal className="size-5" /></Link></Button>
               <input ref={fileRef} type="file" hidden accept="image/*,video/*" multiple onChange={(e) => addFiles(e.target.files)} />
               <Button variant="ghost" size="sm" onClick={() => fileRef.current?.click()} className="gap-1.5 px-2 text-muted-foreground">
                 <ImageIcon className="h-5 w-5" /> Photo

@@ -83,7 +83,7 @@ function Landing() {
           <div className="mt-10 grid gap-5 md:grid-cols-3">{[
             { icon: Users, title: "A place to belong", text: "Your school community, classmates and alumni. Familiar faces and fresh perspectives, all in one place.", badge: "YOUR COMMUNITY", color: "text-primary bg-accent" },
             { icon: MessageCircle, title: "Stay in the loop", text: "Share a post, add a story or message a friend. From a quick hello to a study session that makes the difference.", badge: "YOUR CONNECTIONS", color: "text-verified bg-muted" },
-            { icon: Trophy, title: "Grow together", text: "Take on missions, earn badges and cheer on your school. Turn everyday participation into shared achievements.", badge: "YOUR NEXT CHAPTER", color: "text-trending-foreground bg-trending/15" },
+            { icon: Trophy, title: "Grow together", text: "Share study resources, celebrate classmates and cheer on your school. Make progress together, in class and beyond.", badge: "YOUR NEXT CHAPTER", color: "text-trending-foreground bg-trending/15" },
           ].map(({icon: Icon, title, text, badge, color}) => <article key={title} className="flex flex-col rounded-lg border border-border bg-surface p-6"><div className={`grid h-11 w-11 place-items-center rounded-md ${color}`}><Icon className="h-5 w-5" /></div><p className="mt-7 text-[10px] font-semibold tracking-widest text-muted-foreground">{badge}</p><h3 className="mt-2 text-lg font-semibold">{title}</h3><p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">{text}</p><Link to="/auth" search={{ mode: "signup" }} className="mt-6 inline-flex items-center gap-2 text-sm font-semibold">Join in<ArrowUpRight className="h-4 w-4" /></Link></article>)}</div>
         </section>
 

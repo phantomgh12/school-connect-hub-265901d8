@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { Heart, MessageCircle, Bookmark, Share2, MoreHorizontal, Trash2, Pencil, Send, Download, Flag, Loader2, Eye, UserPlus, UserCheck, Pin, Globe, Users, School } from "lucide-react";
+import { Heart, MessageCircle, Bookmark, Share2, MoreHorizontal, Trash2, Pencil, Send, Download, Flag, Loader2, Eye, UserPlus, UserCheck, Pin, Globe, Users, School, FileText, ExternalLink, ShieldAlert } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { VerifiedBadge } from "@/components/app/VerifiedBadge";
 import { PostPoll, type Poll } from "@/components/app/PostPoll";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { readPostOptions, mediaAspectClass } from "@/lib/post-options";
 
 export type FeedPost = {
   id: string;
@@ -26,6 +27,7 @@ export type FeedPost = {
   feeling?: string | null;
   pinned?: boolean | null;
   poll?: Poll | null;
+  options?: unknown;
 };
 
 const AUDIENCE_META: Record<string, { icon: typeof Globe; label: string }> = {
@@ -55,6 +57,9 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
   const [menuOpen, setMenuOpen] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
   const [pinned, setPinned] = useState(!!post.pinned);
+  const [revealed, setRevealed] = useState(false);
+  const options = readPostOptions(post.options);
+  const hidden = !!options.warning && !revealed;
 
   const isMine = post.user_id === currentUserId;
   const audience = AUDIENCE_META[post.audience ?? "public"] ?? { icon: Globe, label: "Everyone" };
@@ -199,7 +204,7 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
 
   return (
     <article id={`post-${post.id}`} className="post-card glass w-full max-w-full rounded-lg p-4 sm:p-5 animate-fade-up">
-      <header className="flex min-w-0 items-center gap-2 sm:gap-3">
+      <header className="grid min-w-0 grid-cols-[auto_minmax(0,1fr)_auto_auto] items-center gap-2 sm:gap-3">
         <Link to="/profile/$userId" params={{ userId: post.user_id }} className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full bg-primary text-sm font-bold text-primary-foreground ring-2 ring-background">
           {post.author?.avatar_url ? <img src={post.author.avatar_url} className="h-full w-full object-cover" alt="" loading="lazy" decoding="async" /> : initials}
         </Link>
@@ -217,11 +222,11 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
             <AudienceIcon className="h-3 w-3 shrink-0" aria-label={audience.label} />
           </div>
         </div>
-        {!isMine && (
+        {!isMine ? (
           <Button variant="ghost" onClick={toggleFollow} aria-label={isFollowing ? "Unfollow student" : "Follow student"} title={isFollowing ? "Unfollow student" : "Follow student"} className={`shrink-0 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold ${isFollowing ? "border bg-background/60 text-muted-foreground" : "bg-primary text-primary-foreground"}`}>
             {isFollowing ? <><UserCheck className="h-3 w-3" /> <span className="hidden xs:inline">Following</span></> : <><UserPlus className="h-3 w-3" /> <span className="hidden xs:inline">Follow</span></>}
           </Button>
-        )}
+        ) : <span />}
         <div className="relative shrink-0">
           <Button variant="ghost" onClick={() => setMenuOpen((v) => !v)} aria-label="Post options" title="Post options" className="rounded-full p-1.5 hover:bg-muted"><MoreHorizontal className="h-4 w-4" /></Button>
           {menuOpen && (
@@ -242,6 +247,8 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
       </header>
 
 
+      {options.warning && <div className="mt-4 flex min-w-0 items-center gap-2 border-y py-3"><ShieldAlert className="size-4 shrink-0 text-primary" /><span className="min-w-0 flex-1 break-words text-sm font-medium">{options.warning}</span><Button variant="outline" size="sm" onClick={() => setRevealed((v) => !v)}>{revealed ? "Hide" : "Show post"}</Button></div>}
+      {!hidden && <>
       {editing ? (
         <div className="mt-3">
           <textarea value={editContent} onChange={(e) => setEditContent(e.target.value)} rows={3} className="w-full rounded-2xl border bg-background/60 p-3 text-sm outline-none" />
@@ -260,21 +267,27 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
 
 
       {post.media_urls.length > 0 && (
-        <div className={`mt-3 grid gap-2 overflow-hidden rounded-2xl ${post.media_urls.length > 1 ? "grid-cols-2" : "grid-cols-1"}`}>
+        <div className="mt-3 grid min-w-0 gap-3">
           {post.media_urls.map((url, i) => (
-            <div key={i} className="group relative">
-              {post.post_type === "video" || url.match(/\.(mp4|webm|mov)/i) ? (
-                <video src={url} controls className="max-h-[520px] w-full rounded-xl bg-media object-cover" />
+            <div key={i} className="group relative min-w-0">
+              {options.attachments?.[i]?.kind === "audio" || /\.(mp3|m4a|wav|ogg|aac|flac)(?:\?|$)/i.test(url) || (post.post_type === "audio" && !options.attachments?.length) ? (
+                <div className="min-w-0 rounded-md border bg-muted p-3"><p className="mb-2 truncate text-sm font-medium">{options.attachments?.[i]?.name || "Audio"}</p><audio src={url} controls preload="metadata" className="w-full" /></div>
+              ) : options.attachments?.[i]?.kind === "document" || /\.pdf(?:\?|$)/i.test(url) ? (
+                <a href={url} target="_blank" rel="noopener noreferrer" className="flex min-w-0 items-center gap-3 rounded-md border p-4 text-primary"><FileText className="size-6 shrink-0" /><span className="min-w-0 flex-1 truncate">{options.attachments?.[i]?.name || "PDF document"}</span><ExternalLink className="size-4 shrink-0" /></a>
+              ) : options.attachments?.[i]?.kind === "video" || /\.(mp4|webm|mov)(?:\?|$)/i.test(url) || (post.post_type === "video" && !options.attachments?.length) ? (
+                <video src={url} controls preload="metadata" playsInline className={`max-h-[520px] w-full rounded-md bg-media ${mediaAspectClass(options.aspect)}`} />
               ) : (
-                <img src={url} alt="" className="max-h-[520px] w-full rounded-xl object-cover" loading="lazy" />
+                <img src={url} alt={options.attachments?.[i]?.description || "Post photo"} className={`max-h-[520px] w-full rounded-md bg-muted ${mediaAspectClass(options.aspect)}`} loading="lazy" />
               )}
-              <Button variant="ghost" onClick={() => downloadMedia(url)} className="absolute right-2 top-2 rounded-full bg-background/80 p-2 backdrop-blur transition lg:opacity-0 lg:group-hover:opacity-100 lg:focus-visible:opacity-100" title="Download">
+              <Button variant="ghost" size="icon" onClick={() => downloadMedia(url)} className="mt-1 bg-background/80" aria-label="Download attachment" title="Download attachment">
                 <Download className="h-4 w-4" />
               </Button>
             </div>
           ))}
         </div>
       )}
+
+      {options.link && <a href={options.link} target="_blank" rel="noopener noreferrer" className="mt-3 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 rounded-md border p-3 text-sm text-primary"><span className="truncate">{options.link}</span><ExternalLink className="size-4 shrink-0" /></a>}
 
       {post.poll && (
         <div className="mt-3">
@@ -289,6 +302,7 @@ export function PostCard({ post, currentUserId, onChange }: { post: FeedPost; cu
           ))}
         </div>
       )}
+      </>}
 
       <div className="mt-3 flex items-center gap-3 text-[11px] text-muted-foreground">
         <span className="inline-flex items-center gap-1"><Eye className="h-3 w-3" /> {viewCount} view{viewCount === 1 ? "" : "s"}</span>
