@@ -1,4 +1,7 @@
 # Current work
+- [ ] Fix narrow-screen overflow and verify student pages.
+- [ ] Add audio posts plus PDFs, links, content warnings, image descriptions and aspect ratios.
+- [ ] Remove shop, badge and coin experiences from the app.
 - [ ] Redesign the shared interface, student screens and public pages; verify layouts without overlaps.
 - [ ] Grant @Phantomgh admin access using the existing admin page.
 - [x] Rebuild the photo-free landing page with real community totals and honest unavailable states.
