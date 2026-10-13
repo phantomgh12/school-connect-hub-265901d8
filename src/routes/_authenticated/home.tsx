@@ -7,7 +7,7 @@ import { PostCard, type FeedPost } from "@/components/app/PostCard";
 import { StoryRail } from "@/components/app/StoryRail";
 import { SkeletonPost, SkeletonCard } from "@/components/app/Skeletons";
 import { NetworkStatsCard, SchoolCommunityCard } from "@/components/app/NetworkPanels";
-import { DailyRewardsCard, ReferralProgressCard, SchoolRankingsCard, TrendingCard, UpcomingEventsCard, SuggestedFriendsCard } from "@/components/app/SidePanels";
+import { SchoolRankingsCard, TrendingCard, UpcomingEventsCard, SuggestedFriendsCard } from "@/components/app/SidePanels";
 import { fetchFeedPage, loadViewerContext, postPrompts, type FeedTab, type ViewerContext } from "@/lib/feed";
 import { Button } from "@/components/ui/button";
 import { School, Sparkles, UserCheck, Flame, Clock } from "lucide-react";
@@ -24,6 +24,8 @@ export const Route = createFileRoute("/_authenticated/home")({
       { name: "description", content: "Your personalised student feed: For You, Following, Trending and Latest posts from your school community." },
       { property: "og:title", content: "Home Feed — SchoolConnect" },
       { property: "og:description", content: "A personalised feed for students and alumni." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: HomePage,
@@ -113,12 +115,10 @@ function HomePage() {
     <AppShell
       right={
         <>
-          <DailyRewardsCard />
           <TrendingCard />
           <SuggestedFriendsCard uid={uid} />
           <SchoolRankingsCard />
           <UpcomingEventsCard />
-          <ReferralProgressCard uid={uid} />
           {uid && <NetworkStatsCard userId={uid} />}
           {uid && <SchoolCommunityCard userId={uid} />}
         </>

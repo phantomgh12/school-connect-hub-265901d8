@@ -8,6 +8,13 @@
       "when": 1791526811704,
       "tag": "0000_landing_community_stats",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791922952083,
+      "tag": "0001_post_attachment_options",
+      "breakpoints": true
     }
   ]
 }

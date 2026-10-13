@@ -1,0 +1,2 @@
+ALTER TABLE public.posts ADD COLUMN IF NOT EXISTS options jsonb NOT NULL DEFAULT '{}'::jsonb;
+COMMENT ON COLUMN public.posts.options IS 'Optional attachment descriptions, safe external link, content warning and media aspect ratio. Existing posts remain compatible.';

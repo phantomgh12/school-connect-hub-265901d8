@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Coins, Flame, Zap } from "lucide-react";
+import { Flame, Zap } from "lucide-react";
 
 export type ProfileCounts = {
   posts: number;
@@ -14,7 +14,7 @@ export type ProfileCounts = {
 /** Followers / following / posts / likes strip used on every profile. */
 export function ProfileStats({ userId }: { userId: string }) {
   const [c, setC] = useState<ProfileCounts | null>(null);
-  const [gam, setGam] = useState<{ xp: number; level: number; coins: number; streak_days: number } | null>(null);
+  const [gam, setGam] = useState<{ xp: number; level: number; streak_days: number } | null>(null);
 
   useEffect(() => {
     if (!userId) return;
@@ -28,7 +28,7 @@ export function ProfileStats({ userId }: { userId: string }) {
         supabase.from("friendships").select("id", { count: "exact", head: true }).eq("addressee_id", userId).eq("status", "accepted"),
         supabase.from("posts").select("likes_count").eq("user_id", userId),
         supabase.from("stories").select("id", { count: "exact", head: true }).eq("user_id", userId),
-        supabase.from("user_gamification").select("xp,level,coins,streak_days").eq("user_id", userId).maybeSingle(),
+        supabase.from("user_gamification").select("xp,level,streak_days").eq("user_id", userId).maybeSingle(),
       ]);
       if (!alive) return;
       setC({
@@ -67,7 +67,6 @@ export function ProfileStats({ userId }: { userId: string }) {
         <ul className="flex flex-wrap gap-2 text-xs font-bold">
           <li className="inline-flex items-center gap-1 rounded-full border px-2.5 py-1"><Zap className="h-3.5 w-3.5 text-primary" /> Level {gam.level} · {gam.xp} XP</li>
           <li className="inline-flex items-center gap-1 rounded-full border px-2.5 py-1"><Flame className="h-3.5 w-3.5 text-primary" /> {gam.streak_days}d streak</li>
-          <li className="inline-flex items-center gap-1 rounded-full border px-2.5 py-1"><Coins className="h-3.5 w-3.5 text-primary" /> {gam.coins}</li>
         </ul>
       )}
     </div>
