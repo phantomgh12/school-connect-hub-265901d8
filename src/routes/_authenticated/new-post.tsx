@@ -160,8 +160,10 @@ function NewPostPage() {
           {AUDIENCES.map(({ key, label, Icon }) => (
             <Button
               key={key}
+              variant={audience === key ? "default" : "outline"}
+              aria-pressed={audience === key}
               onClick={() => setAudience(key)}
-              className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold ${audience === key ? "border-transparent bg-primary text-primary-foreground" : "bg-background/60 hover:bg-muted"}`}
+              className="gap-1.5 px-3 text-xs"
             >
               <Icon className="h-3.5 w-3.5" /> {label}
             </Button>
@@ -185,14 +187,14 @@ function NewPostPage() {
         {feeling && (
           <p className="mt-2 text-sm text-muted-foreground">
             Feeling <span className="font-semibold text-foreground">{feeling}</span>
-            <Button onClick={() => setFeeling(null)} className="ml-2 text-xs underline">remove</Button>
+            <Button variant="link" size="sm" onClick={() => setFeeling(null)} className="ml-2 text-xs">remove</Button>
           </p>
         )}
 
         {showFeelings && (
           <div className="mt-2 flex flex-wrap gap-1.5">
             {FEELINGS.map((f) => (
-              <Button key={f} onClick={() => { setFeeling(f); setShowFeelings(false); }} className="rounded-full border bg-background/60 px-3 py-1 text-xs font-semibold hover:bg-muted">{f}</Button>
+              <Button key={f} variant="outline" size="sm" onClick={() => { setFeeling(f); setShowFeelings(false); }} className="px-3 text-xs">{f}</Button>
             ))}
           </div>
         )}
@@ -201,7 +203,7 @@ function NewPostPage() {
           <div className="mt-3 rounded-2xl border border-border/70 bg-background/60 p-3">
             <div className="mb-2 flex items-center justify-between">
               <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-muted-foreground"><BarChart3 className="h-3.5 w-3.5" /> Poll</span>
-              <Button onClick={() => setPollOn(false)} className="rounded-full p-1 hover:bg-muted"><X className="h-3.5 w-3.5" /></Button>
+              <Button variant="ghost" size="icon" aria-label="Remove poll" onClick={() => setPollOn(false)}><X className="h-3.5 w-3.5" /></Button>
             </div>
             <input
               value={pollQuestion}
@@ -219,13 +221,13 @@ function NewPostPage() {
                     className="min-w-0 flex-1 rounded-xl border border-border/70 bg-card px-3 py-2 text-sm outline-none focus:border-primary"
                   />
                   {pollOptions.length > 2 && (
-                    <Button onClick={() => setPollOptions((p) => p.filter((_, j) => j !== i))} className="rounded-full p-1.5 hover:bg-muted"><X className="h-3.5 w-3.5" /></Button>
+                    <Button variant="ghost" size="icon" aria-label={`Remove option ${i + 1}`} onClick={() => setPollOptions((p) => p.filter((_, j) => j !== i))}><X className="h-3.5 w-3.5" /></Button>
                   )}
                 </div>
               ))}
             </div>
             {pollOptions.length < 6 && (
-              <Button onClick={() => setPollOptions((p) => [...p, ""])} className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-primary"><Plus className="h-3.5 w-3.5" /> Add option</Button>
+              <Button variant="link" size="sm" onClick={() => setPollOptions((p) => [...p, ""])} className="mt-2 gap-1 text-xs"><Plus className="h-3.5 w-3.5" /> Add option</Button>
             )}
           </div>
         )}
@@ -239,7 +241,7 @@ function NewPostPage() {
               onChange={(e) => setScheduleAt(e.target.value)}
               className="rounded-xl border border-border/70 bg-card px-3 py-1.5 text-sm outline-none focus:border-primary"
             />
-            {scheduleAt && <Button onClick={() => setScheduleAt("")} className="text-xs underline">clear</Button>}
+            {scheduleAt && <Button variant="link" size="sm" onClick={() => setScheduleAt("")} className="text-xs">clear</Button>}
           </div>
         )}
 
@@ -272,9 +274,10 @@ function NewPostPage() {
           </div>
           <div className="flex items-center gap-2">
             <Button
+              variant="outline"
               onClick={() => submit(true)}
               disabled={busy}
-              className="inline-flex items-center gap-1.5 rounded-full border px-4 py-2.5 text-sm font-semibold hover:bg-muted disabled:opacity-50"
+              className="gap-1.5 px-4"
             >
               <FileText className="h-4 w-4" /> Draft
             </Button>
@@ -295,8 +298,10 @@ function NewPostPage() {
 function Tool({ onClick, Icon, label, active }: { onClick: () => void; Icon: any; label: string; active?: boolean }) {
   return (
     <Button
+      variant={active ? "default" : "outline"}
+      aria-pressed={!!active}
       onClick={onClick}
-      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold ${active ? "border-transparent bg-primary text-primary-foreground" : "bg-background/60 hover:bg-muted"}`}
+      className="gap-1.5 px-3 text-xs"
     >
       <Icon className="h-4 w-4" /> {label}
     </Button>
