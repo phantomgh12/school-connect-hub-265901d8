@@ -106,7 +106,6 @@
 
   --border: oklch(0.9 0.006 250);
   --input: oklch(0.86 0.008 250);
-
   /* ---------- Action: deep ink (flat, no gradients) ---------- */
   --primary: oklch(0.53 0.205 259);
   --primary-foreground: oklch(0.99 0 0);
@@ -115,7 +114,6 @@
   --accent-foreground: oklch(0.45 0.18 259);
 
   --ring: oklch(0.53 0.205 259);
-
   /* ---------- Semantic ---------- */
   --success: oklch(0.43 0.105 165);
   --success-foreground: oklch(0.99 0 0);
@@ -144,7 +142,7 @@
   --shadow-flat: 0 1px 2px oklch(0.20 0.01 265 / 0.06);
 }
 
-/* ===================================================================
+/* ==================================================================
    DARK MODE
    =================================================================== */
 
@@ -493,4 +491,61 @@ body {
 @media (max-width: 639px) {
   .student-workspace main .post-card { padding: 1rem; }
   .student-workspace main :is(input, textarea, select) { font-size: 1rem; }
+}
+/* ===================================================================
+   REFINEMENT LAYER — color rule, sizing, layout, border maths, type
+   =================================================================== */
+
+/* Type scale (1.2 minor third) and rhythm on a 4px grid. */
+:root {
+  --step--1: 0.8125rem;
+  --step-0: 0.9375rem;
+  --step-1: 1.125rem;
+  --step-2: 1.35rem;
+  --step-3: 1.62rem;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  /* Border maths: inner radius = outer radius − padding (never below 4px). */
+  --radius-outer: 0.75rem;
+  --pad-card: 1rem;
+  --radius-inner: max(0.25rem, calc(var(--radius-outer) - var(--pad-card) / 2));
+  --control-h: 2.5rem;
+}
+
+@layer base {
+  body { font-size: var(--step-0); line-height: 1.55; font-feature-settings: "ss01", "cv11"; }
+  h1 { font-size: var(--step-3); line-height: 1.2; font-weight: 700; }
+  h2 { font-size: var(--step-2); line-height: 1.25; font-weight: 650; }
+  h3 { font-size: var(--step-1); line-height: 1.3; font-weight: 650; }
+  small, .text-xs { line-height: 1.45; }
+  /* 60/30/10: neutrals carry surfaces, foreground carries structure, primary only for action. */
+  a:not([class]) { color: var(--primary); text-underline-offset: 3px; }
+  ::selection { background: var(--accent); color: var(--accent-foreground); }
+  hr { border-color: var(--border); }
+  :is(input, textarea, select):not([type="checkbox"]):not([type="radio"]) {
+    border-radius: var(--radius-inner);
+  }
+}
+
+/* Cards: one outer radius, consistent padding; children nest with inner radius. */
+.student-workspace main .glass,
+.student-workspace main .post-card,
+.student-workspace main .card-soft {
+  border-radius: var(--radius-outer);
+}
+.student-workspace main .glass :is(img, video, .rounded-xl, .rounded-lg):not(.rounded-full),
+.student-workspace main .post-card :is(img, video, .rounded-xl, .rounded-lg):not(.rounded-full) {
+  border-radius: var(--radius-inner);
+}
+.student-workspace main button { min-height: var(--control-h); }
+.student-workspace main > div { max-width: 42rem; margin-inline: auto; }
+.student-workspace main > div > * + * { margin-top: var(--space-4); }
+.student-workspace main .text-muted-foreground { color: var(--muted-foreground); }
+
+@media (max-width: 639px) {
+  :root { --pad-card: 0.875rem; --radius-outer: 0.625rem; }
+  h1 { font-size: var(--step-2); }
 }
